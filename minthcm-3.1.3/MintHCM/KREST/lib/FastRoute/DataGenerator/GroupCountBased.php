@@ -15,7 +15,7 @@ class GroupCountBased extends RegexBasedAbstract
         $regexes = [];
         $numGroups = 0;
         foreach ($regexToRoutesMap as $regex => $route) {
-            $numVariables = count($route->variables);
+            $numVariables = is_array($route->variables) || $route->variables instanceof \Countable ? count($route->variables) : 0;
             $numGroups = max($numGroups, $numVariables);
 
             $regexes[] = $regex . str_repeat('()', $numGroups - $numVariables);

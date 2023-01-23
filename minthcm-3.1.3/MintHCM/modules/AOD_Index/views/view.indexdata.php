@@ -34,6 +34,7 @@ class AOD_IndexViewIndexData extends SugarView {
      */
     public function display()
     {
+        $listViewDefs = [];
         global $timedate, $current_language;
         $db = DBManagerFactory::getInstance();
 
@@ -45,7 +46,7 @@ class AOD_IndexViewIndexData extends SugarView {
 
         $beanList = $index->getIndexableModules();
 
-        $moduleCounts = array();
+        $moduleCounts = [];
 
         foreach($beanList as $beanModule => $beanName){
             $bean = BeanFactory::getBean($beanModule);
@@ -61,7 +62,7 @@ class AOD_IndexViewIndexData extends SugarView {
         $indexedCount = $db->getOne("SELECT COUNT(*) FROM aod_indexevent WHERE deleted = 0 AND success = 1");
         $failedCount = $db->getOne("SELECT COUNT(*) FROM aod_indexevent WHERE deleted = 0 AND success = 0");
 
-        $indexFiles = count(glob($index->location."/*.cfs"));
+        $indexFiles = is_array(glob($index->location."/*.cfs")) || glob($index->location."/*.cfs") instanceof \Countable ? count(glob($index->location."/*.cfs")) : 0;
 
         $this->ss->assign("revisionCount",$revisionCount);
         $this->ss->assign("indexedCount",$indexedCount);

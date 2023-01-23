@@ -65,10 +65,10 @@ $sugar_smarty->assign('APP_LIST', $app_list_strings);
 }*/
 $role = new ACLRole();
 $role_name = '';
-$return= array('module'=>'ACLRoles', 'action'=>'index', 'record'=>'');
+$return= ['module'=>'ACLRoles', 'action'=>'index', 'record'=>''];
 if(!empty($_REQUEST['record'])){
 	$role->retrieve($_REQUEST['record']);
-	$categories = ACLRole::getRoleActions($_REQUEST['record']);
+	$categories = (new ACLRole())->getRoleActions($_REQUEST['record']);
 	
 	$role_name =  $role->name;
 	if(!empty($_REQUEST['isDuplicate'])){
@@ -80,7 +80,7 @@ if(!empty($_REQUEST['record'])){
 	}
 	
 }else{
-	$categories = ACLRole::getRoleActions('');
+	$categories = (new ACLRole())->getRoleActions('');
 }
 $sugar_smarty->assign('ROLE', $role->toArray());
 $tdwidth = 10;
@@ -106,7 +106,7 @@ if($_REQUEST['category_name'] == 'All'){
 	echo $sugar_smarty->fetch('modules/ACLRoles/EditAllBody.tpl');	
 }else{
 //WDong Bug 23195: Strings not localized in Role Management.
-echo getClassicModuleTitle($_REQUEST['category_name'],array($app_list_strings['moduleList'][$_REQUEST['category_name']]), false);
+echo getClassicModuleTitle($_REQUEST['category_name'],[$app_list_strings['moduleList'][$_REQUEST['category_name']]], false);
 echo $sugar_smarty->fetch('modules/ACLRoles/EditRole.tpl');
 echo '</form>';
 }

@@ -24,8 +24,8 @@
 
 class AOR_Chart extends Basic
 {
-    const COLOUR_DEFAULTS = "['#1f78b4','#a6cee3','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928','#144c73','#6caed1','#8acf4e','#20641c','#f8514f','#9e1214','#fc9d24','#b35900','#a880bb','#442763','#ffff4d','#733a1a']";
-    public $colours;
+    public const COLOUR_DEFAULTS = "['#1f78b4','#a6cee3','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928','#144c73','#6caed1','#8acf4e','#20641c','#f8514f','#9e1214','#fc9d24','#b35900','#a880bb','#442763','#ffff4d','#733a1a']";
+    public $colours = self::COLOUR_DEFAULTS;
     public $new_schema = true;
     public $module_dir = 'AOR_Charts';
     public $object_name = 'AOR_Chart';
@@ -56,7 +56,6 @@ class AOR_Chart extends Basic
     public function __construct()
     {
         parent::__construct();
-        $this->colours = self::COLOUR_DEFAULTS;
     }
 
     /**
@@ -76,7 +75,7 @@ class AOR_Chart extends Basic
 
     public function save_lines(array $post, AOR_Report $bean, $postKey)
     {
-        $seenIds = array();
+        $seenIds = [];
         if (isset($post[$postKey.'id'])) {
             foreach ($post[$postKey . 'id'] as $key => $id) {
                 if ($id && $post['record']!='') {
@@ -103,7 +102,7 @@ class AOR_Chart extends Basic
 
     private function getValidChartTypes()
     {
-        return array('bar','line','pie','radar','rose', 'grouped_bar', 'stacked_bar');
+        return ['bar', 'line', 'pie', 'radar', 'rose', 'grouped_bar', 'stacked_bar'];
     }
 
 
@@ -114,7 +113,7 @@ class AOR_Chart extends Basic
         $g = hexdec(substr($hash, 2, 2));
         $b = hexdec(substr($hash, 4, 2));
         if ($rgbArray) {
-            return array('R'=>$r,'G'=>$g,'B'=>$b);
+            return ['R'=>$r, 'G'=>$g, 'B'=>$b];
         }
         $highR = $r + 10;
         $highG = $g + 10;
@@ -123,14 +122,14 @@ class AOR_Chart extends Basic
             .str_pad(dechex($g), 2, '0', STR_PAD_LEFT)
             .str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
         $highlight = '#'.dechex($highR).dechex($highG).dechex($highB);
-        return array('main'=>$main,'highlight'=>$highlight);
+        return ['main'=>$main, 'highlight'=>$highlight];
     }
 
     public function buildChartImageBar($chartPicture, $recordImageMap = false)
     {
-        $scaleSettings = array("DrawSubTicks" => false, "LabelRotation" => 30, 'MinDivHeight' => 50);
+        $scaleSettings = ["DrawSubTicks" => false, "LabelRotation" => 30, 'MinDivHeight' => 50];
         $chartPicture->drawScale($scaleSettings);
-        $chartPicture->drawBarChart(array("RecordImageMap"=>$recordImageMap));
+        $chartPicture->drawBarChart(["RecordImageMap"=>$recordImageMap]);
     }
 
     public function buildChartImagePie($chartPicture, $chartData, $reportData, $imageHeight, $imageWidth, $xName, $recordImageMap)
@@ -141,21 +140,21 @@ class AOR_Chart extends Basic
             $PieChart->setSliceColor($x, $this->getColour($row[$xName], true));
             $x++;
         }
-        $PieChart->draw2DPie($imageWidth/3, $imageHeight/2, array("Border"=>true,'Radius'=>200,''=>true,"RecordImageMap"=>$recordImageMap));
-        $PieChart->drawPieLegend($imageWidth*0.7, $imageHeight/3, array('FontSize'=>10,"FontName"=>"modules/AOR_Charts/lib/pChart/fonts/verdana.ttf",'BoxSize'=>14));
+        $PieChart->draw2DPie($imageWidth/3, $imageHeight/2, ["Border"=>true, 'Radius'=>200, ''=>true, "RecordImageMap"=>$recordImageMap]);
+        $PieChart->drawPieLegend($imageWidth*0.7, $imageHeight/3, ['FontSize'=>10, "FontName"=>"modules/AOR_Charts/lib/pChart/fonts/verdana.ttf", 'BoxSize'=>14]);
     }
 
     public function buildChartImageLine($chartPicture, $recordImageMap = false)
     {
-        $scaleSettings = array("XMargin"=>10,"YMargin"=>10,"GridR"=>200,"GridG"=>200,"GridB"=>200,'MinDivHeight' => 50,"LabelRotation" => 30);
+        $scaleSettings = ["XMargin"=>10, "YMargin"=>10, "GridR"=>200, "GridG"=>200, "GridB"=>200, 'MinDivHeight' => 50, "LabelRotation" => 30];
         $chartPicture->drawScale($scaleSettings);
-        $chartPicture->drawLineChart(array("RecordImageMap"=>$recordImageMap));
+        $chartPicture->drawLineChart(["RecordImageMap"=>$recordImageMap]);
     }
 
     public function buildChartImageRadar($chartPicture, $chartData, $recordImageMap)
     {
         $SplitChart = new pRadar();
-        $Options = array("LabelPos"=>RADAR_LABELS_HORIZONTAL,"RecordImageMap"=>$recordImageMap);
+        $Options = ["LabelPos"=>RADAR_LABELS_HORIZONTAL, "RecordImageMap"=>$recordImageMap];
         $SplitChart->drawRadar($chartPicture, $chartData, $Options);
     }
 
@@ -183,7 +182,7 @@ class AOR_Chart extends Basic
 
         $chartData = new pData();
         $chartData->loadPalette("modules/AOR_Charts/lib/pChart/palettes/navy.color", true);
-        $labels = array();
+        $labels = [];
         foreach ($reportData as $row) {
             $chartData->addPoints($row[$yName], 'data');
             $chartData->addPoints($row[$xName], 'Labels');
@@ -204,12 +203,12 @@ class AOR_Chart extends Basic
 
         $chartPicture->Antialias = true;
 
-        $chartPicture->drawFilledRectangle(0, 0, $imageWidth-1, $imageHeight-1, array("R"=>240,"G"=>240,"B"=>240,"BorderR"=>0,"BorderG"=>0,"BorderB"=>0,));
+        $chartPicture->drawFilledRectangle(0, 0, $imageWidth-1, $imageHeight-1, ["R"=>240, "G"=>240, "B"=>240, "BorderR"=>0, "BorderG"=>0, "BorderB"=>0]);
 
-        $chartPicture->setFontProperties(array("FontName"=>"modules/AOR_Charts/lib/pChart/fonts/verdana.ttf","FontSize"=>14));
+        $chartPicture->setFontProperties(["FontName"=>"modules/AOR_Charts/lib/pChart/fonts/verdana.ttf", "FontSize"=>14]);
 
-        $chartPicture->drawText($imageWidth/2, 20, $this->name, array("R"=>0,"G"=>0,"B"=>0,'Align'=>TEXT_ALIGN_TOPMIDDLE));
-        $chartPicture->setFontProperties(array("FontName"=>"modules/AOR_Charts/lib/pChart/fonts/verdana.ttf","FontSize"=>6));
+        $chartPicture->drawText($imageWidth/2, 20, $this->name, ["R"=>0, "G"=>0, "B"=>0, 'Align'=>TEXT_ALIGN_TOPMIDDLE]);
+        $chartPicture->setFontProperties(["FontName"=>"modules/AOR_Charts/lib/pChart/fonts/verdana.ttf", "FontSize"=>6]);
 
         $chartPicture->setGraphArea(60, 60, $imageWidth-60, $imageHeight-100);
 
@@ -696,22 +695,22 @@ EOF;
 
         // get grouped values
 
-        $data = array();
-        $tooltips = array();
+        $data = [];
+        $tooltips = [];
 
-        $usedKeys = array();
+        $usedKeys = [];
         foreach ($reportData as $key => $row) {
             $filter = $row[$xName];
             foreach ($reportData as $key2 => $row2) {
                 if ($row2[$xName] == $filter && !in_array($key, $usedKeys)) {
                     $data      [ $row[$xName]  ]   [] = (float) $row[$yName];
-                    $tooltips  [ $row[$xName]  ]   [] = isset($row[$zName]) ? $row[$zName] : null;
+                    $tooltips  [ $row[$xName]  ]   [] = $row[$zName] ?? null;
                     $usedKeys[] = $key;
                 }
             }
         }
 
-        $_data = array();
+        $_data = [];
         foreach ($data as $label => $values) {
             foreach ($values as $key => $value) {
                 $_data[$label][$tooltips[$label][$key]] = $value;
@@ -722,12 +721,12 @@ EOF;
 
         // make data format for charts
 
-        $_data = array();
-        $_labels = array();
-        $_tooltips = array();
+        $_data = [];
+        $_labels = [];
+        $_tooltips = [];
         foreach ($data as $label => $values) {
             $_labels[] = $this->getShortenedLabel($label);
-            $_values = array();
+            $_values = [];
             foreach ($values as $tooltip => $value) {
                 $_tooltips[] = $tooltip . " ($value)";
                 $_values[] = $value;
@@ -736,20 +735,17 @@ EOF;
         }
 
 
-        $chart = array(
-            'data' => $_data,
-            'labels' => $_labels,
-            'tooltips' => $_tooltips,
-        );
+        $chart = ['data' => $_data, 'labels' => $_labels, 'tooltips' => $_tooltips];
 
         return $chart;
     }
 
     private function getRGraphBarChartData($reportData, $xName, $yName)
     {
-        $chart['labels']=array();
-        $chart['data']=array();
-        $chart['tooltips']=array();
+        $chart = [];
+        $chart['labels']=[];
+        $chart['data']=[];
+        $chart['tooltips']=[];
         foreach ($reportData as $row) {
             $chart['labels'][] = $this->getShortenedLabel($row[$xName]);
             $chart['tooltips'][] = $row[$xName].': '.$row[$yName];
@@ -761,23 +757,16 @@ EOF;
 
     private function getBarChartData($reportData, $xName, $yName)
     {
-        $data = array();
-        $data['labels'] = array();
-        $datasetData = array();
+        $data = [];
+        $data['labels'] = [];
+        $datasetData = [];
         foreach ($reportData as $row) {
             $data['labels'][] = $row[$xName];
             $datasetData[] = $row[$yName];
         }
 
-        $data['datasets'] = array();
-        $data['datasets'][] = array(
-            'fillColor' => "rgba(151,187,205,0.2)",
-            'strokeColor' => "rgba(151,187,205,1)",
-            'pointColor' => "rgba(151,187,205,1)",
-            'pointStrokeColor' => "#fff",
-            'pointHighlightFill' => "#fff",
-            'pointHighlightStroke' => "rgba(151,187,205,1)4",
-            'data'=>$datasetData);
+        $data['datasets'] = [];
+        $data['datasets'][] = ['fillColor' => "rgba(151,187,205,0.2)", 'strokeColor' => "rgba(151,187,205,1)", 'pointColor' => "rgba(151,187,205,1)", 'pointStrokeColor' => "#fff", 'pointHighlightFill' => "#fff", 'pointHighlightStroke' => "rgba(151,187,205,1)4", 'data'=>$datasetData];
         return $data;
     }
 
@@ -788,7 +777,7 @@ EOF;
 
     private function getBarChartConfig()
     {
-        return array();
+        return [];
     }
     private function getLineChartConfig()
     {
@@ -817,31 +806,26 @@ EOF;
 
     private function getRadarChartConfig()
     {
-        return array();
+        return [];
     }
 
     private function getPieChartConfig()
     {
-        $config = array();
+        $config = [];
         $config['legendTemplate'] = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;<%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>";
         return $config;
     }
 
     private function getPieChartData($reportData, $xName, $yName)
     {
-        $data = array();
+        $data = [];
 
         foreach ($reportData as $row) {
             if (!$row[$yName]) {
                 continue;
             }
             $colour = $this->getColour($row[$xName]);
-            $data[] = array(
-                'value' => (int)$row[$yName],
-                'label' => $row[$xName],
-                'color' => $colour['main'],
-                'highlight' => $colour['highlight'],
-            );
+            $data[] = ['value' => (int)$row[$yName], 'label' => $row[$xName], 'color' => $colour['main'], 'highlight' => $colour['highlight']];
         }
         return $data;
     }

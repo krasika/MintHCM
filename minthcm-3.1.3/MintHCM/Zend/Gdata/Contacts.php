@@ -66,9 +66,9 @@ require_once 'Zend/Gdata/Contacts/ListEntry.php';
 class Zend_Gdata_Contacts extends Zend_Gdata
 {
 
-    const CONTACT_FEED_URI = 'https://www.google.com/m8/feeds/contacts/default/full';
-    const AUTH_SERVICE_NAME = 'cp';
-    const DEFAULT_MAJOR_PROTOCOL_VERSION = 3;
+    public const CONTACT_FEED_URI = 'https://www.google.com/m8/feeds/contacts/default/full';
+    public const AUTH_SERVICE_NAME = 'cp';
+    public const DEFAULT_MAJOR_PROTOCOL_VERSION = 3;
 
     protected $maxResults = 10;
     protected $startIndex = 1;
@@ -77,9 +77,7 @@ class Zend_Gdata_Contacts extends Zend_Gdata
      *
      * @var array
      */
-    public static $namespaces = array(
-        array('gContact', 'http://schemas.google.com/contact/2008', 1, 0),
-    );
+    public static $namespaces = [['gContact', 'http://schemas.google.com/contact/2008', 1, 0]];
 
     /**
      * Create Gdata_Calendar object

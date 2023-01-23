@@ -92,7 +92,7 @@ abstract class NusoapSoap extends SugarSoapService{
 		$GLOBALS['log']->info('Begin: NusoapSoap->serve');
 		ob_clean();
 		$this->in_service = true;
-		register_shutdown_function(array($this, "shutdown"));
+		register_shutdown_function([$this, "shutdown"]);
 		ob_start();
 		$this->server->service($GLOBALS['HTTP_RAW_POST_DATA']);
 		$this->in_service = false;
@@ -114,7 +114,7 @@ abstract class NusoapSoap extends SugarSoapService{
 	 * @param String $arrayType - arrayType: namespace:name (xsd:string)
 	 * @access public
 	 */
-	public function registerType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs=array(), $arrayType=''){
+	public function registerType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs=[], $arrayType=''){
 		$this->server->wsdl->addComplexType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs, $arrayType);
   	} // fn
 

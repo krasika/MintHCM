@@ -50,7 +50,7 @@ class AOPAssignManager
     private $ieX = false;
     private $distributionMethod = '';
     private $aopFallback = true;
-    private $assignableUsers = array();
+    private $assignableUsers = [];
 
     /**
      * AOPAssignManager constructor.
@@ -116,7 +116,7 @@ class AOPAssignManager
         $role = new ACLRole();
         $role->retrieve($roleId);
         $role_users = $role->get_linked_beans('users', 'User');
-        $r_users = array();
+        $r_users = [];
         foreach ($role_users as $role_user) {
             $r_users[$role_user->id] = $role_user->name;
         }
@@ -130,12 +130,12 @@ class AOPAssignManager
     private function getAssignableUsers()
     {
         if ($this->distributionMethod === 'singleUser') {
-            return array();
+            return [];
         }
         $distributionOptions = $this->getDistributionOptions();
 
         if (empty($distributionOptions)) {
-            return array();
+            return [];
         }
         switch ($distributionOptions[0]) {
             case 'security_group':
@@ -144,8 +144,8 @@ class AOPAssignManager
                     $security_group = new SecurityGroup();
                     $security_group->retrieve($distributionOptions[1]);
                     $group_users = $security_group->get_linked_beans('users', 'User');
-                    $users = array();
-                    $r_users = array();
+                    $users = [];
+                    $r_users = [];
                     if ($distributionOptions[2] !== '') {
                         $r_users = $this->getRoleUsers($distributionOptions[2]);
                     }
@@ -202,7 +202,7 @@ class AOPAssignManager
             $idIn = "'".$idIn."'";
         }
         $res = $db->query("SELECT assigned_user_id, COUNT(*) AS c FROM cases WHERE assigned_user_id IN ({$idIn}) AND deleted = 0 GROUP BY assigned_user_id ORDER BY COUNT(*)");
-        $this->leastBusyUsers = array();
+        $this->leastBusyUsers = [];
         while ($row = $db->fetchByAssoc($res)) {
             $this->leastBusyUsers[$row['assigned_user_id']] = $row['c'];
         }
@@ -275,6 +275,7 @@ class AOPAssignManager
      */
     private function getRoundRobinUser()
     {
+        $lastUser = [];
         $id = empty($this->ieX) ? '' : $this->ieX->id;
         $file = create_cache_directory('modules/AOP_Case_Updates/Users/').$id.'lastUser.cache.php';
         $lastUserId = '';
@@ -306,7 +307,7 @@ class AOPAssignManager
         $id = empty($this->ieX) ? '' : $this->ieX->id;
         $_SESSION['AOPLastUser'][$id] = $user_id;
         $file = create_cache_directory('modules/AOP_Case_Updates/Users/').$id.'lastUser.cache.php';
-        $arrayString = var_export_helper(array('User' => $user_id));
+        $arrayString = var_export_helper(['User' => $user_id]);
         $content = <<<eoq
 <?php
     \$lastUser = {$arrayString};

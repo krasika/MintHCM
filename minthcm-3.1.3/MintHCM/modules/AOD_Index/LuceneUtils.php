@@ -128,8 +128,8 @@ function createOdtDocument($path){
         return false;
     }
     $doc = new Zend_Search_Lucene_Document();
-    $documentBody = array();
-    $coreProperties = array();
+    $documentBody = [];
+    $coreProperties = [];
     $package = new ZipArchive();
     $package->open($path);
     $contents = simplexml_load_string($package->getFromName("content.xml"));
@@ -173,7 +173,7 @@ function createRTFDocument($path){
 }
 
 function rtf_isPlainText($s) {
-    $arrfailAt = array("*", "fonttbl", "colortbl", "datastore", "themedata");
+    $arrfailAt = ["*", "fonttbl", "colortbl", "datastore", "themedata"];
     for ($i = 0; $i < count($arrfailAt); $i++)
         if (!empty($s[$arrfailAt[$i]])) return false;
     return true;
@@ -187,7 +187,7 @@ function rtf2text($filename) {
 
     // Create empty stack array.
     $document = "";
-    $stack = array();
+    $stack = [];
     $j = -1;
     // Read the data character-by- character…
     for ($i = 0, $len = strlen($text); $i < $len; $i++) {

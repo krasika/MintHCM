@@ -59,40 +59,6 @@ if ( !defined('sugarEntry') || !sugarEntry ) {
    die('Not A Valid Entry Point');
 }
 
-$dictionary['view_tools_queue'] = array(
-   'table' => 'view_tools_queue',
-   'fields' => array(
-      array(
-         'name' => 'id',
-         'type' => 'id',
-      ),
-      array(
-         'name' => 'date_modified',
-         'type' => 'datetime',
-      ),
-      array(
-         'name' => 'module_name',
-         'type' => 'varchar',
-      ),
-      array(
-         'name' => 'record_id',
-         'type' => 'id',
-      ),
-   ),
-   'indices' => array(
-      array(
-         'name' => 'view_tools_queue_primary',
-         'type' => 'primary',
-         'fields' =>
-         array(
-            'id',
-         ),
-      ),
-      array(
-         'name' => 'view_tools_queue_date_modified',
-         'type' => 'index',
-         'fields' =>
-         array( 'date_modified' )
-      ),
-   ),
-);
+$dictionary['view_tools_queue'] = ['table' => 'view_tools_queue', 'fields' => [['name' => 'id', 'type' => 'id'], ['name' => 'date_modified', 'type' => 'datetime'], ['name' => 'module_name', 'type' => 'varchar'], ['name' => 'record_id', 'type' => 'id']], 'indices' => [['name' => 'view_tools_queue_primary', 'type' => 'primary', 'fields' =>
+['id']], ['name' => 'view_tools_queue_date_modified', 'type' => 'index', 'fields' =>
+['date_modified']]]];

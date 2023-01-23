@@ -76,7 +76,7 @@ trait IndexingSchedulerTrait
         $indexer->getLogger()->debug('Starting scheduled job');
 
         $indexer->setDifferentialIndexing(
-            isset($options['partial']) ? $options['partial'] : true
+            $options['partial'] ?? true
         );
 
         try {

@@ -54,7 +54,7 @@ class Zend_Gdata_Contacts_Extension_Address extends Zend_Gdata_Extension
     protected $_rootElement = 'structuredPostalAddress';
     protected $_isPrimary = FALSE;
     protected $_addressType = null;
-    protected $_transformMapping = array('work' => 'primary', 'home' => 'alt', '' => 'primary');
+    protected $_transformMapping = ['work' => 'primary', 'home' => 'alt', '' => 'primary'];
     /**
      * Constructs a new Zend_Gdata_Contacts_Extension_Name object.
      * @param string $value (optional) The text content of the element.
@@ -112,7 +112,7 @@ class Zend_Gdata_Contacts_Extension_Address extends Zend_Gdata_Extension
 
     public function toArray()
     {
-        $results = array();
+        $results = [];
 
         $keyPrefix= $this->_transformMapping[strtolower($this->getAddressType())];
 

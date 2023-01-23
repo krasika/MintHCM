@@ -32,26 +32,20 @@ require_once 'Zend/Validate/Abstract.php';
  */
 class Zend_Validate_Ip extends Zend_Validate_Abstract
 {
-    const INVALID        = 'ipInvalid';
-    const NOT_IP_ADDRESS = 'notIpAddress';
+    public const INVALID        = 'ipInvalid';
+    public const NOT_IP_ADDRESS = 'notIpAddress';
 
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::INVALID        => "Invalid type given, value should be a string",
-        self::NOT_IP_ADDRESS => "'%value%' does not appear to be a valid IP address",
-    );
+    protected $_messageTemplates = [self::INVALID        => "Invalid type given, value should be a string", self::NOT_IP_ADDRESS => "'%value%' does not appear to be a valid IP address"];
 
     /**
      * internal options
      *
      * @var array
      */
-    protected $_options = array(
-        'allowipv6' => true,
-        'allowipv4' => true
-    );
+    protected $_options = ['allowipv6' => true, 'allowipv4' => true];
 
     /**
      * Sets validator options
@@ -59,8 +53,9 @@ class Zend_Validate_Ip extends Zend_Validate_Abstract
      * @param array $options OPTIONAL Options to set, see the manual for all available options
      * @return void
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
+        $temp = [];
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
         } else if (!is_array($options)) {

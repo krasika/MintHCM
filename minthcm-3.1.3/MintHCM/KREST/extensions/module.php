@@ -34,13 +34,13 @@ $app->group('/module', function () use ($KRESTManager, $KRESTModuleHandler) {
       $appListStrings = return_app_list_strings_language($language);
       $appStrings = array_merge($appListStrings, $dynamicDomains);
 
-      $responseArray = array( 'languages' => array( 'available' => $GLOBALS['sugar_config']['languages'], 'default' => $GLOBALS['sugar_config']['default_language'] ), 'mod' => $KRESTModuleHandler->get_mod_language(json_decode($getParams['modules']), $language), 'applang' => return_application_language($language), 'applist' => $appStrings );
+      $responseArray = ['languages' => ['available' => $GLOBALS['sugar_config']['languages'], 'default' => $GLOBALS['sugar_config']['default_language']], 'mod' => $KRESTModuleHandler->get_mod_language(json_decode($getParams['modules']), $language), 'applang' => return_application_language($language), 'applist' => $appStrings];
 
       $responseArray['md5'] = md5(json_encode($responseArray));
 
       // if an md5 was sent in and matches the curent one .. no change .. do not send the language to save bandwidth
       if ( $_REQUEST['md5'] == $responseArray['md5'] ) {
-         $responseArray = array( 'md5' => $_REQUEST['md5'] );
+         $responseArray = ['md5' => $_REQUEST['md5']];
       }
 
       return $response->withJson($responseArray);
@@ -56,7 +56,7 @@ $app->group('/module', function () use ($KRESTManager, $KRESTModuleHandler) {
    });
    $this->post('/{beanName}', function ($request, $response, $args) use ($KRESTModuleHandler) {
       $requestParams = $request->getParams();
-      $retArray = array();
+      $retArray = [];
 
       $items = json_decode($request->getBody(), true);
 

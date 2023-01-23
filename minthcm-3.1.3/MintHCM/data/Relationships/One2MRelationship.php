@@ -128,7 +128,7 @@ class One2MRelationship extends M2MRelationship
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
-    public function add($lhs, $rhs, $additionalFields = array())
+    public function add($lhs, $rhs, $additionalFields = [])
     {
         $dataToInsert = $this->getRowToInsert($lhs, $rhs, $additionalFields);
         
@@ -176,7 +176,7 @@ class One2MRelationship extends M2MRelationship
      * 
      * The logic for dealing with adding self-referencing one-to-many relations is in the add() method
      */
-    protected function addSelfReferencing($lhs, $rhs, $additionalFields = array())
+    protected function addSelfReferencing($lhs, $rhs, $additionalFields = [])
     {
         //No-op on One2M.
     }
@@ -184,7 +184,7 @@ class One2MRelationship extends M2MRelationship
     /**
      * Just overriding the function from M2M to prevent it from occuring
      */
-    protected function removeSelfReferencing($lhs, $rhs, $additionalFields = array())
+    protected function removeSelfReferencing($lhs, $rhs, $additionalFields = [])
     {
         //No-op on One2M.
     }

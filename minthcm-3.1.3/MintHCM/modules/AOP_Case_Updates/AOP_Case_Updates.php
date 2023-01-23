@@ -228,10 +228,10 @@ class AOP_Case_Updates extends Basic
     {
         $user = $this->getUser();
         if ($user) {
-            return array($user->emailAddress->getPrimaryAddress($user));
+            return [$user->emailAddress->getPrimaryAddress($user)];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -249,8 +249,8 @@ class AOP_Case_Updates extends Basic
         if (!$user) {
             $this->getUser();
         }
-        $beans = array('Contacts' => $contactId, 'Cases' => $this->getCase()->id, 'Users' => $user->id, 'AOP_Case_Updates' => $this->id);
-        $ret = array();
+        $beans = ['Contacts' => $contactId, 'Cases' => $this->getCase()->id, 'Users' => $user->id, 'AOP_Case_Updates' => $this->id];
+        $ret = [];
         $ret['subject'] = from_html(aop_parse_template($template->subject, $beans));
         $body = aop_parse_template(str_replace('$sugarurl', $sugar_config['site_url'], $template->body_html), $beans);
         $bodyAlt = aop_parse_template(str_replace('$sugarurl', $sugar_config['site_url'], $template->body), $beans);
@@ -277,7 +277,7 @@ class AOP_Case_Updates extends Basic
     public function sendEmail(
         $emails,
         $template,
-        $signature = array(),
+        $signature = [],
         $caseId = null,
         $addDelimiter = true,
         $contactId = null

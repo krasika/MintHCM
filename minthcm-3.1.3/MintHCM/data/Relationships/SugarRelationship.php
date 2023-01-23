@@ -78,7 +78,7 @@ abstract class SugarRelationship
     /**
      * @var SugarBean[]
      */
-    protected static $beansToResave = array();
+    protected static $beansToResave = [];
 
     /**
      * @param $lhs
@@ -86,7 +86,7 @@ abstract class SugarRelationship
      * @param array $additionalFields
      * @return mixed
      */
-    abstract public function add($lhs, $rhs, $additionalFields = array());
+    abstract public function add($lhs, $rhs, $additionalFields = []);
 
     /**
      * @abstract
@@ -104,7 +104,7 @@ abstract class SugarRelationship
      * @param $link Link2 loads the rows for this relationship that match the given link
      * @param array $params
      */
-    abstract public function load($link, $params = array());
+    abstract public function load($link, $params = []);
 
     /**
      * Gets the query to load a link.
@@ -118,7 +118,7 @@ abstract class SugarRelationship
      *
      * @return array|string query used to load this relationship
      */
-    abstract public function getQuery($link, $params = array());
+    abstract public function getQuery($link, $params = []);
 
     /**
      * @abstract
@@ -129,7 +129,7 @@ abstract class SugarRelationship
      *
      * @return array|string the query to join against the related modules table for the given link.
      */
-    abstract public function getJoin($link, $params = array(), $return_array = false);
+    abstract public function getJoin($link, $params = [], $return_array = false);
 
     /**
      * @abstract
@@ -181,7 +181,7 @@ abstract class SugarRelationship
      */
     public function removeById($rowID)
     {
-        $this->removeRow(array('id' => $rowID));
+        $this->removeRow(['id' => $rowID]);
     }
 
     /**
@@ -221,7 +221,7 @@ abstract class SugarRelationship
      */
     public function getFields()
     {
-        return isset($this->def['fields']) ? $this->def['fields'] : array();
+        return $this->def['fields'] ?? [];
     }
 
     /**
@@ -236,7 +236,7 @@ abstract class SugarRelationship
             return $this->updateRow($existing['id'], array_merge($existing, $row));
         }
 
-        $values = array();
+        $values = [];
         foreach ($this->getFields() as $def) {
             $field = $def['name'];
             if (isset($row[$field])) {
@@ -261,7 +261,7 @@ abstract class SugarRelationship
      */
     protected function updateRow($id, $values)
     {
-        $newVals = array();
+        $newVals = [];
         //Unset the ID since we are using it to update the row
         if (isset($values['id'])) {
             unset($values['id']);
@@ -291,7 +291,7 @@ abstract class SugarRelationship
         }
 
         $date_modified = TimeDate::getInstance()->getNow()->asDb();
-        $stringSets = array();
+        $stringSets = [];
         foreach ($where as $field => $val) {
             $stringSets[] = "$field = '$val'";
         }
@@ -375,7 +375,7 @@ abstract class SugarRelationship
      */
     protected function getCustomLogicArguments($focus, $related, $link_name)
     {
-        $custom_logic_arguments = array();
+        $custom_logic_arguments = [];
         $custom_logic_arguments['id'] = $focus->id;
         $custom_logic_arguments['related_id'] = $related->id;
         $custom_logic_arguments['module'] = $focus->module_dir;
@@ -443,7 +443,7 @@ abstract class SugarRelationship
     protected function getOptionalWhereClause($optional_array)
     {
         //lhs_field, operator, and rhs_value must be set in optional_array
-        foreach (array('lhs_field', 'operator', 'rhs_value') as $required) {
+        foreach (['lhs_field', 'operator', 'rhs_value'] as $required) {
             if (empty($optional_array[$required])) {
                 return '';
             }
@@ -462,7 +462,7 @@ abstract class SugarRelationship
     public static function addToResaveList($bean)
     {
         if (!isset(self::$beansToResave[$bean->module_dir])) {
-            self::$beansToResave[$bean->module_dir] = array();
+            self::$beansToResave[$bean->module_dir] = [];
         }
         self::$beansToResave[$bean->module_dir][$bean->id] = $bean;
     }
@@ -491,7 +491,7 @@ abstract class SugarRelationship
         $GLOBALS['resavingRelatedBeans'] = false;
 
         //Reset the list of beans that will need to be resaved
-        self::$beansToResave = array();
+        self::$beansToResave = [];
     }
 
     /**
@@ -529,11 +529,11 @@ abstract class SugarRelationship
             case 'rhs_module':
                 return $this->getRHSModule();
             case 'lhs_table' :
-                return isset($this->def['lhs_table']) ? $this->def['lhs_table'] : '';
+                return $this->def['lhs_table'] ?? '';
             case 'rhs_table' :
-                return isset($this->def['rhs_table']) ? $this->def['rhs_table'] : '';
+                return $this->def['rhs_table'] ?? '';
             case 'list_fields':
-                return array('lhs_table', 'lhs_key', 'rhs_module', 'rhs_table', 'rhs_key', 'relationship_type');
+                return ['lhs_table', 'lhs_key', 'rhs_module', 'rhs_table', 'rhs_key', 'relationship_type'];
         }
 
         if (isset($this->$name)) {

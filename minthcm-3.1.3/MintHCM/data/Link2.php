@@ -74,10 +74,10 @@ class Link2 {
    protected $beans;  //beans on the other side of the link
    protected $rows;   //any additional fields on the relationship
    protected $loaded; //true if this link has been loaded from the database
-   protected $relationship_fields = array();
+   protected $relationship_fields = [];
    //Used to store unsaved beans on this relationship that will be combined with the ones pulled from the DB
    // if getBeans() is called.
-   protected $tempBeans = array();
+   protected $tempBeans = [];
 
    /**
     * @param  $linkName String name of a link field in the module's vardefs
@@ -85,7 +85,7 @@ class Link2 {
     * @param  $linkDef array Optional vardef for the link in case it can't be found in the passed in bean
     * for the global dictionary
     */
-   public function __construct($linkName, $bean, $linkDef = array()) {
+   public function __construct($linkName, $bean, $linkDef = []) {
       $this->focus = $bean;
       //Try to load the link vardef from the beans field defs. Otherwise start searching
       if ( empty($bean->field_defs) || empty($bean->field_defs[$linkName]) || empty($bean->field_defs[$linkName]['relationship']) ) {
@@ -127,7 +127,7 @@ class Link2 {
       $this->relationship = SugarRelationshipFactory::getInstance()->getRelationship($this->def['relationship']);
 
       // Fix to restore functionality from Link.php that needs to be rewritten but for now this will do.
-      $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : array();
+      $this->relationship_fields = (!empty($this->def['rel_fields'])) ? $this->def['rel_fields'] : [];
 
       if ( !$this->loadedSuccesfully() ) {
          $logFunction = 'fatal';
@@ -161,7 +161,7 @@ class Link2 {
    /**
     * @param array $params
     */
-   public function load($params = array()) {
+   public function load($params = []) {
       $data = $this->query($params);
       $this->rows = $data['rows'];
       $this->beans = null;
@@ -199,7 +199,7 @@ class Link2 {
     * @param array $params
     * @return array ids of records related through this link
     */
-   public function get($params = array()) {
+   public function get($params = []) {
       if ( !$this->loaded ) {
          $this->load($params);
       }
@@ -303,7 +303,7 @@ class Link2 {
       }
 
       if ( $this->relationship->getLHSLink() == $this->name &&
-              ($this->relationship->getLHSModule() == (isset($this->focus->module_name) ? $this->focus->module_name : null))
+              ($this->relationship->getLHSModule() == ($this->focus->module_name ?? null))
       ) {
          return REL_LHS;
       }
@@ -376,7 +376,7 @@ class Link2 {
     *
     * @return String/Array query to grab just ids for this relationship
     */
-   public function getQuery($params = array()) {
+   public function getQuery($params = []) {
       return $this->relationship->getQuery($this, $params);
    }
 
@@ -390,7 +390,7 @@ class Link2 {
     *
     * @return string/array query to use when joining for subpanels
     */
-   public function getSubpanelQuery($params = array(), $return_array = false) {
+   public function getSubpanelQuery($params = [], $return_array = false) {
       if ( !empty($this->def['ignore_role']) ) {
          $params['ignore_role'] = true;
       }
@@ -419,11 +419,11 @@ class Link2 {
     *
     * @return SugarBean[] array of SugarBeans related through this link.
     */
-   public function getBeans($params = array()) {
+   public function getBeans($params = []) {
       //Some deprecated code attempts to pass in the old format to getBeans with a large number of useless parameters.
       //reset the parameters if they are not in the new array format.
       if ( !is_array($params) ) {
-         $params = array();
+         $params = [];
       }
 
       if ( !$this->loaded && empty($params) ) {
@@ -437,10 +437,10 @@ class Link2 {
          $rows = $data['rows'];
       }
 
-      $result = array();
+      $result = [];
       if ( !$this->beansAreLoaded() || !empty($params) ) {
          if ( !is_array($this->beans) ) {
-            $this->beans = array();
+            $this->beans = [];
          }
 
          $rel_module = $this->getRelatedModuleName();
@@ -448,7 +448,7 @@ class Link2 {
          //First swap in the temp loaded beans, only if we are doing a complete load (no params)
          if ( empty($params) ) {
             $result = $this->tempBeans;
-            $this->tempBeans = array();
+            $this->tempBeans = [];
          }
 
          //now load from the rows
@@ -499,12 +499,12 @@ class Link2 {
     * @return bool|array Return true if all relationships were added.
     * Return an array with the failed keys if any of them failed.
     */
-   public function add($rel_keys, $additional_values = array()) {
+   public function add($rel_keys, $additional_values = []) {
       if ( !is_array($rel_keys) ) {
-         $rel_keys = array( $rel_keys );
+         $rel_keys = [$rel_keys];
       }
 
-      $failures = array();
+      $failures = [];
 
       foreach ( $rel_keys as $key ) {
          //We must use beans for LogicHooks and other business logic to fire correctly
@@ -546,10 +546,10 @@ class Link2 {
     */
    public function remove($rel_keys) {
       if ( !is_array($rel_keys) ) {
-         $rel_keys = array( $rel_keys );
+         $rel_keys = [$rel_keys];
       }
 
-      $failures = array();
+      $failures = [];
 
       foreach ( $rel_keys as $key ) {
          //We must use beans for LogicHooks and other business logic to fire correctly
@@ -618,7 +618,7 @@ class Link2 {
     * @return SugarBean
     */
    protected function getRelatedBean($id = false) {
-      $params = array( 'encode' => true, 'deleted' => true );
+      $params = ['encode' => true, 'deleted' => true];
 
       return BeanFactory::getBean($this->getRelatedModuleName(), $id, $params);
    }
@@ -707,10 +707,7 @@ class Link2 {
       } else {
          $key = $this->relationship->def[$side . '_key'];
       }
-      return array(
-         'module' => $module,
-         'key' => $key,
-      );
+      return ['module' => $module, 'key' => $key];
    }
 
 }

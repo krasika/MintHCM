@@ -52,8 +52,8 @@ use SuiteCRM\Enumerator\ExceptionCode;
  */
 class InvalidJsonApiResponseException extends ApiException
 {
-    const MSG_PREFIX = '[InvalidJsonApiResponse]';
-    const DEFAULT_CODE = 8010;
-    const HTTP_STATUS = 400;
-    const DETAIL_TEXT_LABEL = 'LBL_INVALID_JSON_API_RESPONSE_EXCEPTION_DETAIL';
+    public const MSG_PREFIX = '[InvalidJsonApiResponse]';
+    public const DEFAULT_CODE = 8010;
+    public const HTTP_STATUS = 400;
+    public const DETAIL_TEXT_LABEL = 'LBL_INVALID_JSON_API_RESPONSE_EXCEPTION_DETAIL';
 }

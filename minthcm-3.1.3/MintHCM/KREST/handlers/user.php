@@ -19,9 +19,9 @@ class KRESTUserHandler {
     public function get_modules_acl() {
         global $moduleList;
 
-        $actions = array('list', 'view', 'edit');
+        $actions = ['list', 'view', 'edit'];
 
-        $retModules = array();
+        $retModules = [];
 
         foreach (ACLController::disabledModuleList($moduleList) as $disabledModule)
             unset($moduleList[$disabledModule]);

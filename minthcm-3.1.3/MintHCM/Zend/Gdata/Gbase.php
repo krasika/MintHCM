@@ -63,17 +63,17 @@ class Zend_Gdata_Gbase extends Zend_Gdata
     /**
      * Path to the customer items feeds on the Google Base server.
      */
-    const GBASE_ITEM_FEED_URI = 'http://www.google.com/base/feeds/items';
+    public const GBASE_ITEM_FEED_URI = 'http://www.google.com/base/feeds/items';
 
     /**
      * Path to the snippets feeds on the Google Base server.
      */
-    const GBASE_SNIPPET_FEED_URI = 'http://www.google.com/base/feeds/snippets';
+    public const GBASE_SNIPPET_FEED_URI = 'http://www.google.com/base/feeds/snippets';
 
     /**
      * Authentication service name for Google Base
      */
-    const AUTH_SERVICE_NAME = 'gbase';
+    public const AUTH_SERVICE_NAME = 'gbase';
 
     /**
      * The default URI for POST methods
@@ -87,10 +87,7 @@ class Zend_Gdata_Gbase extends Zend_Gdata
      *
      * @var array
      */
-    public static $namespaces = array(
-        array('g', 'http://base.google.com/ns/1.0', 1, 0),
-        array('batch', 'http://schemas.google.com/gdata/batch', 1, 0)
-    );
+    public static $namespaces = [['g', 'http://base.google.com/ns/1.0', 1, 0], ['batch', 'http://schemas.google.com/gdata/batch', 1, 0]];
 
     /**
      * Create Zend_Gdata_Gbase object

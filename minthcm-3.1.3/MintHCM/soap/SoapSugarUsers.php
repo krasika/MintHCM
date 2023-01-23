@@ -57,8 +57,8 @@ $disable_date_format = true;
 
 $server->register(
     'is_user_admin',
-    array('session' => 'xsd:string'),
-    array('return' => 'xsd:int'),
+    ['session' => 'xsd:string'],
+    ['return' => 'xsd:int'],
     $NAMESPACE);
 
 /**
@@ -82,8 +82,8 @@ function is_user_admin($session)
 
 $server->register(
     'login',
-    array('user_auth' => 'tns:user_auth', 'application_name' => 'xsd:string'),
-    array('return' => 'tns:set_entry_result'),
+    ['user_auth' => 'tns:user_auth', 'application_name' => 'xsd:string'],
+    ['return' => 'tns:set_entry_result'],
     $NAMESPACE);
 
 /**
@@ -109,7 +109,7 @@ function login($user_auth, $application)
     $authController = new AuthenticationController();
     //rrs
     $isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'],
-        array('passwordEncrypted' => true));
+        ['passwordEncrypted' => true]);
     $usr_id = $user->retrieve_user_id($user_auth['user_name']);
     if ($usr_id) {
         $user->retrieve($usr_id);
@@ -122,7 +122,7 @@ function login($user_auth, $application)
             LogicHook::initialize();
             $GLOBALS['logic_hook']->call_custom_logic('Users', 'login_failed');
 
-            return array('id' => -1, 'error' => $error);
+            return ['id' => -1, 'error' => $error];
         } // if
         if (!empty($user) && !empty($user->id) && !$user->is_group) {
             $success = true;
@@ -136,7 +136,7 @@ function login($user_auth, $application)
             LogicHook::initialize();
             $GLOBALS['logic_hook']->call_custom_logic('Users', 'login_failed');
 
-            return array('id' => -1, 'error' => $error);
+            return ['id' => -1, 'error' => $error];
         } else {
             if (function_exists('openssl_decrypt')) {
                 $password = decrypt_string($user_auth['password']);
@@ -166,22 +166,22 @@ function login($user_auth, $application)
 
         $current_user->call_custom_logic('after_login');
 
-        return array('id' => session_id(), 'error' => $error);
+        return ['id' => session_id(), 'error' => $error];
     }
     $error->set_error('invalid_login');
     $GLOBALS['log']->fatal('SECURITY: User authentication for ' . $user_auth['user_name'] . ' failed');
     LogicHook::initialize();
     $GLOBALS['logic_hook']->call_custom_logic('Users', 'login_failed');
 
-    return array('id' => -1, 'error' => $error);
+    return ['id' => -1, 'error' => $error];
 
 }
 
 //checks if the soap server and client are running on the same machine
 $server->register(
     'is_loopback',
-    array(),
-    array('return' => 'xsd:int'),
+    [],
+    ['return' => 'xsd:int'],
     $NAMESPACE);
 
 /**
@@ -282,8 +282,8 @@ function is_valid_ip_address($session_var)
 
 $server->register(
     'seamless_login',
-    array('session' => 'xsd:string'),
-    array('return' => 'xsd:int'),
+    ['session' => 'xsd:string'],
+    ['return' => 'xsd:int'],
     $NAMESPACE);
 
 /**
@@ -304,17 +304,8 @@ function seamless_login($session)
 
 $server->register(
     'get_entry_list',
-    array(
-        'session' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'query' => 'xsd:string',
-        'order_by' => 'xsd:string',
-        'offset' => 'xsd:int',
-        'select_fields' => 'tns:select_fields',
-        'max_results' => 'xsd:int',
-        'deleted' => 'xsd:int'
-    ),
-    array('return' => 'tns:get_entry_list_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'query' => 'xsd:string', 'order_by' => 'xsd:string', 'offset' => 'xsd:int', 'select_fields' => 'tns:select_fields', 'max_results' => 'xsd:int', 'deleted' => 'xsd:int'],
+    ['return' => 'tns:get_entry_list_result'],
     $NAMESPACE);
 
 /**
@@ -341,12 +332,13 @@ $server->register(
  */
 function get_entry_list($session, $module_name, $query, $order_by, $offset, $select_fields, $max_results, $deleted)
 {
+    $seed = null;
     global $beanList, $beanFiles, $current_user;
     $error = new SoapError();
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     $using_cp = false;
     if ($module_name == 'CampaignProspects') {
@@ -356,13 +348,13 @@ function get_entry_list($session, $module_name, $query, $order_by, $offset, $sel
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     global $current_user;
     if (!check_modules_access($current_user, $module_name, 'read')) {
         $error->set_error('no_access');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     // If the maximum number of entries per page was specified, override the configuration value.
@@ -378,7 +370,7 @@ function get_entry_list($session, $module_name, $query, $order_by, $offset, $sel
     if (!($seed->ACLAccess('Export') && $seed->ACLAccess('list'))) {
         $error->set_error('no_access');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     require_once 'include/SugarSQLValidate.php';
@@ -387,10 +379,7 @@ function get_entry_list($session, $module_name, $query, $order_by, $offset, $sel
         $GLOBALS['log']->error("Bad query: $query $order_by");
         $error->set_error('no_access');
 
-        return array(
-            'result_count' => -1,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => -1, 'error' => $error->get_soap_array()];
     }
     if ($query == '') {
         $where = '';
@@ -406,14 +395,14 @@ function get_entry_list($session, $module_name, $query, $order_by, $offset, $sel
     $list = $response['list'];
 
 
-    $output_list = array();
+    $output_list = [];
 
     $isEmailModule = false;
     if ($module_name == 'Emails') {
         $isEmailModule = true;
     }
     // retrieve the vardef information on the bean's fields.
-    $field_list = array();
+    $field_list = [];
 
     require_once 'modules/Currencies/Currency.php';
 
@@ -471,24 +460,13 @@ function get_entry_list($session, $module_name, $query, $order_by, $offset, $sel
     // Calculate the offset for the start of the next page
     $next_offset = $offset + sizeof($output_list);
 
-    return array(
-        'result_count' => sizeof($output_list),
-        'next_offset' => $next_offset,
-        'field_list' => $field_list,
-        'entry_list' => $output_list,
-        'error' => $error->get_soap_array()
-    );
+    return ['result_count' => sizeof($output_list), 'next_offset' => $next_offset, 'field_list' => $field_list, 'entry_list' => $output_list, 'error' => $error->get_soap_array()];
 }
 
 $server->register(
     'get_entry',
-    array(
-        'session' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'id' => 'xsd:string',
-        'select_fields' => 'tns:select_fields'
-    ),
-    array('return' => 'tns:get_entry_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'id' => 'xsd:string', 'select_fields' => 'tns:select_fields'],
+    ['return' => 'tns:get_entry_result'],
     $NAMESPACE);
 
 /**
@@ -502,18 +480,13 @@ $server->register(
  */
 function get_entry($session, $module_name, $id, $select_fields)
 {
-    return get_entries($session, $module_name, array($id), $select_fields);
+    return get_entries($session, $module_name, [$id], $select_fields);
 }
 
 $server->register(
     'get_entries',
-    array(
-        'session' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'ids' => 'tns:select_fields',
-        'select_fields' => 'tns:select_fields'
-    ),
-    array('return' => 'tns:get_entry_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'ids' => 'tns:select_fields', 'select_fields' => 'tns:select_fields'],
+    ['return' => 'tns:get_entry_result'],
     $NAMESPACE);
 
 /**
@@ -531,12 +504,12 @@ function get_entries($session, $module_name, $ids, $select_fields)
 {
     global $beanList, $beanFiles;
     $error = new SoapError();
-    $field_list = array();
-    $output_list = array();
+    $field_list = [];
+    $output_list = [];
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('field_list' => $field_list, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['field_list' => $field_list, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     $using_cp = false;
     if ($module_name == 'CampaignProspects') {
@@ -546,13 +519,13 @@ function get_entries($session, $module_name, $ids, $select_fields)
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array('field_list' => $field_list, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['field_list' => $field_list, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     global $current_user;
     if (!check_modules_access($current_user, $module_name, 'read')) {
         $error->set_error('no_access');
 
-        return array('field_list' => $field_list, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['field_list' => $field_list, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     $class_name = $beanList[$module_name];
@@ -574,23 +547,16 @@ function get_entries($session, $module_name, $ids, $select_fields)
         }
 
         if ($seed->deleted == 1) {
-            $list = array();
-            $list[] = array(
-                'name' => 'warning',
-                'value' => 'Access to this object is denied since it has been deleted or does not exist'
-            );
-            $list[] = array('name' => 'deleted', 'value' => '1');
-            $output_list[] = Array(
-                'id' => $id,
-                'module_name' => $module_name,
-                'name_value_list' => $list,
-            );
+            $list = [];
+            $list[] = ['name' => 'warning', 'value' => 'Access to this object is denied since it has been deleted or does not exist'];
+            $list[] = ['name' => 'deleted', 'value' => '1'];
+            $output_list[] = ['id' => $id, 'module_name' => $module_name, 'name_value_list' => $list];
             continue;
         }
         if (!$seed->ACLAccess('DetailView')) {
             $error->set_error('no_access');
 
-            return array('field_list' => $field_list, 'entry_list' => array(), 'error' => $error->get_soap_array());
+            return ['field_list' => $field_list, 'entry_list' => [], 'error' => $error->get_soap_array()];
         }
         $output_list[] = get_return_value($seed, $module_name);
 
@@ -603,13 +569,13 @@ function get_entries($session, $module_name, $ids, $select_fields)
     $output_list = filter_return_list($output_list, $select_fields, $module_name);
     $field_list = filter_field_list($field_list, $select_fields, $module_name);
 
-    return array('field_list' => $field_list, 'entry_list' => $output_list, 'error' => $error->get_soap_array());
+    return ['field_list' => $field_list, 'entry_list' => $output_list, 'error' => $error->get_soap_array()];
 }
 
 $server->register(
     'set_entry',
-    array('session' => 'xsd:string', 'module_name' => 'xsd:string', 'name_value_list' => 'tns:name_value_list'),
-    array('return' => 'tns:set_entry_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'name_value_list' => 'tns:name_value_list'],
+    ['return' => 'tns:set_entry_result'],
     $NAMESPACE);
 
 /**
@@ -623,24 +589,25 @@ $server->register(
  */
 function set_entry($session, $module_name, $name_value_list)
 {
+    $seed = null;
     global $beanList, $beanFiles;
 
     $error = new SoapError();
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
     global $current_user;
     if (!check_modules_access($current_user, $module_name, 'write')) {
         $error->set_error('no_access');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
 
     $class_name = $beanList[$module_name];
@@ -654,7 +621,7 @@ function set_entry($session, $module_name, $name_value_list)
             if (is_null($result)) {
                 $error->set_error('no_access');
 
-                return array('id' => -1, 'error' => $error->get_soap_array());
+                return ['id' => -1, 'error' => $error->get_soap_array()];
             } else {
                 break;
             }
@@ -668,21 +635,21 @@ function set_entry($session, $module_name, $name_value_list)
     if (!$seed->ACLAccess('Save') || ($seed->deleted == 1 && !$seed->ACLAccess('Delete'))) {
         $error->set_error('no_access');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
     $seed->save();
     if ($seed->deleted == 1) {
         $seed->mark_deleted($seed->id);
     }
 
-    return array('id' => $seed->id, 'error' => $error->get_soap_array());
+    return ['id' => $seed->id, 'error' => $error->get_soap_array()];
 
 }
 
 $server->register(
     'set_entries',
-    array('session' => 'xsd:string', 'module_name' => 'xsd:string', 'name_value_lists' => 'tns:name_value_lists'),
-    array('return' => 'tns:set_entries_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'name_value_lists' => 'tns:name_value_lists'],
+    ['return' => 'tns:set_entries_result'],
     $NAMESPACE);
 
 /**
@@ -701,10 +668,7 @@ function set_entries($session, $module_name, $name_value_lists)
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array(
-            'ids' => array(),
-            'error' => $error->get_soap_array()
-        );
+        return ['ids' => [], 'error' => $error->get_soap_array()];
     }
 
     return handle_set_entries($module_name, $name_value_lists, false);
@@ -715,8 +679,8 @@ NOTE SPECIFIC CODE
 */
 $server->register(
     'set_note_attachment',
-    array('session' => 'xsd:string', 'note' => 'tns:note_attachment'),
-    array('return' => 'tns:set_entry_result'),
+    ['session' => 'xsd:string', 'note' => 'tns:note_attachment'],
+    ['return' => 'tns:set_entry_result'],
     $NAMESPACE);
 
 /**
@@ -734,20 +698,20 @@ function set_note_attachment($session, $note)
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
 
     require_once('modules/Notes/NoteSoap.php');
     $ns = new NoteSoap();
 
-    return array('id' => $ns->saveFile($note), 'error' => $error->get_soap_array());
+    return ['id' => $ns->saveFile($note), 'error' => $error->get_soap_array()];
 
 }
 
 $server->register(
     'get_note_attachment',
-    array('session' => 'xsd:string', 'id' => 'xsd:string'),
-    array('return' => 'tns:return_note_attachment'),
+    ['session' => 'xsd:string', 'id' => 'xsd:string'],
+    ['return' => 'tns:return_note_attachment'],
     $NAMESPACE);
 
 /**
@@ -766,11 +730,12 @@ $server->register(
  */
 function get_note_attachment($session, $id)
 {
+    $note = null;
     $error = new SoapError();
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     $note = new Note();
@@ -779,7 +744,7 @@ function get_note_attachment($session, $id)
     if (!$note->ACLAccess('DetailView')) {
         $error->set_error('no_access');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     require_once('modules/Notes/NoteSoap.php');
     $ns = new NoteSoap();
@@ -792,22 +757,14 @@ function get_note_attachment($session, $id)
         $file = '';
     }
 
-    return array(
-        'note_attachment' => array('id' => $id, 'filename' => $note->filename, 'file' => $file),
-        'error' => $error->get_soap_array()
-    );
+    return ['note_attachment' => ['id' => $id, 'filename' => $note->filename, 'file' => $file], 'error' => $error->get_soap_array()];
 
 }
 
 $server->register(
     'relate_note_to_module',
-    array(
-        'session' => 'xsd:string',
-        'note_id' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'module_id' => 'xsd:string'
-    ),
-    array('return' => 'tns:error_value'),
+    ['session' => 'xsd:string', 'note_id' => 'xsd:string', 'module_name' => 'xsd:string', 'module_id' => 'xsd:string'],
+    ['return' => 'tns:error_value'],
     $NAMESPACE);
 
 /**
@@ -822,6 +779,7 @@ $server->register(
  */
 function relate_note_to_module($session, $note_id, $module_name, $module_id)
 {
+    $seed = null;
     global $beanList, $beanFiles;
     $error = new SoapError();
     if (!validate_authenticated($session)) {
@@ -847,7 +805,7 @@ function relate_note_to_module($session, $note_id, $module_name, $module_id)
     if (!$seed->ACLAccess('ListView')) {
         $error->set_error('no_access');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     if ($module_name != 'Contacts') {
@@ -868,13 +826,8 @@ function relate_note_to_module($session, $note_id, $module_name, $module_id)
 
 $server->register(
     'get_related_notes',
-    array(
-        'session' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'module_id' => 'xsd:string',
-        'select_fields' => 'tns:select_fields'
-    ),
-    array('return' => 'tns:get_entry_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'module_id' => 'xsd:string', 'select_fields' => 'tns:select_fields'],
+    ['return' => 'tns:get_entry_result'],
     $NAMESPACE);
 
 /**
@@ -897,18 +850,18 @@ function get_related_notes($session, $module_name, $module_id, $select_fields)
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
     global $current_user;
     if (!check_modules_access($current_user, $module_name, 'read')) {
         $error->set_error('no_access');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     $class_name = $beanList[$module_name];
@@ -918,12 +871,12 @@ function get_related_notes($session, $module_name, $module_id, $select_fields)
     if (!$seed->ACLAccess('DetailView')) {
         $error->set_error('no_access');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
-    $list = $seed->get_linked_beans('notes', 'Note', array(), 0, -1, 0);
+    $list = $seed->get_linked_beans('notes', 'Note', [], 0, -1, 0);
 
-    $output_list = Array();
-    $field_list = Array();
+    $output_list = [];
+    $field_list = [];
     foreach ($list as $value) {
         $output_list[] = get_return_value($value, 'Notes');
         if (empty($field_list)) {
@@ -933,19 +886,13 @@ function get_related_notes($session, $module_name, $module_id, $select_fields)
     $output_list = filter_return_list($output_list, $select_fields, $module_name);
     $field_list = filter_field_list($field_list, $select_fields, $module_name);
 
-    return array(
-        'result_count' => sizeof($output_list),
-        'next_offset' => 0,
-        'field_list' => $field_list,
-        'entry_list' => $output_list,
-        'error' => $error->get_soap_array()
-    );
+    return ['result_count' => sizeof($output_list), 'next_offset' => 0, 'field_list' => $field_list, 'entry_list' => $output_list, 'error' => $error->get_soap_array()];
 }
 
 $server->register(
     'logout',
-    array('session' => 'xsd:string'),
-    array('return' => 'tns:error_value'),
+    ['session' => 'xsd:string'],
+    ['return' => 'tns:error_value'],
     $NAMESPACE);
 
 /**
@@ -975,8 +922,8 @@ function logout($session)
 
 $server->register(
     'get_module_fields',
-    array('session' => 'xsd:string', 'module_name' => 'xsd:string'),
-    array('return' => 'tns:module_fields'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string'],
+    ['return' => 'tns:module_fields'],
     $NAMESPACE);
 
 /**
@@ -989,31 +936,32 @@ $server->register(
  */
 function get_module_fields($session, $module_name)
 {
+    $seed = null;
     global $beanList, $beanFiles;
     $error = new SoapError();
-    $module_fields = array();
+    $module_fields = [];
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_session');
 
-        return array('module_fields' => $module_fields, 'error' => $error->get_soap_array());
+        return ['module_fields' => $module_fields, 'error' => $error->get_soap_array()];
     }
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array('module_fields' => $module_fields, 'error' => $error->get_soap_array());
+        return ['module_fields' => $module_fields, 'error' => $error->get_soap_array()];
     }
     global $current_user;
     if (!check_modules_access($current_user, $module_name, 'read')) {
         $error->set_error('no_access');
 
-        return array('module_fields' => $module_fields, 'error' => $error->get_soap_array());
+        return ['module_fields' => $module_fields, 'error' => $error->get_soap_array()];
     }
     $class_name = $beanList[$module_name];
 
     if (empty($beanFiles[$class_name])) {
         $error->set_error('no_file');
 
-        return array('module_fields' => $module_fields, 'error' => $error->get_soap_array());
+        return ['module_fields' => $module_fields, 'error' => $error->get_soap_array()];
     }
 
     require_once($beanFiles[$class_name]);
@@ -1025,14 +973,14 @@ function get_module_fields($session, $module_name)
     } else {
         $error->set_error('no_access');
 
-        return array('module_fields' => $module_fields, 'error' => $error->get_soap_array());
+        return ['module_fields' => $module_fields, 'error' => $error->get_soap_array()];
     }
 }
 
 $server->register(
     'get_available_modules',
-    array('session' => 'xsd:string'),
-    array('return' => 'tns:module_list'),
+    ['session' => 'xsd:string'],
+    ['return' => 'tns:module_list'],
     $NAMESPACE);
 
 /**
@@ -1045,22 +993,22 @@ $server->register(
 function get_available_modules($session)
 {
     $error = new SoapError();
-    $modules = array();
+    $modules = [];
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_session');
 
-        return array('modules' => $modules, 'error' => $error->get_soap_array());
+        return ['modules' => $modules, 'error' => $error->get_soap_array()];
     }
     $modules = array_keys($_SESSION['avail_modules']);
 
-    return array('modules' => $modules, 'error' => $error->get_soap_array());
+    return ['modules' => $modules, 'error' => $error->get_soap_array()];
 }
 
 
 $server->register(
     'update_portal_user',
-    array('session' => 'xsd:string', 'portal_name' => 'xsd:string', 'name_value_list' => 'tns:name_value_list'),
-    array('return' => 'tns:error_value'),
+    ['session' => 'xsd:string', 'portal_name' => 'xsd:string', 'name_value_list' => 'tns:name_value_list'],
+    ['return' => 'tns:error_value'],
     $NAMESPACE);
 
 /**
@@ -1073,6 +1021,7 @@ $server->register(
  */
 function update_portal_user($session, $portal_name, $name_value_list)
 {
+    $contact = null;
     global $beanList, $beanFiles;
     $error = new SoapError();
     if (!validate_authenticated($session)) {
@@ -1082,7 +1031,7 @@ function update_portal_user($session, $portal_name, $name_value_list)
     }
     $contact = new Contact();
 
-    $searchBy = array('deleted' => 0);
+    $searchBy = ['deleted' => 0];
     foreach ($name_value_list as $name_value) {
         $searchBy[$name_value['name']] = $name_value['value'];
     }
@@ -1109,8 +1058,8 @@ function update_portal_user($session, $portal_name, $name_value_list)
 
 $server->register(
     'get_user_id',
-    array('session' => 'xsd:string'),
-    array('return' => 'xsd:string'),
+    ['session' => 'xsd:string'],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1134,8 +1083,8 @@ function get_user_id($session)
 
 $server->register(
     'get_user_team_id',
-    array('session' => 'xsd:string'),
-    array('return' => 'xsd:string'),
+    ['session' => 'xsd:string'],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1157,8 +1106,8 @@ function get_user_team_id($session)
 
 $server->register(
     'get_user_team_set_id',
-    array('session' => 'xsd:string'),
-    array('return' => 'xsd:string'),
+    ['session' => 'xsd:string'],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1180,8 +1129,8 @@ function get_user_team_set_id($session)
 
 $server->register(
     'get_server_time',
-    array(),
-    array('return' => 'xsd:string'),
+    [],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1196,8 +1145,8 @@ function get_server_time()
 
 $server->register(
     'get_gmt_time',
-    array(),
-    array('return' => 'xsd:string'),
+    [],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1212,8 +1161,8 @@ function get_gmt_time()
 
 $server->register(
     'get_sugar_flavor',
-    array(),
-    array('return' => 'xsd:string'),
+    [],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1233,8 +1182,8 @@ function get_sugar_flavor()
 
 $server->register(
     'get_server_version',
-    array(),
-    array('return' => 'xsd:string'),
+    [],
+    ['return' => 'xsd:string'],
     $NAMESPACE);
 
 /**
@@ -1258,15 +1207,8 @@ function get_server_version()
 
 $server->register(
     'get_relationships',
-    array(
-        'session' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'module_id' => 'xsd:string',
-        'related_module' => 'xsd:string',
-        'related_module_query' => 'xsd:string',
-        'deleted' => 'xsd:int'
-    ),
-    array('return' => 'tns:get_relationships_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'module_id' => 'xsd:string', 'related_module' => 'xsd:string', 'related_module_query' => 'xsd:string', 'deleted' => 'xsd:int'],
+    ['return' => 'tns:get_relationships_result'],
     $NAMESPACE);
 
 /**
@@ -1283,12 +1225,15 @@ $server->register(
  */
 function get_relationships($session, $module_name, $module_id, $related_module, $related_module_query, $deleted)
 {
+    $related_mod = null;
+    $sql = null;
+    $list = [];
     $error = new SoapError();
-    $ids = array();
+    $ids = [];
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('ids' => $ids, 'error' => $error->get_soap_array());
+        return ['ids' => $ids, 'error' => $error->get_soap_array()];
     }
     global $beanList, $beanFiles;
     $error = new SoapError();
@@ -1296,7 +1241,7 @@ function get_relationships($session, $module_name, $module_id, $related_module, 
     if (empty($beanList[$module_name]) || empty($beanList[$related_module])) {
         $error->set_error('no_module');
 
-        return array('ids' => $ids, 'error' => $error->get_soap_array());
+        return ['ids' => $ids, 'error' => $error->get_soap_array()];
     }
     $class_name = $beanList[$module_name];
     require_once($beanFiles[$class_name]);
@@ -1305,7 +1250,7 @@ function get_relationships($session, $module_name, $module_id, $related_module, 
     if (!$mod->ACLAccess('DetailView')) {
         $error->set_error('no_access');
 
-        return array('ids' => $ids, 'error' => $error->get_soap_array());
+        return ['ids' => $ids, 'error' => $error->get_soap_array()];
     }
 
     require_once 'include/SugarSQLValidate.php';
@@ -1314,10 +1259,7 @@ function get_relationships($session, $module_name, $module_id, $related_module, 
         $GLOBALS['log']->error("Bad query: $related_module_query");
         $error->set_error('no_access');
 
-        return array(
-            'result_count' => -1,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => -1, 'error' => $error->get_soap_array()];
     }
 
     $id_list = get_linked_records($related_module, $module_name, $module_id);
@@ -1325,12 +1267,12 @@ function get_relationships($session, $module_name, $module_id, $related_module, 
     if ($id_list === false) {
         $error->set_error('no_relationship_support');
 
-        return array('ids' => $ids, 'error' => $error->get_soap_array());
-    } elseif (count($id_list) == 0) {
-        return array('ids' => $ids, 'error' => $error->get_soap_array());
+        return ['ids' => $ids, 'error' => $error->get_soap_array()];
+    } elseif ((is_array($id_list) || $id_list instanceof \Countable ? count($id_list) : 0) == 0) {
+        return ['ids' => $ids, 'error' => $error->get_soap_array()];
     }
 
-    $list = array();
+    $list = [];
 
     $in = "'" . implode("', '", $id_list) . "'";
 
@@ -1357,28 +1299,24 @@ function get_relationships($session, $module_name, $module_id, $related_module, 
         $list[] = $row['id'];
     }
 
-    $return_list = array();
+    $return_list = [];
 
     foreach ($list as $id) {
         $related_class_name = $beanList[$related_module];
         $related_mod = new $related_class_name();
         $related_mod->retrieve($id);
 
-        $return_list[] = array(
-            'id' => $id,
-            'date_modified' => $related_mod->date_modified,
-            'deleted' => $related_mod->deleted
-        );
+        $return_list[] = ['id' => $id, 'date_modified' => $related_mod->date_modified, 'deleted' => $related_mod->deleted];
     }
 
-    return array('ids' => $return_list, 'error' => $error->get_soap_array());
+    return ['ids' => $return_list, 'error' => $error->get_soap_array()];
 }
 
 
 $server->register(
     'set_relationship',
-    array('session' => 'xsd:string', 'set_relationship_value' => 'tns:set_relationship_value'),
-    array('return' => 'tns:error_value'),
+    ['session' => 'xsd:string', 'set_relationship_value' => 'tns:set_relationship_value'],
+    ['return' => 'tns:error_value'],
     $NAMESPACE);
 
 /**
@@ -1406,8 +1344,8 @@ function set_relationship($session, $set_relationship_value)
 
 $server->register(
     'set_relationships',
-    array('session' => 'xsd:string', 'set_relationship_list' => 'tns:set_relationship_list'),
-    array('return' => 'tns:set_relationship_list_result'),
+    ['session' => 'xsd:string', 'set_relationship_list' => 'tns:set_relationship_list'],
+    ['return' => 'tns:set_relationship_list_result'],
     $NAMESPACE);
 
 /**
@@ -1440,7 +1378,7 @@ function set_relationships($session, $set_relationship_list)
         }
     }
 
-    return array('created' => $count, 'failed' => $failed, 'error' => $error);
+    return ['created' => $count, 'failed' => $failed, 'error' => $error];
 }
 
 
@@ -1583,12 +1521,7 @@ function handle_set_relationship($set_relationship_value, $session = '')
         if (!empty($mod->account_id)) {
             // when setting a relationship from a Contact to these activities, if the Contacts is related to an Account,
             // we want to associate that Account to the activity as well
-            $ret = set_relationship($session, array(
-                'module1' => 'Accounts',
-                'module1_id' => $mod->account_id,
-                'module2' => $module2,
-                'module2_id' => $module2_id
-            ));
+            $ret = set_relationship($session, ['module1' => 'Accounts', 'module1_id' => $mod->account_id, 'module2' => $module2, 'module2_id' => $module2_id]);
         }
     } else {
         $mod->$key = $module2_id;
@@ -1601,8 +1534,8 @@ function handle_set_relationship($set_relationship_value, $session = '')
 
 $server->register(
     'set_document_revision',
-    array('session' => 'xsd:string', 'note' => 'tns:document_revision'),
-    array('return' => 'tns:set_entry_result'),
+    ['session' => 'xsd:string', 'note' => 'tns:document_revision'],
+    ['return' => 'tns:set_entry_result'],
     $NAMESPACE);
 
 /**
@@ -1619,27 +1552,20 @@ function set_document_revision($session, $document_revision)
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
 
     require_once('modules/Documents/DocumentSoap.php');
     $dr = new DocumentSoap();
 
-    return array('id' => $dr->saveFile($document_revision), 'error' => $error->get_soap_array());
+    return ['id' => $dr->saveFile($document_revision), 'error' => $error->get_soap_array()];
 
 }
 
 $server->register(
     'search_by_module',
-    array(
-        'user_name' => 'xsd:string',
-        'password' => 'xsd:string',
-        'search_string' => 'xsd:string',
-        'modules' => 'tns:select_fields',
-        'offset' => 'xsd:int',
-        'max_results' => 'xsd:int'
-    ),
-    array('return' => 'tns:get_entry_list_result'),
+    ['user_name' => 'xsd:string', 'password' => 'xsd:string', 'search_string' => 'xsd:string', 'modules' => 'tns:select_fields', 'offset' => 'xsd:int', 'max_results' => 'xsd:int'],
+    ['return' => 'tns:get_entry_list_result'],
     $NAMESPACE);
 
 /**
@@ -1656,6 +1582,7 @@ $server->register(
  */
 function search_by_module($user_name, $password, $search_string, $modules, $offset, $max_results)
 {
+    $query_array = [];
     global $beanList, $beanFiles;
 
     $error = new SoapError();
@@ -1673,7 +1600,7 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
     if ($hasLoginError) {
         $error->set_error('invalid_login');
 
-        return array('result_count' => -1, 'entry_list' => array(), 'error' => $error->get_soap_array());
+        return ['result_count' => -1, 'entry_list' => [], 'error' => $error->get_soap_array()];
     }
 
     global $current_user;
@@ -1682,66 +1609,9 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
         $sugar_config['list_max_entries_per_page'] = $max_results;
     }
     //  MRF - BUG:19552 - added a join for accounts' emails below
-    $query_array = array(
-        'Accounts' => array(
-            'where' => array(
-                'Accounts' => array(0 => "accounts.name like '{0}%'"),
-                'EmailAddresses' => array(0 => "ea.email_address like '{0}%'")
-            ),
-            'fields' => "accounts.id, accounts.name"
-        ),
-        'Bugs' => array(
-            'where' => array('Bugs' => array(0 => "bugs.name like '{0}%'", 1 => "bugs.bug_number = {0}")),
-            'fields' => "bugs.id, bugs.name, bugs.bug_number"
-        ),
-        'Cases' => array(
-            'where' => array(
-                'Cases' => array(
-                    0 => "cases.name like '{0}%'",
-                    1 => "cases.case_number = {0}"
-                )
-            ),
-            'fields' => "cases.id, cases.name, cases.case_number"
-        ),
-        'Leads' => array(
-            'where' => array(
-                'Leads' => array(
-                    0 => "leads.first_name like '{0}%'",
-                    1 => "leads.last_name like '{0}%'"
-                ),
-                'EmailAddresses' => array(0 => "ea.email_address like '{0}%'")
-            ),
-            'fields' => "leads.id, leads.first_name, leads.last_name, leads.status"
-        ),
-        'Project' => array(
-            'where' => array('Project' => array(0 => "project.name like '{0}%'")),
-            'fields' => "project.id, project.name"
-        ),
-        'ProjectTask' => array(
-            'where' => array('ProjectTask' => array(0 => "project.id = '{0}'")),
-            'fields' => "project_task.id, project_task.name"
-        ),
-        'Contacts' => array(
-            'where' => array(
-                'Contacts' => array(
-                    0 => "contacts.first_name like '{0}%'",
-                    1 => "contacts.last_name like '{0}%'"
-                ),
-                'EmailAddresses' => array(0 => "ea.email_address like '{0}%'")
-            ),
-            'fields' => "contacts.id, contacts.first_name, contacts.last_name"
-        ),
-        'Opportunities' => array(
-            'where' => array('Opportunities' => array(0 => "opportunities.name like '{0}%'")),
-            'fields' => "opportunities.id, opportunities.name"
-        ),
-        'Users' => array(
-            'where' => array('EmailAddresses' => array(0 => "ea.email_address like '{0}%'")),
-            'fields' => "users.id, users.user_name, users.first_name, ea.email_address"
-        ),
-    );
+    $query_array = ['Accounts' => ['where' => ['Accounts' => [0 => "accounts.name like '{0}%'"], 'EmailAddresses' => [0 => "ea.email_address like '{0}%'"]], 'fields' => "accounts.id, accounts.name"], 'Bugs' => ['where' => ['Bugs' => [0 => "bugs.name like '{0}%'", 1 => "bugs.bug_number = {0}"]], 'fields' => "bugs.id, bugs.name, bugs.bug_number"], 'Cases' => ['where' => ['Cases' => [0 => "cases.name like '{0}%'", 1 => "cases.case_number = {0}"]], 'fields' => "cases.id, cases.name, cases.case_number"], 'Leads' => ['where' => ['Leads' => [0 => "leads.first_name like '{0}%'", 1 => "leads.last_name like '{0}%'"], 'EmailAddresses' => [0 => "ea.email_address like '{0}%'"]], 'fields' => "leads.id, leads.first_name, leads.last_name, leads.status"], 'Project' => ['where' => ['Project' => [0 => "project.name like '{0}%'"]], 'fields' => "project.id, project.name"], 'ProjectTask' => ['where' => ['ProjectTask' => [0 => "project.id = '{0}'"]], 'fields' => "project_task.id, project_task.name"], 'Contacts' => ['where' => ['Contacts' => [0 => "contacts.first_name like '{0}%'", 1 => "contacts.last_name like '{0}%'"], 'EmailAddresses' => [0 => "ea.email_address like '{0}%'"]], 'fields' => "contacts.id, contacts.first_name, contacts.last_name"], 'Opportunities' => ['where' => ['Opportunities' => [0 => "opportunities.name like '{0}%'"]], 'fields' => "opportunities.id, opportunities.name"], 'Users' => ['where' => ['EmailAddresses' => [0 => "ea.email_address like '{0}%'"]], 'fields' => "users.id, users.user_name, users.first_name, ea.email_address"]];
 
-    $more_query_array = array();
+    $more_query_array = [];
     foreach ($modules as $module) {
         if (!array_key_exists($module, $query_array)) {
             $seed = new $beanList[$module]();
@@ -1751,14 +1621,7 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
             } else {
                 $namefield = "$table_name.name";
             }
-            $more_query_array[$module] = array(
-                'where' => array(
-                    $module => array(
-                        0 => "$namefield like '%{0}%'",
-                    ),
-                ),
-                'fields' => "$table_name.id, $namefield AS name"
-            );
+            $more_query_array[$module] = ['where' => [$module => [0 => "$namefield like '%{0}%'"]], 'fields' => "$table_name.id, $namefield AS name"];
         }
     }
 
@@ -1810,9 +1673,9 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
                         if ($key != 'EmailAddresses') {
                             foreach ($search_terms as $term) {
                                 if (!strpos($where_clause, 'number')) {
-                                    $where .= string_format($where_clause, array(DBManagerFactory::getInstance()->quote($term)));
+                                    $where .= string_format($where_clause, [DBManagerFactory::getInstance()->quote($term)]);
                                 } elseif (is_numeric($term)) {
-                                    $where .= string_format($where_clause, array(DBManagerFactory::getInstance()->quote($term)));
+                                    $where .= string_format($where_clause, [DBManagerFactory::getInstance()->quote($term)]);
                                 } else {
                                     $addQuery = false;
                                 }
@@ -1843,16 +1706,12 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
                 $result = $seed->db->query($query, $offset, $max_results);
 
                 while (($row = $seed->db->fetchByAssoc($result)) != null) {
-                    $list = array();
+                    $list = [];
                     foreach ($row as $field_key => $field_value) {
-                        $list[$field_key] = array('name' => $field_key, 'value' => $field_value);
+                        $list[$field_key] = ['name' => $field_key, 'value' => $field_value];
                     }
 
-                    $output_list[] = array(
-                        'id' => $row['id'],
-                        'module_name' => $module_name,
-                        'name_value_list' => $list
-                    );
+                    $output_list[] = ['id' => $row['id'], 'module_name' => $module_name, 'name_value_list' => $list];
                     if (empty($field_list)) {
                         $field_list = get_field_list($row);
                     }
@@ -1863,21 +1722,15 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
 
     $next_offset = $offset + sizeof($output_list);
 
-    return array(
-        'result_count' => sizeof($output_list),
-        'next_offset' => $next_offset,
-        'field_list' => $field_list,
-        'entry_list' => $output_list,
-        'error' => $error->get_soap_array()
-    );
+    return ['result_count' => sizeof($output_list), 'next_offset' => $next_offset, 'field_list' => $field_list, 'entry_list' => $output_list, 'error' => $error->get_soap_array()];
 
 }//end function
 
 
 $server->register(
     'get_mailmerge_document',
-    array('session' => 'xsd:string', 'file_name' => 'xsd:string', 'fields' => 'tns:select_fields'),
-    array('return' => 'tns:get_sync_result_encoded'),
+    ['session' => 'xsd:string', 'file_name' => 'xsd:string', 'fields' => 'tns:select_fields'],
+    ['return' => 'tns:get_sync_result_encoded'],
     $NAMESPACE);
 
 /**
@@ -1890,24 +1743,25 @@ $server->register(
  */
 function get_mailmerge_document($session, $file_name, $fields)
 {
+    $merge_array = [];
     global $beanList, $beanFiles, $app_list_strings;
     $error = new SoapError();
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('result' => '', 'error' => $error->get_soap_array());
+        return ['result' => '', 'error' => $error->get_soap_array()];
     }
     if (!preg_match('/^sugardata[\.\d\s]+\.php$/', $file_name)) {
         $error->set_error('no_records');
 
-        return array('result' => '', 'error' => $error->get_soap_array());
+        return ['result' => '', 'error' => $error->get_soap_array()];
     }
     $html = '';
 
     $file_name = sugar_cached('MergedDocuments/') . pathinfo($file_name, PATHINFO_BASENAME);
 
-    $master_fields = array();
-    $related_fields = array();
+    $master_fields = [];
+    $related_fields = [];
 
     if (file_exists($file_name)) {
         include($file_name);
@@ -1996,13 +1850,13 @@ function get_mailmerge_document($session, $file_name, $fields)
 
     $result = base64_encode($html);
 
-    return array('result' => $result, 'error' => $error);
+    return ['result' => $result, 'error' => $error];
 }
 
 $server->register(
     'get_mailmerge_document2',
-    array('session' => 'xsd:string', 'file_name' => 'xsd:string', 'fields' => 'tns:select_fields'),
-    array('return' => 'tns:get_mailmerge_document_result'),
+    ['session' => 'xsd:string', 'file_name' => 'xsd:string', 'fields' => 'tns:select_fields'],
+    ['return' => 'tns:get_mailmerge_document_result'],
     $NAMESPACE);
 
 /**
@@ -2015,6 +1869,7 @@ $server->register(
  */
 function get_mailmerge_document2($session, $file_name, $fields)
 {
+    $merge_array = [];
     global $beanList, $beanFiles, $app_list_strings, $app_strings;
 
     $error = new SoapError();
@@ -2022,20 +1877,20 @@ function get_mailmerge_document2($session, $file_name, $fields)
         $GLOBALS['log']->error('invalid_login');
         $error->set_error('invalid_login');
 
-        return array('result' => '', 'error' => $error->get_soap_array());
+        return ['result' => '', 'error' => $error->get_soap_array()];
     }
     if (!preg_match('/^sugardata[\.\d\s]+\.php$/', $file_name)) {
         $GLOBALS['log']->error($app_strings['ERR_NO_SUCH_FILE'] . " ({$file_name})");
         $error->set_error('no_records');
 
-        return array('result' => '', 'error' => $error->get_soap_array());
+        return ['result' => '', 'error' => $error->get_soap_array()];
     }
     $html = '';
 
     $file_name = sugar_cached('MergedDocuments/') . pathinfo($file_name, PATHINFO_BASENAME);
 
-    $master_fields = array();
-    $related_fields = array();
+    $master_fields = [];
+    $related_fields = [];
 
     if (file_exists($file_name)) {
         include($file_name);
@@ -2082,7 +1937,7 @@ function get_mailmerge_document2($session, $file_name, $fields)
         $html .= '</tr>';
 
         $ids = $merge_array['ids'];
-        $resultIds = array();
+        $resultIds = [];
         $is_prospect_merge = ($seed1->object_name == 'Prospect');
         if ($is_prospect_merge) {
             $pSeed = $seed1;
@@ -2094,7 +1949,7 @@ function get_mailmerge_document2($session, $file_name, $fields)
             } else {
                 $seed1->retrieve($key);
             }
-            $resultIds[] = array('name' => $seed1->module_name, 'value' => $key);
+            $resultIds[] = ['name' => $seed1->module_name, 'value' => $key];
             $html .= '<tr>';
             foreach ($master_fields as $master_field) {
                 if (isset($seed1->$master_field)) {
@@ -2105,7 +1960,7 @@ function get_mailmerge_document2($session, $file_name, $fields)
 
                         if (isset($app_list_strings[$seed1->field_name_map[$master_field]['options']])) {
                             $items = unencodeMultienum($seed1->$master_field);
-                            $output = array();
+                            $output = [];
                             foreach ($items as $item) {
                                 if (!empty($app_list_strings[$seed1->field_name_map[$master_field]['options']][$item])) {
                                     array_push($output,
@@ -2121,7 +1976,7 @@ function get_mailmerge_document2($session, $file_name, $fields)
                         }
                     } elseif ($seed1->field_name_map[$master_field]['type'] == 'currency') {
                         $amount_field = $seed1->$master_field;
-                        $params = array('currency_symbol' => false);
+                        $params = ['currency_symbol' => false];
                         $amount_field = currency_format_number($amount_field, $params);
                         $html .= '<td>' . $amount_field . '</td>';
                     } else {
@@ -2132,7 +1987,7 @@ function get_mailmerge_document2($session, $file_name, $fields)
                 }
             }
             if (isset($value) && !empty($value)) {
-                $resultIds[] = array('name' => $seed2->module_name, 'value' => $value);
+                $resultIds[] = ['name' => $seed2->module_name, 'value' => $value];
                 $seed2->retrieve($value);
                 foreach ($related_fields as $related_field) {
                     if (isset($seed2->$related_field)) {
@@ -2141,7 +1996,7 @@ function get_mailmerge_document2($session, $file_name, $fields)
                             $html .= '<td>' . $app_list_strings[$seed2->field_name_map[$related_field]['options']][$seed2->$related_field] . '</td>';
                         } elseif ($seed2->field_name_map[$related_field]['type'] == 'currency') {
                             $amount_field = $seed2->$related_field;
-                            $params = array('currency_symbol' => false);
+                            $params = ['currency_symbol' => false];
                             $amount_field = currency_format_number($amount_field, $params);
                             $html .= '<td>' . $amount_field . '</td>';
                         } else {
@@ -2158,13 +2013,13 @@ function get_mailmerge_document2($session, $file_name, $fields)
     }
     $result = base64_encode($html);
 
-    return array('html' => $result, 'name_value_list' => $resultIds, 'error' => $error);
+    return ['html' => $result, 'name_value_list' => $resultIds, 'error' => $error];
 }
 
 $server->register(
     'get_document_revision',
-    array('session' => 'xsd:string', 'i' => 'xsd:string'),
-    array('return' => 'tns:return_document_revision'),
+    ['session' => 'xsd:string', 'i' => 'xsd:string'],
+    ['return' => 'tns:return_document_revision'],
     $NAMESPACE);
 
 /**
@@ -2177,13 +2032,14 @@ $server->register(
  */
 function get_document_revision($session, $id)
 {
+    $dr = null;
     global $sugar_config;
 
     $error = new SoapError();
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
 
 
@@ -2193,28 +2049,19 @@ function get_document_revision($session, $id)
         $filename = "upload://{$dr->id}";
         $contents = base64_encode(sugar_file_get_contents($filename));
 
-        return array(
-            'document_revision' => array(
-                'id' => $dr->id,
-                'document_name' => $dr->document_name,
-                'revision' => $dr->revision,
-                'filename' => $dr->filename,
-                'file' => $contents
-            ),
-            'error' => $error->get_soap_array()
-        );
+        return ['document_revision' => ['id' => $dr->id, 'document_name' => $dr->document_name, 'revision' => $dr->revision, 'filename' => $dr->filename, 'file' => $contents], 'error' => $error->get_soap_array()];
     } else {
         $error->set_error('no_records');
 
-        return array('id' => -1, 'error' => $error->get_soap_array());
+        return ['id' => -1, 'error' => $error->get_soap_array()];
     }
 
 }
 
 $server->register(
     'set_campaign_merge',
-    array('session' => 'xsd:string', 'targets' => 'tns:select_fields', 'campaign_id' => 'xsd:string'),
-    array('return' => 'tns:error_value'),
+    ['session' => 'xsd:string', 'targets' => 'tns:select_fields', 'campaign_id' => 'xsd:string'],
+    ['return' => 'tns:error_value'],
     $NAMESPACE);
 /**
  *   Once we have successfuly done a mail merge on a campaign, we need to notify Sugar of the targets
@@ -2246,8 +2093,8 @@ function set_campaign_merge($session, $targets, $campaign_id)
 
 $server->register(
     'get_entries_count',
-    array('session' => 'xsd:string', 'module_name' => 'xsd:string', 'query' => 'xsd:string', 'deleted' => 'xsd:int'),
-    array('return' => 'tns:get_entries_count_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'query' => 'xsd:string', 'deleted' => 'xsd:int'],
+    ['return' => 'tns:get_entries_count_result'],
     $NAMESPACE);
 
 /**
@@ -2262,6 +2109,9 @@ $server->register(
  */
 function get_entries_count($session, $module_name, $query, $deleted)
 {
+    $where_clauses = [];
+    $seed = null;
+    $sql = null;
     global $beanList, $beanFiles, $current_user;
 
     $error = new SoapError();
@@ -2269,28 +2119,19 @@ function get_entries_count($session, $module_name, $query, $deleted)
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array(
-            'result_count' => -1,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => -1, 'error' => $error->get_soap_array()];
     }
 
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array(
-            'result_count' => -1,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => -1, 'error' => $error->get_soap_array()];
     }
 
     if (!check_modules_access($current_user, $module_name, 'list')) {
         $error->set_error('no_access');
 
-        return array(
-            'result_count' => -1,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => -1, 'error' => $error->get_soap_array()];
     }
 
     $class_name = $beanList[$module_name];
@@ -2300,10 +2141,7 @@ function get_entries_count($session, $module_name, $query, $deleted)
     if (!$seed->ACLAccess('ListView')) {
         $error->set_error('no_access');
 
-        return array(
-            'result_count' => -1,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => -1, 'error' => $error->get_soap_array()];
     }
 
     $sql = 'SELECT COUNT(*) result_count FROM ' . $seed->table_name . ' ';
@@ -2313,7 +2151,7 @@ function get_entries_count($session, $module_name, $query, $deleted)
     $sql .= $customJoin['join'];
 
     // build WHERE clauses, if any
-    $where_clauses = array();
+    $where_clauses = [];
     if (!empty($query)) {
         require_once 'include/SugarSQLValidate.php';
         $valid = new SugarSQLValidate();
@@ -2321,10 +2159,7 @@ function get_entries_count($session, $module_name, $query, $deleted)
             $GLOBALS['log']->error("Bad query: $query");
             $error->set_error('no_access');
 
-            return array(
-                'result_count' => -1,
-                'error' => $error->get_soap_array()
-            );
+            return ['result_count' => -1, 'error' => $error->get_soap_array()];
         }
         $where_clauses[] = $query;
     }
@@ -2340,21 +2175,13 @@ function get_entries_count($session, $module_name, $query, $deleted)
     $res = DBManagerFactory::getInstance()->query($sql);
     $row = DBManagerFactory::getInstance()->fetchByAssoc($res);
 
-    return array(
-        'result_count' => $row['result_count'],
-        'error' => $error->get_soap_array()
-    );
+    return ['result_count' => $row['result_count'], 'error' => $error->get_soap_array()];
 }
 
 $server->register(
     'set_entries_details',
-    array(
-        'session' => 'xsd:string',
-        'module_name' => 'xsd:string',
-        'name_value_lists' => 'tns:name_value_lists',
-        'select_fields' => 'tns:select_fields'
-    ),
-    array('return' => 'tns:set_entries_detail_result'),
+    ['session' => 'xsd:string', 'module_name' => 'xsd:string', 'name_value_lists' => 'tns:name_value_lists', 'select_fields' => 'tns:select_fields'],
+    ['return' => 'tns:set_entries_detail_result'],
     $NAMESPACE);
 
 /**
@@ -2374,10 +2201,7 @@ function set_entries_details($session, $module_name, $name_value_lists, $select_
     if (!validate_authenticated($session)) {
         $error->set_error('invalid_login');
 
-        return array(
-            'ids' => array(),
-            'error' => $error->get_soap_array()
-        );
+        return ['ids' => [], 'error' => $error->get_soap_array()];
     }
 
     return handle_set_entries($module_name, $name_value_lists, $select_fields);
@@ -2389,23 +2213,23 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
     global $beanList, $beanFiles, $app_list_strings, $current_user;
 
     $error = new SoapError();
-    $ret_values = array();
+    $ret_values = [];
 
     if (empty($beanList[$module_name])) {
         $error->set_error('no_module');
 
-        return array('ids' => array(), 'error' => $error->get_soap_array());
+        return ['ids' => [], 'error' => $error->get_soap_array()];
     }
 
     if (!check_modules_access($current_user, $module_name, 'write')) {
         $error->set_error('no_access');
 
-        return array('ids' => -1, 'error' => $error->get_soap_array());
+        return ['ids' => -1, 'error' => $error->get_soap_array()];
     }
 
     $class_name = $beanList[$module_name];
     require_once($beanFiles[$class_name]);
-    $ids = array();
+    $ids = [];
     $count = 1;
     $total = sizeof($name_value_lists);
 
@@ -2423,7 +2247,7 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
         }
 
 
-        $dataValues = array();
+        $dataValues = [];
 
         foreach ($name_value_list as $value) {
             $val = $value['value'];
@@ -2442,7 +2266,7 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
 
                 if (isset($app_list_strings[$vardef['options']]) && !isset($app_list_strings[$vardef['options']][$value])) {
                     $items = explode(",", $val);
-                    $parsedItems = array();
+                    $parsedItems = [];
                     foreach ($items as $item) {
                         if (in_array($item, $app_list_strings[$vardef['options']])) {
                             $keyVal = array_search($item, $app_list_strings[$vardef['options']]);
@@ -2516,9 +2340,7 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
                             'Looking for ' . $module_name . ' with outlook_id ' . $seed->outlook_id
                         );
 
-                        $fields = array(
-                            'outlook_id' => $seed->outlook_id
-                        );
+                        $fields = ['outlook_id' => $seed->outlook_id];
                         // Try to fetch a bean with this outlook_id
                         $temp = BeanFactory::getBean($module_name);
                         $temp = $temp->retrieve_by_string_fields($fields);
@@ -2536,12 +2358,7 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
 
                             // If we didn't, try to find the meeting by comparing the passed
                             // Subject, start date and duration
-                            $fields = array(
-                                'name' => $seed->name,
-                                'date_start' => $seed->date_start,
-                                'duration_hours' => $seed->duration_hours,
-                                'duration_minutes' => $seed->duration_minutes
-                            );
+                            $fields = ['name' => $seed->name, 'date_start' => $seed->date_start, 'duration_hours' => $seed->duration_hours, 'duration_minutes' => $seed->duration_minutes];
                             $temp = BeanFactory::getBean($module_name);
                             $temp = $temp->retrieve_by_string_fields($fields);
 
@@ -2579,7 +2396,7 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
 
         // if somebody is calling set_entries_detail() and wants fields returned...
         if ($select_fields !== false) {
-            $ret_values[$count] = array();
+            $ret_values[$count] = [];
 
             foreach ($select_fields as $select_field) {
                 if (isset($seed->$select_field)) {
@@ -2591,15 +2408,9 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = fa
 
     // handle returns for set_entries_detail() and set_entries()
     if ($select_fields !== false) {
-        return array(
-            'name_value_lists' => $ret_values,
-            'error' => $error->get_soap_array()
-        );
+        return ['name_value_lists' => $ret_values, 'error' => $error->get_soap_array()];
     } else {
-        return array(
-            'ids' => $ids,
-            'error' => $error->get_soap_array()
-        );
+        return ['ids' => $ids, 'error' => $error->get_soap_array()];
     }
 }
 

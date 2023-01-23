@@ -35,7 +35,7 @@ class _parse_lockinfo
 	 * @var bool
 	 * @access public
 	 */
-	var $success = false;
+	public $success = true;
 
 	/**
 	 * lock type, currently only "write"
@@ -43,7 +43,7 @@ class _parse_lockinfo
 	 * @var string
 	 * @access public
 	 */
-	var $locktype = "";
+	public $locktype = "";
 
 	/**
 	 * lock scope, "shared" or "exclusive"
@@ -51,7 +51,7 @@ class _parse_lockinfo
 	 * @var string
 	 * @access public
 	 */
-	var $lockscope = "";
+	public $lockscope = "";
 
 	/**
 	 * lock owner information
@@ -59,7 +59,7 @@ class _parse_lockinfo
 	 * @var string
 	 * @access public
 	 */
-	var $owner = "";
+	public $owner = "";
 
 	/**
 	 * flag that is set during lock owner read
@@ -67,7 +67,7 @@ class _parse_lockinfo
 	 * @var bool
 	 * @access private
 	 */
-	var $collect_owner = false;
+	public $collect_owner = false;
 
 	/**
 	 * constructor
@@ -77,9 +77,6 @@ class _parse_lockinfo
 	 */
     function __construct($path)
 	{
-		// we assume success unless problems occur
-		$this->success = true;
-
 		// remember if any input was parsed
 		$had_input = false;
 
@@ -95,10 +92,10 @@ class _parse_lockinfo
 
 		// set tag and data handlers
 		xml_set_element_handler($xml_parser,
-								array(&$this, "_startElement"),
-								array(&$this, "_endElement"));
+								[&$this, "_startElement"],
+								[&$this, "_endElement"]);
 		xml_set_character_data_handler($xml_parser,
-									   array(&$this, "_data"));
+									   [&$this, "_data"]);
 
 		// we want a case sensitive parser
 		xml_parser_set_option($xml_parser,
@@ -143,7 +140,7 @@ class _parse_lockinfo
     {
 		// namespace handling
         if (strstr($name, " ")) {
-            list($ns, $tag) = explode(" ", $name);
+            [$ns, $tag] = explode(" ", $name);
         } else {
             $ns = "";
             $tag = $name;
@@ -207,7 +204,7 @@ class _parse_lockinfo
     {
 		// namespace handling
 		if (strstr($name, " ")) {
-			list($ns, $tag) = explode(" ", $name);
+			[$ns, $tag] = explode(" ", $name);
 		} else {
 			$ns = "";
 			$tag = $name;

@@ -261,9 +261,9 @@ class Zend_Oauth_Client extends Zend_Http_Client
                 $this->_getSignableParametersAsQueryString()
             );
             $this->setRawData($raw);
-            $this->paramsPost = array();
+            $this->paramsPost = [];
         } elseif ($requestScheme == Zend_Oauth::REQUEST_SCHEME_QUERYSTRING) {
-            $params = array();
+            $params = [];
             $query = $this->getUri()->getQuery();
             if ($query) {
                 $queryParts = explode('&', $this->getUri()->getQuery());
@@ -283,7 +283,7 @@ class Zend_Oauth_Client extends Zend_Http_Client
                 $this->getUri(true), $this->_config, $params
             );
             $this->getUri()->setQuery($query);
-            $this->paramsGet = array();
+            $this->paramsGet = [];
         } else {
             require_once 'Zend/Oauth/Exception.php';
             throw new Zend_Oauth_Exception('Invalid request scheme: ' . $requestScheme);
@@ -299,7 +299,7 @@ class Zend_Oauth_Client extends Zend_Http_Client
      */
     protected function _getSignableParametersAsQueryString()
     {
-        $params = array();
+        $params = [];
             if (!empty($this->paramsGet)) {
                 $params = array_merge($params, $this->paramsGet);
                 $query  = $this->getToken()->toQueryString(
@@ -331,6 +331,6 @@ class Zend_Oauth_Client extends Zend_Http_Client
             require_once 'Zend/Oauth/Exception.php';
             throw new Zend_Oauth_Exception('Method does not exist: ' . $method);
         }
-        return call_user_func_array(array($this->_config,$method), $args);
+        return call_user_func_array([$this->_config, $method], $args);
     }
 }

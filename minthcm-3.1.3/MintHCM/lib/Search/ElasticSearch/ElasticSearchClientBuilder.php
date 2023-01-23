@@ -100,7 +100,7 @@ class ElasticSearchClientBuilder
             throw new \InvalidArgumentException('Host URL must be a string');
         }
 
-        $hostURL = self::addHttp($hostURL, isset($host['scheme']) ? $host['scheme'] : 'http');
+        $hostURL = self::addHttp($hostURL, $host['scheme'] ?? 'http');
 
         $parsedHost = parse_url($hostURL);
 

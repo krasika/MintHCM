@@ -249,7 +249,7 @@ class Links implements LoggerAwareInterface, JsonApiResponseInterface
      */
     public function toJsonApiResponse()
     {
-        $response = array();
+        $response = [];
         if ($this->hasSelf()) {
             $response['self'] = $this->self;
         }

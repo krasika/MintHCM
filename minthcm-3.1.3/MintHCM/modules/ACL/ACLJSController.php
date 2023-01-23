@@ -133,7 +133,7 @@ EOQ;
 	}
 
 	function getHTMLValues($def){
-		$return_array = array();
+		$return_array = [];
 		switch($def['display_option']){
 			case 'clear_link':
 				$return_array['href']= "#";

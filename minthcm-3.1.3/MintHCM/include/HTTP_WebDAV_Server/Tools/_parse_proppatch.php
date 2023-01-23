@@ -35,7 +35,7 @@ class _parse_proppatch
      * @var
      * @access
      */
-    var $success;
+    public $success = true;
 
     /**
      *
@@ -43,7 +43,7 @@ class _parse_proppatch
      * @var
      * @access
      */
-    var $props;
+    public $props = [];
 
     /**
      *
@@ -51,7 +51,7 @@ class _parse_proppatch
      * @var
      * @access
      */
-    var $depth;
+    public $depth = 0;
 
     /**
      *
@@ -59,7 +59,7 @@ class _parse_proppatch
      * @var
      * @access
      */
-    var $mode;
+    public $mode;
 
     /**
      *
@@ -67,7 +67,7 @@ class _parse_proppatch
      * @var
      * @access
      */
-    var $current;
+    public $current;
 
     /**
      * constructor
@@ -77,10 +77,6 @@ class _parse_proppatch
      */
     function __construct($path)
     {
-        $this->success = true;
-
-        $this->depth = 0;
-        $this->props = array();
         $had_input = false;
 
         $f_in = fopen($path, "r");
@@ -92,11 +88,11 @@ class _parse_proppatch
         $xml_parser = xml_parser_create_ns("UTF-8", " ");
 
         xml_set_element_handler($xml_parser,
-                                array(&$this, "_startElement"),
-                                array(&$this, "_endElement"));
+                                [&$this, "_startElement"],
+                                [&$this, "_endElement"]);
 
         xml_set_character_data_handler($xml_parser,
-                                       array(&$this, "_data"));
+                                       [&$this, "_data"]);
 
         xml_parser_set_option($xml_parser,
                               XML_OPTION_CASE_FOLDING, false);
@@ -130,7 +126,7 @@ class _parse_proppatch
     function _startElement($parser, $name, $attrs)
     {
         if (strstr($name, " ")) {
-            list($ns, $tag) = explode(" ", $name);
+            [$ns, $tag] = explode(" ", $name);
             if ($ns == "")
                 $this->success = false;
         } else {
@@ -143,8 +139,8 @@ class _parse_proppatch
         }
 
         if ($this->depth == 3) {
-            $prop = array("name" => $tag);
-            $this->current = array("name" => $tag, "ns" => $ns, "status"=> 200);
+            $prop = ["name" => $tag];
+            $this->current = ["name" => $tag, "ns" => $ns, "status"=> 200];
             if ($this->mode == "set") {
                 $this->current["val"] = "";     // default set val
             }
@@ -174,7 +170,7 @@ class _parse_proppatch
     function _endElement($parser, $name)
     {
         if (strstr($name, " ")) {
-            list($ns, $tag) = explode(" ", $name);
+            [$ns, $tag] = explode(" ", $name);
             if ($ns == "")
                 $this->success = false;
         } else {

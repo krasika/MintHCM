@@ -78,7 +78,7 @@ class DashletRssFeedTitle {
 	 */
 	public function readFeed() {
 		if ($this->url) {
-                    if (!in_array(strtolower(parse_url($this->url, PHP_URL_SCHEME)), array("http", "https"), true)) {
+                    if (!in_array(strtolower(parse_url($this->url, PHP_URL_SCHEME)), ["http", "https"], true)) {
                         return false;
                     }
 			$fileOpen = @fopen($this->url, 'r');
@@ -96,10 +96,10 @@ class DashletRssFeedTitle {
 	 *
 	 */
 	public function getTitle() {
-		$matches = array ();
+		$matches = [];
 		preg_match("/<title>.*?<\/title>/i", $this->contents, $matches);
 		if (isset($matches[0])) {
-			$this->title = str_replace(array('<![CDATA[', '<title>', '</title>', ']]>'), '', $matches[0]);
+			$this->title = str_replace(['<![CDATA[', '<title>', '</title>', ']]>'], '', $matches[0]);
 		}
 	}
 
@@ -110,7 +110,7 @@ class DashletRssFeedTitle {
 	}
 
 	private function _identifyXmlEncoding() {
-		$matches = array ();
+		$matches = [];
 		preg_match('/encoding\=*\".*?\"/', $this->contents, $matches);
 		if (isset($matches[0])) {
 			$this->xmlEncoding = trim(str_replace('encoding="', '"', $matches[0]), '"');

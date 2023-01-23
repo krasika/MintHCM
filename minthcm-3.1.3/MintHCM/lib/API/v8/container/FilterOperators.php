@@ -51,16 +51,5 @@ use Slim\Exception\ContainerValueNotFoundException;
  * @return SuiteCRM\API\JsonApi\v1\Filters\Interfaces\OperatorInterface[]
  */
 $container['FilterOperators'] = function ($container) {
-    return array(
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\EqualsOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\NotEqualsOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\GreaterThanOrEqualsOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\GreaterThanOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\LessThanOrEqualsOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\LessThanOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\InOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\NotInOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Strings\LikeOperator($container),
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Strings\NotLikeOperator($container),
-    );
+    return [new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\EqualsOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\NotEqualsOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\GreaterThanOrEqualsOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\GreaterThanOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\LessThanOrEqualsOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\LessThanOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\InOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Comparators\NotInOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Strings\LikeOperator($container), new \SuiteCRM\API\JsonApi\v1\Filters\Operators\Strings\NotLikeOperator($container)];
 };

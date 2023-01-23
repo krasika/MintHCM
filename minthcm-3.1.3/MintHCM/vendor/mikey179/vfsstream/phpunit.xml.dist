@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
+         bootstrap="src/test/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -39,6 +39,6 @@
 
   <php>
     <ini name="memory_limit" value="-1"/>
-    <ini name="error_reporting" value="30719"/> <!-- E_ALL | E_STRICT -->
+    <ini name="error_reporting" value="30719"/> <!-- E_ALL | E_STRICT -->
   </php>
 </phpunit>

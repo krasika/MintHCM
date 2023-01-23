@@ -87,15 +87,15 @@ class GroupedTabStructure
         	$tabStructure =& $GLOBALS['tabStructure'];
         }
         
-        $retStruct = array();
-        $mlhUsed = array();
+        $retStruct = [];
+        $mlhUsed = [];
 		//the invisible list should be merged if activities is set to be hidden
         if(in_array('Activities', $modList)){
         	$modList = array_merge($modList,$modInvisListActivities);
 		}
 		
 		//Add any iFrame tabs to the 'other' group.
-		$moduleExtraMenu = array();
+		$moduleExtraMenu = [];
 		if(!should_hide_iframes()) {
 			$iFrame = new iFrame();
 			$frames = $iFrame->lookup_frames('tab');	
@@ -113,9 +113,9 @@ class GroupedTabStructure
         {
             //Ensure even empty groups are returned
         	if($labelAsKey){
-                $retStruct[$subModules['label']]['modules'] = array();
+                $retStruct[$subModules['label']]['modules'] = [];
             }else{
-                $retStruct[$app_strings[$subModules['label']]]['modules']= array();
+                $retStruct[$app_strings[$subModules['label']]]['modules']= [];
             }
 
             foreach($subModules['modules'] as $key => $subModule)

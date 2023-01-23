@@ -187,7 +187,7 @@ class SearchResultsController extends Controller
         $fieldDef = $bean->getFieldDefinition(strtolower($fieldKey));
         $header = [
             'label' => $this->getListViewHeaderLabel($bean, $fieldValue, $fieldDef),
-            'comment' => isset($fieldDef['comment']) ? $fieldDef['comment'] : null,
+            'comment' => $fieldDef['comment'] ?? null,
             'field' => $fieldDef['name'],
         ];
         return $header;

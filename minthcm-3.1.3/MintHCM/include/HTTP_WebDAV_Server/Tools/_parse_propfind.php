@@ -35,7 +35,7 @@ class _parse_propfind
 	 * @var bool
 	 * @access public
 	 */
-	var $success = false;
+	public $success = true;
 
 	/**
 	 * found properties are collected here
@@ -43,7 +43,7 @@ class _parse_propfind
 	 * @var array
 	 * @access public
 	 */
-	var $props = false;
+	public $props = [];
 
 	/**
 	 * internal tag nesting depth counter
@@ -51,7 +51,7 @@ class _parse_propfind
 	 * @var int
 	 * @access private
 	 */
-	var $depth = 0;
+	public $depth = 0;
 
 
 	/**
@@ -61,15 +61,6 @@ class _parse_propfind
 	 */
 	function __construct($path)
 	{
-		// success state flag
-		$this->success = true;
-
-		// property storage array
-		$this->props = array();
-
-		// internal tag depth counter
-		$this->depth = 0;
-
 		// remember if any input was parsed
 		$had_input = false;
 
@@ -85,8 +76,8 @@ class _parse_propfind
 
 		// set tag and data handlers
 		xml_set_element_handler($xml_parser,
-								array(&$this, "_startElement"),
-								array(&$this, "_endElement"));
+								[&$this, "_startElement"],
+								[&$this, "_endElement"]);
 
 		// we want a case sensitive parser
 		xml_parser_set_option($xml_parser,
@@ -130,7 +121,7 @@ class _parse_propfind
 	{
 		// name space handling
 		if (strstr($name, " ")) {
-			list($ns, $tag) = explode(" ", $name);
+			[$ns, $tag] = explode(" ", $name);
 			if ($ns == "")
 				$this->success = false;
 		} else {
@@ -149,7 +140,7 @@ class _parse_propfind
 
 		// requested properties are found at level 2
 		if ($this->depth == 2) {
-			$prop = array("name" => $tag);
+			$prop = ["name" => $tag];
 			if ($ns)
 				$prop["xmlns"] = $ns;
 			$this->props[] = $prop;

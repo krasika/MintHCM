@@ -48,200 +48,25 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
 // this is a list of what values are expected for a given custom field type
 // will eventually be moved to the SugarFields classes
-$custom_field_meta = array(
-	'address' => array(
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'len',
-		'name',
-		'reportable'
-	),
-	'bool' => array(
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'name',
-		'reportable'
-	),
-	'currency' => array(
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'name',
-		'reportable'
-	),
-	'date' => array(
-		'audited',
-		'default_value',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'massupdate',
-		'name',
-		'reportable',
-		'required'
-	),
-	'enum' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'massupdate',
-		'name',
-		'options',
-		'reportable',
-		'required'
-	),
-	'float' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'len',
-		'name',
-		'precision',
-		'reportable',
-		'required'
-	),
-	'html' => array(
-		'audited',
-		'duplicate_merge',
-		'ext4',
-		'help',
-		'label',
-		'label_value',
-		'name',
-		'reportable',
-		'required'
-	),
-	'int' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'len',
-		'max',
-		'min',
-		'name',
-		'reportable',
-		'required'
-	),
-	'multienum' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'massupdate',
-		'name',
-		'options',
-		'reportable',
-		'required'
-	),
-	'phone' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'len',
-		'name',
-		'reportable',
-		'required'
-	),
-	'radioenum' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'massupdate',
-		'name',
-		'options',
-		'reportable',
-		'required'
-	),
-	'relate' => array(
-		'audited',
-		'duplicate_merge',
-		'ext2',
-		'help',
-		'label',
-		'label_value',
-		'name',
-		'reportable',
-		'required'
-	),
-	'text' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'name',
-		'reportable',
-		'required'
-	),
-	'varchar' => array(
-		'audited',
-		'default',
-		'duplicate_merge',
-		'help',
-		'label',
-		'label_value',
-		'len',
-		'name',
-		'reportable',
-		'required'
-	)
-);
+$custom_field_meta = ['address' => ['default', 'duplicate_merge', 'help', 'label', 'label_value', 'len', 'name', 'reportable'], 'bool' => ['duplicate_merge', 'help', 'label', 'label_value', 'name', 'reportable'], 'currency' => ['duplicate_merge', 'help', 'label', 'label_value', 'name', 'reportable'], 'date' => ['audited', 'default_value', 'duplicate_merge', 'help', 'label', 'label_value', 'massupdate', 'name', 'reportable', 'required'], 'enum' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'massupdate', 'name', 'options', 'reportable', 'required'], 'float' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'len', 'name', 'precision', 'reportable', 'required'], 'html' => ['audited', 'duplicate_merge', 'ext4', 'help', 'label', 'label_value', 'name', 'reportable', 'required'], 'int' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'len', 'max', 'min', 'name', 'reportable', 'required'], 'multienum' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'massupdate', 'name', 'options', 'reportable', 'required'], 'phone' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'len', 'name', 'reportable', 'required'], 'radioenum' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'massupdate', 'name', 'options', 'reportable', 'required'], 'relate' => ['audited', 'duplicate_merge', 'ext2', 'help', 'label', 'label_value', 'name', 'reportable', 'required'], 'text' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'name', 'reportable', 'required'], 'varchar' => ['audited', 'default', 'duplicate_merge', 'help', 'label', 'label_value', 'len', 'name', 'reportable', 'required']];
 
 // create or update an existing custom field
 $server->register(
 	'set_custom_field',
-	array(
-		'session' => 'xsd:string',
-		'module_name' => 'xsd:string',
-		'type' => 'xsd:string',
-		'properties' => 'tns:name_value_list',
-		'add_to_layout' => 'xsd:int',
-	),
-	array(
-		'return' => 'tns:error_value'
-	),
+	['session' => 'xsd:string', 'module_name' => 'xsd:string', 'type' => 'xsd:string', 'properties' => 'tns:name_value_list', 'add_to_layout' => 'xsd:int'],
+	['return' => 'tns:error_value'],
 	$NAMESPACE
 );
 
 function set_custom_field($session, $module_name, $type, $properties, $add_to_layout) {
-	global $current_user;
+	$new_properties = [];
+ global $current_user;
 	global $beanList, $beanFiles;
 	global $custom_field_meta;
 
 	$error = new SoapError();
 
-	$request_arr = array(
-		'action' => 'SaveField',
-		'is_update' => 'true',
-		'module' => 'ModuleBuilder',
-		'view_module' => $module_name,
-		'view_package' => 'studio'
-	);
+	$request_arr = ['action' => 'SaveField', 'is_update' => 'true', 'module' => 'ModuleBuilder', 'view_module' => $module_name, 'view_package' => 'studio'];
 
 	// ERROR CHECKING
 	if(!validate_authenticated($session)) {
@@ -264,7 +89,7 @@ function set_custom_field($session, $module_name, $type, $properties, $add_to_la
 		return $error->get_soap_array();
 	}
 
-	$new_properties = array();
+	$new_properties = [];
 	foreach($properties as $value) {
 		$new_properties[$value['name']] = $value['value'];
 	}
@@ -293,10 +118,7 @@ function set_custom_field($session, $module_name, $type, $properties, $add_to_la
 
 	// add the field to the given module's EditView and DetailView layouts
 	if ($add_to_layout == 1) {
-		$layout_properties = array(
-			'name' => $new_properties['name'],
-			'label' => $new_properties['label']
-		);
+		$layout_properties = ['name' => $new_properties['name'], 'label' => $new_properties['label']];
 
 		if (isset($new_properties['customCode'])) {
 			$layout_properties['customCode'] = $new_properties['customCode'];

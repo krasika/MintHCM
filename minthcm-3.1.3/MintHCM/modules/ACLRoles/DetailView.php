@@ -64,7 +64,7 @@ $sugar_smarty->assign('APP_LIST', $app_list_strings);
 }*/
 $role = new ACLRole();
 $role->retrieve($_REQUEST['record']);
-$categories = ACLRole::getRoleActions($_REQUEST['record']);
+$categories = (new ACLRole())->getRoleActions($_REQUEST['record']);
 $names = ACLAction::setupCategoriesMatrix($categories);
 if(!empty($names))$tdwidth = 100 / sizeof($names);
 $sugar_smarty->assign('ROLE', $role->toArray());
@@ -72,9 +72,9 @@ $sugar_smarty->assign('CATEGORIES', $categories);
 $sugar_smarty->assign('TDWIDTH', $tdwidth);
 $sugar_smarty->assign('ACTION_NAMES', $names);
 
-$return= array('module'=>'ACLRoles', 'action'=>'DetailView', 'record'=>$role->id);
+$return= ['module'=>'ACLRoles', 'action'=>'DetailView', 'record'=>$role->id];
 $sugar_smarty->assign('RETURN', $return);
-$params = array();
+$params = [];
 $params[] = "<a href='index.php?module=ACLRoles&action=index'>{$mod_strings['LBL_MODULE_NAME']}</a>";
 $params[] = $role->get_summary_text();
 echo getClassicModuleTitle("ACLRoles", $params, true);

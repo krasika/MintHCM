@@ -45,32 +45,10 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$dictionary['InboundEmail_cacheTimestamp'] = array ('table' => 'inbound_email_cache_ts',
-	'fields' => array (
-		'id' => array (
-			'name' => 'id',
-			'vname' => 'LBL_ID',
-			'type' => 'varchar',
-			'len'	=> 190,
-			'required' => true,
-			'reportable' => false,
-		),
-		'ie_timestamp' => array(
-			'name'	=> 'ie_timestamp',
-			'type'	=> 'uint',
-			'len'	=> 16,
-			'required'	=> true,
-		),
-	),
-	'indices' => array (
-		array(
-			'name' => 'ie_cachetimestamppk',
-			'type' =>'primary',
-			'fields' => array(
-				'id'
-			)
-		),
-	), /* end indices */
-	'relationships' => array (
-	), /* end relationships */
-);
+$dictionary['InboundEmail_cacheTimestamp'] = [
+    'table' => 'inbound_email_cache_ts',
+    'fields' => ['id' => ['name' => 'id', 'vname' => 'LBL_ID', 'type' => 'varchar', 'len'	=> 190, 'required' => true, 'reportable' => false], 'ie_timestamp' => ['name'	=> 'ie_timestamp', 'type'	=> 'uint', 'len'	=> 16, 'required'	=> true]],
+    'indices' => [['name' => 'ie_cachetimestamppk', 'type' =>'primary', 'fields' => ['id']]],
+    /* end indices */
+    'relationships' => [],
+];

@@ -43,29 +43,5 @@
  */
 
 $module_name = 'AOD_Index';
-$viewdefs[$module_name]['EditView'] = array(
-    'templateMeta' => array('maxColumns' => '2', 
-                            'widths' => array(
-                                            array('label' => '10', 'field' => '30'), 
-                                            array('label' => '10', 'field' => '30')
-                                            ),                                                                                                                                    
-                                            ),
-                                            
-                                            
- 'panels' =>array (
-  'default' => 
-  array (
-    
-    array (
-      'name',
-      'assigned_user_name',
-    ),
-    
-    array (
-      'description',
-    ),
-  ),
-                                                    
-),
-                        
-);
+$viewdefs[$module_name]['EditView'] = ['templateMeta' => ['maxColumns' => '2', 'widths' => [['label' => '10', 'field' => '30'], ['label' => '10', 'field' => '30']]], 'panels' =>['default' => 
+[['name', 'assigned_user_name'], ['description']]]];

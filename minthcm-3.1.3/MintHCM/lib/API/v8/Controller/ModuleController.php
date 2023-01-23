@@ -89,8 +89,8 @@ use Tracker;
  */
 class ModuleController extends ApiController
 {
-    const MISSING_ID = '[ModuleController] ["id" does not exist]';
-    const SOURCE_TYPE = '/data/attributes/type';
+    public const MISSING_ID = '[ModuleController] ["id" does not exist]';
+    public const SOURCE_TYPE = '/data/attributes/type';
 
     /**
      * GET /api/v8/modules/meta/list
@@ -106,9 +106,7 @@ class ModuleController extends ApiController
             require_once $this->paths->getProjectPath().'/include/modules.php';
             global $moduleList;
 
-            $payload = array(
-                'meta' => array('modules' => array('list' => array()))
-            );
+            $payload = ['meta' => ['modules' => ['list' => []]]];
 
             foreach ($moduleList as $module) {
                 $payload['meta']['modules']['list'][$module]['links'] =
@@ -117,7 +115,7 @@ class ModuleController extends ApiController
 
             $this->negotiatedJsonApiContent($req, $res);
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
         return $this->generateJsonApiResponse($req, $res, $payload);
     }
@@ -140,7 +138,7 @@ class ModuleController extends ApiController
             $config = $this->containers->get('ConfigurationManager');
             $this->negotiatedJsonApiContent($req, $res);
 
-            $payload = array();
+            $payload = [];
 
             require_once $this->paths->getProjectPath().'/include/GroupedTabs/GroupedTabStructure.php';
             $groupedTabsClass = new GroupedTabStructure();
@@ -153,32 +151,19 @@ class ModuleController extends ApiController
                 $menu = $sugarView->getMenu($moduleName);
 
                 $self = $config['site_url'] . '/api/v'. self::VERSION_MAJOR . '/modules/' . $moduleName . '/';
-                $actions = array();
+                $actions = [];
                 foreach ($menu as $item) {
                     $url = parse_url($item[0]);
                     parse_str($url['query'], $orig);
-                    $actions[] = array(
-                        'href' => $self . $item[2],
-                        'label' => $item[1],
-                        'action' => $item[2],
-                        'module' => $item[3],
-                        'type' => $item[3],
-                        'query' => $orig,
-                    );
+                    $actions[] = ['href' => $self . $item[2], 'label' => $item[1], 'action' => $item[2], 'module' => $item[3], 'type' => $item[3], 'query' => $orig];
                 }
 
-                $modules[$moduleKey] = array(
-                    'type' => $moduleName,
-                    'href' => $config['site_url'] . '/api/v'. self::VERSION_MAJOR . '/modules/' . $moduleName . '/',
-                    'menu' => $actions
-                );
+                $modules[$moduleKey] = ['type' => $moduleName, 'href' => $config['site_url'] . '/api/v'. self::VERSION_MAJOR . '/modules/' . $moduleName . '/', 'menu' => $actions];
             }
 
-            $payload['meta']['menu']['modules'] = array(
-                'all' => $modules,
-            );
+            $payload['meta']['menu']['modules'] = ['all' => $modules];
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -202,7 +187,7 @@ class ModuleController extends ApiController
             $config = $this->containers->get('ConfigurationManager');
             $this->negotiatedJsonApiContent($req, $res);
 
-            $payload = array();
+            $payload = [];
 
             require_once $this->paths->getProjectPath().'/include/GroupedTabs/GroupedTabStructure.php';
             $groupedTabsClass = new GroupedTabStructure();
@@ -230,19 +215,12 @@ class ModuleController extends ApiController
             // Add url  to modules
             foreach ($modules as $moduleKey => $module) {
                 $moduleName = $module;
-                $modules[$moduleKey] = array(
-                    'type' => $moduleName,
-                    'href' => $config['site_url'] . '/api/v'. self::VERSION_MAJOR . '/modules/' . $moduleName . '/',
-                    'label' => $moduleKey
-                );
+                $modules[$moduleKey] = ['type' => $moduleName, 'href' => $config['site_url'] . '/api/v'. self::VERSION_MAJOR . '/modules/' . $moduleName . '/', 'label' => $moduleKey];
             }
 
-            $payload['meta']['menu']['filters'] = array(
-                'all' => $modules,
-                'tabs' => $groupTabs
-            );
+            $payload['meta']['menu']['filters'] = ['all' => $modules, 'tabs' => $groupTabs];
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -267,10 +245,7 @@ class ModuleController extends ApiController
             /** @var Tracker $tracker */
             $tracker = BeanFactory::newBean('Trackers');
 
-            $payload = array(
-                'data' => array(),
-                'included' => array(),
-            );
+            $payload = ['data' => [], 'included' => []];
 
             $recentlyViewedSugarBeans = $tracker->get_recently_viewed($current_user->id);
             foreach ($recentlyViewedSugarBeans as $viewed) {
@@ -294,18 +269,10 @@ class ModuleController extends ApiController
                         ExceptionCode::API_DATE_CONVERTION_SUGARBEAN);
                 }
 
-                $payload['included'][] = array(
-                    'id' => $viewed['item_id'],
-                    'type' => $viewed['module_name'],
-                    'attributes' => array(
-                        'name' => $viewed['item_summary'],
-                        'order'=> $viewed['id'],
-                        'date_modified' => $datetimeISO8601
-                    )
-                );
+                $payload['included'][] = ['id' => $viewed['item_id'], 'type' => $viewed['module_name'], 'attributes' => ['name' => $viewed['item_summary'], 'order'=> $viewed['id'], 'date_modified' => $datetimeISO8601]];
             }
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -323,26 +290,17 @@ class ModuleController extends ApiController
     {
         try {
             $this->negotiatedJsonApiContent($req, $res);
-            $payload = array(
-                'data' => array(),
-                'included' => array(),
-            );
+            $payload = ['data' => [], 'included' => []];
 
             /** @var Favorites $favoritesBean */
             $favoritesBean = BeanFactory::newBean('Favorites');
             $favorites = $favoritesBean->getCurrentUserSidebarFavorites(null);
 
             foreach ($favorites as $favorite) {
-                $payload['included'][] = array(
-                    'id' => $favorite['id'],
-                    'type' => $favorite['module_name'],
-                    'attributes' => array(
-                        'name' => $favorite['item_summary']
-                    )
-                );
+                $payload['included'][] = ['id' => $favorite['id'], 'type' => $favorite['module_name'], 'attributes' => ['name' => $favorite['item_summary']]];
             }
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -364,10 +322,7 @@ class ModuleController extends ApiController
             /** @var ModulesLib $modulesLib; */
             $modulesLib = $this->containers->get('ModulesLib');
 
-            $payload = array(
-                'links' => array(),
-                'data' => array()
-            );
+            $payload = ['links' => [], 'data' => []];
 
             $this->negotiatedJsonApiContent($req, $res);
 
@@ -383,13 +338,10 @@ class ModuleController extends ApiController
             $limitOffset = ($limit <= 0) ? $config['list_max_entries_per_page'] : $limit;
             $lastOffset = (integer)floor((integer)$paginatedModuleRecords['row_count'] / $limitOffset);
 
-            $payload['meta']['offsets'] = array(
-                'current' => $currentOffset,
-                'count' => $lastOffset
-            );
+            $payload['meta']['offsets'] = ['current' => $currentOffset, 'count' => $lastOffset];
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -414,7 +366,7 @@ class ModuleController extends ApiController
             $moduleName = $args['module'];
             $module = BeanFactory::newBean($moduleName);
             $body = json_decode($req->getBody()->getContents(), true);
-            $payload = array();
+            $payload = [];
 
             // Validate module
             if (empty($module)) {
@@ -492,7 +444,7 @@ class ModuleController extends ApiController
             $res = $res->withStatus(201);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -508,6 +460,7 @@ class ModuleController extends ApiController
      */
     public function getModuleRecord(Request $req, Response $res, array $args)
     {
+        $query = [];
         try {
             if (isset($query['include'])) {
                 throw new BadRequestException(
@@ -529,7 +482,7 @@ class ModuleController extends ApiController
             $moduleName = $args['module'];
             $moduleId = $args['id'];
             $module = BeanFactory::newBean($moduleName);
-            $payload = array();
+            $payload = [];
 
             // Validate module
             if (empty($module)) {
@@ -567,7 +520,7 @@ class ModuleController extends ApiController
             $res = $res->withStatus(200);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -590,7 +543,7 @@ class ModuleController extends ApiController
             $moduleId = $args['id'];
             $module = BeanFactory::newBean($moduleName);
             $body = json_decode($req->getBody()->getContents(), true);
-            $payload = array();
+            $payload = [];
 
             // Validate module
             if (empty($module)) {
@@ -655,7 +608,7 @@ class ModuleController extends ApiController
             $res = $res->withStatus(200);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -680,7 +633,7 @@ class ModuleController extends ApiController
             $moduleName = $args['module'];
             $moduleId = $args['id'];
             $module = BeanFactory::newBean($moduleName);
-            $payload = array();
+            $payload = [];
 
             // Validate module
             if (empty($module)) {
@@ -706,13 +659,11 @@ class ModuleController extends ApiController
                 throw new ApiException('[Unable to delete record]');
             }
 
-            $payload['meta'] = array(
-                'status' => 200
-            );
+            $payload['meta'] = ['status' => 200];
             $res = $res->withStatus(200);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -729,6 +680,7 @@ class ModuleController extends ApiController
      */
     public function getModuleMetaLanguage(Request $req, Response $res, array $args)
     {
+        $payload = [];
         try {
             if(!isset($args['module'])) {
                 throw new \InvalidArgumentException('Arguments array should contains a "module" index to describe module name.');
@@ -742,7 +694,7 @@ class ModuleController extends ApiController
             $payload['meta'][$args['module']]['language'] = $moduleLanguageStrings;
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -760,6 +712,7 @@ class ModuleController extends ApiController
      */
     public function getApplicationMetaLanguages(Request $req, Response $res, array $args)
     {
+        $payload = [];
         try {
             $this->negotiatedJsonApiContent($req, $res);
 
@@ -771,7 +724,7 @@ class ModuleController extends ApiController
                 $applicationLanguage->getApplicationLanguageStrings($currentLanguage);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -788,6 +741,7 @@ class ModuleController extends ApiController
      */
     public function getModuleMetaAttributes(Request $req, Response $res, array $args)
     {
+        $payload = [];
         try {
             if(!isset($args['module'])) {
                 throw new \InvalidArgumentException('Arguments array should contains a "module" index to describe module name.');
@@ -798,7 +752,7 @@ class ModuleController extends ApiController
             $payload['meta'][$args['module']]['attributes'] = BeanFactory::getBean($args['module'])->field_defs;
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -834,6 +788,7 @@ class ModuleController extends ApiController
      */
     public function getModuleMetaMenu(Request $req, Response $res, array $args)
     {
+        $payload = [];
         try {
             if(!isset($args['module'])) {
                 throw new \InvalidArgumentException('Arguments array should contains a "module" index to describe module name.');
@@ -846,24 +801,17 @@ class ModuleController extends ApiController
             $config = $this->containers->get('ConfigurationManager');
 
             $self = $config['site_url'] . '/api/v'. self::VERSION_MAJOR . '/modules/' . $args['module'] . '/';
-            $results = array();
+            $results = [];
             foreach ($menu as $item) {
                 $url = parse_url($item[0]);
                 parse_str($url['query'], $orig);
-                $results[] = array(
-                    'href' => $self . $item[2],
-                    'label' => $item[1],
-                    'action' => $item[2],
-                    'module' => $item[3],
-                    'type' => $item[3],
-                    'query' => $orig,
-                );
+                $results[] = ['href' => $self . $item[2], 'label' => $item[1], 'action' => $item[2], 'module' => $item[3], 'type' => $item[3], 'query' => $orig];
             }
 
             $payload['meta'][$args['module']]['menu'] = $results;
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -890,10 +838,7 @@ class ModuleController extends ApiController
             /** @var Tracker $tracker */
             $tracker = BeanFactory::newBean('Trackers');
 
-            $payload = array(
-                'data' => array(),
-                'included' => array(),
-            );
+            $payload = ['data' => [], 'included' => []];
 
             $recentlyViewedSugarBeans = $tracker->get_recently_viewed($current_user->id, $args['module']);
             foreach ($recentlyViewedSugarBeans as $viewed) {
@@ -912,19 +857,11 @@ class ModuleController extends ApiController
 
                 $datetimeISO8601 = $datetime->format(DateTime::ATOM);
 
-                $payload['included'][] = array(
-                    'id' => $viewed['item_id'],
-                    'type' => $viewed['module_name'],
-                    'attributes' => array(
-                        'name' => $viewed['item_summary'],
-                        'order'=> $viewed['id'],
-                        'date_modified' => $datetimeISO8601
-                    )
-                );
+                $payload['included'][] = ['id' => $viewed['item_id'], 'type' => $viewed['module_name'], 'attributes' => ['name' => $viewed['item_summary'], 'order'=> $viewed['id'], 'date_modified' => $datetimeISO8601]];
             }
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -944,14 +881,14 @@ class ModuleController extends ApiController
                 throw new \InvalidArgumentException('Arguments array should contains a "module" index to describe module name.');
             }
             $this->negotiatedJsonApiContent($req, $res);
-            $payload = array();
+            $payload = [];
 
             /** @var Favorites $favoritesBean */
             $favoritesBean = BeanFactory::newBean('Favorites');
             $payload['data'] = $favoritesBean->getCurrentUserFavoritesForModule($args['module']);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -968,6 +905,7 @@ class ModuleController extends ApiController
      */
     public function getModuleMetaLayout(Request $req, Response $res, array $args)
     {
+        $payload = [];
         try {
             if(!isset($args['module'])) {
                 throw new \InvalidArgumentException('Arguments array should contains a "module" index to describe module name.');
@@ -1000,7 +938,7 @@ class ModuleController extends ApiController
             $payload['meta'][$args['module']]['view'][$args['view']] = $viewdefs;
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $payload);
@@ -1040,9 +978,7 @@ class ModuleController extends ApiController
 
             $config = $this->containers->get('ConfigurationManager');
             $this->negotiatedJsonApiContent($req, $res);
-            $payload = array(
-                'data' => array()
-            );
+            $payload = ['data' => []];
             $sugarBean = BeanFactory::getBean($args['module'], $args['id']);
 
             if (empty($sugarBean)) {
@@ -1082,10 +1018,7 @@ class ModuleController extends ApiController
 
                     foreach ($relatedIds as $id) {
                         // only needs one result
-                        $data = array(
-                            'type' => $relatedDefinition['lhs_module'],
-                            'id' => $id
-                        );
+                        $data = ['type' => $relatedDefinition['lhs_module'], 'id' => $id];
 
                         $links = new Links();
                         $data['links'] = $links
@@ -1102,9 +1035,7 @@ class ModuleController extends ApiController
                     /** @var Resource $resource */
                     $resource = $this->containers->get('Resource');
                     $related = $sugarBeanRelationship->query(
-                         array(
-                              'include_middle_table_fields' => true
-                         )
+                         ['include_middle_table_fields' => true]
                     );
                     $relatedDefinition = $sugarBean->field_defs[$args['link']];
                     $relatedType = $sugarBeanRelationship->getRelatedModuleName();
@@ -1114,20 +1045,9 @@ class ModuleController extends ApiController
                             throw new \Exception('Related definition should contains "id" index.');
                         }
 
-                        $data = array(
-                            'id' => $row['id'],
-                            'type' => $relatedType
-                       );
+                        $data = ['id' => $row['id'], 'type' => $relatedType];
 
-                        $meta = array(
-                            'middle_table' => array(
-                                 'data' => array(
-                                    'id' => '',
-                                    'type' => 'Link',
-                                    'attributes' => $row
-                                 )
-                            )
-                       );
+                        $meta = ['middle_table' => ['data' => ['id' => '', 'type' => 'Link', 'attributes' => $row]]];
 
                         $links = new Links();
                         $data['links'] = $links
@@ -1158,7 +1078,7 @@ class ModuleController extends ApiController
                 ->toJsonApiResponse();
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         $this->generateJsonApiResponse($req, $res, $payload);
@@ -1175,6 +1095,9 @@ class ModuleController extends ApiController
      */
     public function createModuleRelationship(Request $req, Response $res, array $args)
     {
+        $additional_fields = null;
+        $link = [];
+        $responsePayload = [];
         try {
 
             if(!isset($args['module'])) {
@@ -1243,13 +1166,13 @@ class ModuleController extends ApiController
                     }
 
                     $data = $requestPayload['data'];
-                    $links = array();
+                    $links = [];
 
 
                     // if a single ResourceIdentifier has been posted
                     if (!isset($data[0])) {
                         // convert to array
-                        $data = array($data);
+                        $data = [$data];
                     }
 
                     foreach ($data as $link) {
@@ -1262,21 +1185,13 @@ class ModuleController extends ApiController
                         $resourceIdentifier = $this->containers->get('ResourceIdentifier');
 
                         $meta = null;
-                        $additional_fields = array();
+                        $additional_fields = [];
                         if (
                             isset($link['meta']['middle_table']['data']['attributes']) &&
                             !empty($link['meta']['middle_table']['data']['attributes'])
                         ) {
                             $additional_fields = $link['meta']['middle_table']['data']['attributes'];
-                            $meta = array(
-                                'middle_table' => array(
-                                    'data' => array(
-                                        'id' => '',
-                                        'type' => 'Link',
-                                        'attributes' => $link['meta']['middle_table']['data']['attributes']
-                                    )
-                                )
-                            );
+                            $meta = ['middle_table' => ['data' => ['id' => '', 'type' => 'Link', 'attributes' => $link['meta']['middle_table']['data']['attributes']]]];
                         }
 
                         if(!isset($link['type'])) {
@@ -1320,7 +1235,7 @@ class ModuleController extends ApiController
                             );
                     }
 
-                    $additional_fields = array();
+                    $additional_fields = [];
                     if (
                         isset($link['meta']['middle_table']['data']['attributes']) &&
                         !empty($link['meta']['middle_table']['data']['attributes'])
@@ -1347,7 +1262,7 @@ class ModuleController extends ApiController
             $responsePayload['data'] = $relationship->toJsonApiResponse();
 
         } catch (\Exception $e) {
-            $responsePayload = $this->handleExceptionIntoPayloadError($req, $e, isset($responsePayload) ? $responsePayload : []);
+            $responsePayload = $this->handleExceptionIntoPayloadError($req, $e, $responsePayload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $responsePayload);
@@ -1366,6 +1281,7 @@ class ModuleController extends ApiController
      */
     public function updateModuleRelationship(Request $req, Response $res, array $args)
     {
+        $responsePayload = [];
         try {
 
             if(!isset($args['module'])) {
@@ -1433,7 +1349,7 @@ class ModuleController extends ApiController
                 // if a single ResourceIdentifier has been posted
                 if (!isset($data[0])) {
                     // convert to array
-                    $data = array($data);
+                    $data = [$data];
                 }
                 foreach ($data as $link) {
                     /** @var ResourceIdentifier $resourceIdentifier */
@@ -1444,20 +1360,12 @@ class ModuleController extends ApiController
                         isset($link['meta']['middle_table']['data']['attributes']) &&
                         !empty($link['meta']['middle_table']['data']['attributes'])
                     ) {
-                        $meta = array(
-                            'middle_table' => array(
-                                'data' => array(
-                                    'id' => '',
-                                    'type' => 'Link',
-                                    'attributes' => $link['meta']['middle_table']['data']['attributes']
-                                )
-                            )
-                        );
+                        $meta = ['middle_table' => ['data' => ['id' => '', 'type' => 'Link', 'attributes' => $link['meta']['middle_table']['data']['attributes']]]];
                     }
 
                     // The following removes PHP notice: Undefined index
-                    $linkId = isset($link['id']) ? $link['id'] : null;
-                    $linkType = isset($link['type']) ? $link['type'] : null;
+                    $linkId = $link['id'] ?? null;
+                    $linkType = $link['type'] ?? null;
 
                     $relationship = $relationship
                         ->withResourceIdentifier(
@@ -1503,11 +1411,11 @@ class ModuleController extends ApiController
             $sugarBean = $sugarBeanResource->toSugarBean();
             $sugarBean->retrieve($sugarBeanResource->getId());
 
-            $responsePayload = array();
+            $responsePayload = [];
             $responsePayload['data'] = $sugarBeanResource->getRelationshipByName($args['link']);
 
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($req, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($req, $e, $payload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res, $responsePayload);
@@ -1580,9 +1488,9 @@ class ModuleController extends ApiController
                     // if a single ResourceIdentifier has been posted
                     if (!isset($data[0])) {
                         // convert to array
-                        $data = array($data);
+                        $data = [$data];
                     }
-                    $links = array();
+                    $links = [];
                     foreach ($data as $link) {
                         $links[] = $link['id'];
                     }
@@ -1607,11 +1515,11 @@ class ModuleController extends ApiController
                 throw new ForbiddenException('[ModuleController] [Invalid Relationship type]');
             }
 
-            $responsePayload = array();
-            $responsePayload['data'] = array();
+            $responsePayload = [];
+            $responsePayload['data'] = [];
 
         } catch (\Exception $e) {
-            $responsePayload = $this->handleExceptionIntoPayloadError($req, $e, isset($responsePayload) ? $responsePayload : []);
+            $responsePayload = $this->handleExceptionIntoPayloadError($req, $e, $responsePayload ?? []);
         }
 
         return $this->generateJsonApiResponse($req, $res->withStatus(204), $responsePayload);

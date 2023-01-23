@@ -80,7 +80,7 @@ class ClientRepository implements ClientRepositoryInterface
         $clientEntity->setIdentifier($clientIdentifier);
         $clientEntity->setName($client->name);
 
-        $redirect_url = isset($client->redirect_uri) ? $client->redirect_uri : '';
+        $redirect_url = $client->redirect_uri ?? '';
         $clientEntity->setRedirectUri($redirect_url);
 
         return $clientEntity;

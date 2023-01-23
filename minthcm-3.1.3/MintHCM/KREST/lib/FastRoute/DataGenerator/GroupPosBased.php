@@ -18,7 +18,7 @@ class GroupPosBased extends RegexBasedAbstract
             $regexes[] = $regex;
             $routeMap[$offset] = [$route->handler, $route->variables];
 
-            $offset += count($route->variables);
+            $offset += is_array($route->variables) || $route->variables instanceof \Countable ? count($route->variables) : 0;
         }
 
         $regex = '~^(?:' . implode('|', $regexes) . ')$~';

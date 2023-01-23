@@ -51,5 +51,5 @@ namespace SuiteCRM\API\JsonApi\v1\Enumerator;
  */
 class ResourceEnum
 {
-    const DEFAULT_SOURCE = '/data';
+    public const DEFAULT_SOURCE = '/data';
 }

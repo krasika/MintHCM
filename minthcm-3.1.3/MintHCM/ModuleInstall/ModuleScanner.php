@@ -51,53 +51,20 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
 class ModuleScanner
 {
-    private $manifestMap = array(
-        'pre_execute' => 'pre_execute',
-        'install_mkdirs' => 'mkdir',
-        'install_copy' => 'copy',
-        'install_images' => 'image_dir',
-        'install_menus' => 'menu',
-        'install_userpage' => 'user_page',
-        'install_dashlets' => 'dashlets',
-        'install_administration' => 'administration',
-        'install_connectors' => 'connectors',
-        'install_vardefs' => 'vardefs',
-        'install_layoutdefs' => 'layoutdefs',
-        'install_layoutfields' => 'layoutfields',
-        'install_relationships' => 'relationships',
-        'install_languages' => 'language',
-        'install_logichooks' => 'logic_hooks',
-        'post_execute' => 'post_execute',
-
-	);
+    private $manifestMap = ['pre_execute' => 'pre_execute', 'install_mkdirs' => 'mkdir', 'install_copy' => 'copy', 'install_images' => 'image_dir', 'install_menus' => 'menu', 'install_userpage' => 'user_page', 'install_dashlets' => 'dashlets', 'install_administration' => 'administration', 'install_connectors' => 'connectors', 'install_vardefs' => 'vardefs', 'install_layoutdefs' => 'layoutdefs', 'install_layoutfields' => 'layoutfields', 'install_relationships' => 'relationships', 'install_languages' => 'language', 'install_logichooks' => 'logic_hooks', 'post_execute' => 'post_execute'];
 
 	/**
 	 * config settings
 	 * @var array
 	 */
-	private $config = array();
+	private $config = [];
 	private $config_hash;
 
-	private $blackListExempt = array();
-	private $classBlackListExempt = array();
+	private $blackListExempt = [];
+	private $classBlackListExempt = [];
 
-    private $validExt = array(
-        'png',
-        'gif',
-        'jpg',
-        'css',
-        'js',
-        'php',
-        'txt',
-        'html',
-        'htm',
-        'tpl',
-        'pdf',
-        'md5',
-        'xml',
-        'hbs'
-    );
-    private $classBlackList = array(
+    private $validExt = ['png', 'gif', 'jpg', 'css', 'js', 'php', 'txt', 'html', 'htm', 'tpl', 'pdf', 'md5', 'xml', 'hbs'];
+    private $classBlackList = [
         // Class names specified here must be in lowercase as the implementation
         // of the tokenizer converts all tokens to lowercase.
         'reflection',
@@ -113,13 +80,12 @@ class ModuleScanner
         'reflector',
         'reflectionexception',
         'lua',
-	    'ziparchive',
-	    'splfileinfo',
-	    'splfileobject',
-	    'pclzip',
-
-    );
-    private $blackList = array(
+        'ziparchive',
+        'splfileinfo',
+        'splfileobject',
+        'pclzip',
+    ];
+    private $blackList = [
         'popen',
         'proc_open',
         'escapeshellarg',
@@ -216,41 +182,35 @@ class ModuleScanner
         'call_user_func',
         'call_user_func_array',
         'create_function',
-
-
-    //mutliple files per function call
-    'copy',
-    'copy_recursive',
-	'link',
-	'rename',
-	'symlink',
-	'move_uploaded_file',
-	'chdir',
-	'chroot',
-	'create_cache_directory',
-	'mk_temp_dir',
-	'write_array_to_file',
-	'write_encoded_file',
-	'create_custom_directory',
-	'sugar_rename',
-	'sugar_chown',
-	'sugar_fopen',
-	'sugar_mkdir',
-	'sugar_file_put_contents',
-	'sugar_file_put_contents_atomic',
-	'sugar_chgrp',
-	'sugar_chmod',
-	'sugar_touch',
-
+        //mutliple files per function call
+        'copy',
+        'copy_recursive',
+        'link',
+        'rename',
+        'symlink',
+        'move_uploaded_file',
+        'chdir',
+        'chroot',
+        'create_cache_directory',
+        'mk_temp_dir',
+        'write_array_to_file',
+        'write_encoded_file',
+        'create_custom_directory',
+        'sugar_rename',
+        'sugar_chown',
+        'sugar_fopen',
+        'sugar_mkdir',
+        'sugar_file_put_contents',
+        'sugar_file_put_contents_atomic',
+        'sugar_chgrp',
+        'sugar_chmod',
+        'sugar_touch',
         // Functions that have callbacks can circumvent our security measures.
         // List retrieved through PHP's XML documentation, and running the
         // following script in the reference directory:
-
         // grep -R callable . | grep -v \.svn | grep methodparam | cut -d: -f1 | sort -u | cut -d"." -f2 | sed 's/\-/\_/g' | cut -d"/" -f4
-
         // AMQPQueue
         'consume',
-
         // PHP internal - arrays
         'array_diff_uassoc',
         'array_diff_ukey',
@@ -270,7 +230,6 @@ class ModuleScanner
         'uasort',
         'uksort',
         'usort',
-
         // EIO functions that accept callbacks.
         'eio_busy',
         'eio_chmod',
@@ -312,14 +271,11 @@ class ModuleScanner
         'eio_unlink',
         'eio_utime',
         'eio_write',
-
         // PHP internal - error functions
         'set_error_handler',
         'set_exception_handler',
-
         // Forms Data Format functions
         'fdf_enum_values',
-
         // PHP internal - function handling
         'call_user_func_array',
         'call_user_func',
@@ -327,7 +283,6 @@ class ModuleScanner
         'forward_static_call',
         'register_shutdown_function',
         'register_tick_function',
-
         // Gearman
         'setclientcallback',
         'setcompletecallback',
@@ -338,21 +293,16 @@ class ModuleScanner
         'setwarningcallback',
         'setworkloadcallback',
         'addfunction',
-
         // Firebird/InterBase
         'ibase_set_event_handler',
-
         // LDAP
         'ldap_set_rebind_proc',
-
         // LibXML
         'libxml_set_external_entity_loader',
-
         // Mailparse functions
         'mailparse_msg_extract_part_file',
         'mailparse_msg_extract_part',
         'mailparse_msg_extract_whole_part_file',
-
         // Memcache(d) functions
         'addserver',
         'setserverparams',
@@ -360,58 +310,43 @@ class ModuleScanner
         'getbykey',
         'getdelayed',
         'getdelayedbykey',
-
         // MySQLi
         'set_local_infile_handler',
-
         // PHP internal - network functions
         'header_register_callback',
-
         // Newt
         'newt_entry_set_filter',
         'newt_set_suspend_callback',
-
         // OAuth
         'consumerhandler',
         'timestampnoncehandler',
         'tokenhandler',
-
         // PHP internal - output control
         'ob_start',
-
         // PHP internal - PCNTL
         'pcntl_signal',
-
         // PHP internal - PCRE
         'preg_replace_callback',
-
         // SQLite
         'sqlitecreateaggregate',
         'sqlitecreatefunction',
         'sqlite_create_aggregate',
         'sqlite_create_function',
-
         // RarArchive
         'open',
-
         // Readline
         'readline_callback_handler_install',
         'readline_completion_function',
-
         // PHP internal - session handling
         'session_set_save_handler',
-
         // PHP internal - SPL
         'construct',
         'iterator_apply',
         'spl_autoload_register',
-
         // Sybase
         'sybase_set_message_handler',
-
         // PHP internal - variable handling
         'is_callable',
-
         // XML Parser
         'xml_set_character_data_handler',
         'xml_set_default_handler',
@@ -422,18 +357,13 @@ class ModuleScanner
         'xml_set_processing_instruction_handler',
         'xml_set_start_namespace_decl_handler',
         'xml_set_unparsed_entity_decl_handler',
-	    'simplexml_load_file',
-	    'simplexml_load_string',
-
+        'simplexml_load_file',
+        'simplexml_load_string',
         // unzip
         'unzip',
         'unzip_file',
-    );
-    private $methodsBlackList = array(
-        'setlevel',
-        'put' => array('sugarautoloader'),
-        'unlink' => array('sugarautoloader')
-    );
+    ];
+    private $methodsBlackList = ['setlevel', 'put' => ['sugarautoloader'], 'unlink' => ['sugarautoloader']];
 
 	public function printToWiki(){
 		echo "'''Default Extensions'''<br>";
@@ -454,14 +384,7 @@ class ModuleScanner
      */
     public function __construct()
     {
-        $params = array(
-            'blackListExempt' => 'MODULE_INSTALLER_PACKAGE_SCAN_BLACK_LIST_EXEMPT',
-            'blackList' => 'MODULE_INSTALLER_PACKAGE_SCAN_BLACK_LIST',
-            'classBlackListExempt' => 'MODULE_INSTALLER_PACKAGE_SCAN_CLASS_BLACK_LIST_EXEMPT',
-            'classBlackList' => 'MODULE_INSTALLER_PACKAGE_SCAN_CLASS_BLACK_LIST',
-            'validExt' => 'MODULE_INSTALLER_PACKAGE_SCAN_VALID_EXT',
-            'methodsBlackList' => 'MODULE_INSTALLER_PACKAGE_SCAN_METHOD_LIST',
-        );
+        $params = ['blackListExempt' => 'MODULE_INSTALLER_PACKAGE_SCAN_BLACK_LIST_EXEMPT', 'blackList' => 'MODULE_INSTALLER_PACKAGE_SCAN_BLACK_LIST', 'classBlackListExempt' => 'MODULE_INSTALLER_PACKAGE_SCAN_CLASS_BLACK_LIST_EXEMPT', 'classBlackList' => 'MODULE_INSTALLER_PACKAGE_SCAN_CLASS_BLACK_LIST', 'validExt' => 'MODULE_INSTALLER_PACKAGE_SCAN_VALID_EXT', 'methodsBlackList' => 'MODULE_INSTALLER_PACKAGE_SCAN_METHOD_LIST'];
 
         $disableConfigOverride = defined('MODULE_INSTALLER_DISABLE_CONFIG_OVERRIDE')
             && MODULE_INSTALLER_DISABLE_CONFIG_OVERRIDE;
@@ -489,7 +412,7 @@ class ModuleScanner
         }
 	}
 
-	private $issues = array();
+	private $issues = [];
 	private $pathToModule = '';
 
 	/**
@@ -584,7 +507,7 @@ class ModuleScanner
 	 *
 	 */
 	public function scanFile($file){
-		$issues = array();
+		$issues = [];
 		if(!$this->isValidExtension($file)){
 			$issues[] = translate('ML_INVALID_EXT');
 			$this->issues['file'][$file] = $issues;
@@ -615,7 +538,7 @@ class ModuleScanner
 			}else{
 				$token['_msi'] = token_name($token[0]);
 				switch($token[0]){
-					case T_WHITESPACE: continue;
+					case T_WHITESPACE: break;
 					case T_EVAL:
 						if(in_array('eval', $this->blackList) && !in_array('eval', $this->blackListExempt))
 						$issues[]= translate('ML_INVALID_FUNCTION') . ' eval()';
@@ -693,10 +616,10 @@ class ModuleScanner
      */
     public function sugarFileExists($path)
     {
-        static $md5 = array();
+        static $md5 = [];
         if (empty($md5) && file_exists('files.md5')) {
             include ('files.md5');
-            $md5 = isset($md5_string) ? $md5_string : null;
+            $md5 = $md5_string ?? null;
         }
         if ($path[0] !== '.' || $path[1] !== '/') {
             $path = './' . $path;
@@ -720,7 +643,7 @@ class ModuleScanner
             // convert to / for OSes that use other separators
             $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
         }
-        $res = array();
+        $res = [];
         foreach (explode("/", $path) as $component) {
             if (empty($component)) {
                 continue;
@@ -744,7 +667,7 @@ class ModuleScanner
 	 */
     public function scanManifest($manifestPath)
     {
-		$issues = array();
+		$issues = [];
 		if(!file_exists($manifestPath)){
 			$this->issues['manifest'][$manifestPath] = translate('ML_NO_MANIFEST');
 			return $issues;
@@ -755,7 +678,7 @@ class ModuleScanner
 			return $fileIssues;
 		}
 		$this->lockConfig();
-		list($manifest, $installdefs) = MSLoadManifest($manifestPath);
+		[$manifest, $installdefs] = MSLoadManifest($manifestPath);
 		$fileIssues = $this->checkConfig($manifestPath);
 		if(!empty($fileIssues)){
 			return $fileIssues;
@@ -897,7 +820,7 @@ class ModuleScanner
 	{
 	    $config_hash_after = md5(serialize($GLOBALS['sugar_config']));
 	    if($config_hash_after != $this->config_hash) {
-	        $this->issues['file'][$file] = array(translate('ML_CONFIG_OVERRIDE'));
+	        $this->issues['file'][$file] = [translate('ML_CONFIG_OVERRIDE')];
 	        return $this->issues;
 	    }
 	    return false;
@@ -914,5 +837,5 @@ class ModuleScanner
 function MSLoadManifest($manifest_file)
 {
 	include( $manifest_file );
-	return array($manifest, $installdefs);
+	return [$manifest, $installdefs];
 }

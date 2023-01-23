@@ -16,7 +16,7 @@ class CharCountBased extends RegexBasedAbstract
 
         $suffixLen = 0;
         $suffix = '';
-        $count = count($regexToRoutesMap);
+        $count = is_array($regexToRoutesMap) || $regexToRoutesMap instanceof \Countable ? count($regexToRoutesMap) : 0;
         foreach ($regexToRoutesMap as $regex => $route) {
             $suffixLen++;
             $suffix .= "\t";

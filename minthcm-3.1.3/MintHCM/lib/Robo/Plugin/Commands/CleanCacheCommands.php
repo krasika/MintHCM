@@ -24,21 +24,9 @@ class CleanCacheCommands extends \Robo\Tasks
      */
     public function cleanCache()
     {
-        $toDelete = array();
-        $doNotDelete = array('Emails', 'emails', '.', '..');
-        $cacheToDelete = array('cache/Relationships',
-                               'cache/csv',
-                               'cache/dashlets',
-                               'cache/diagnostics',
-                               'cache/dynamic_fields',
-                               'cache/feeds',
-                               'cache/import',
-                               'cache/include/javascript',
-                               'cache/jsLanguage',
-                               'cache/pdf',
-                               'cache/themes',
-                               'cache/xml',
-        );
+        $toDelete = [];
+        $doNotDelete = ['Emails', 'emails', '.', '..'];
+        $cacheToDelete = ['cache/Relationships', 'cache/csv', 'cache/dashlets', 'cache/diagnostics', 'cache/dynamic_fields', 'cache/feeds', 'cache/import', 'cache/include/javascript', 'cache/jsLanguage', 'cache/pdf', 'cache/themes', 'cache/xml'];
 
         foreach ($cacheToDelete as  $dir) {
             if (file_exists($dir) && is_dir($dir)) {

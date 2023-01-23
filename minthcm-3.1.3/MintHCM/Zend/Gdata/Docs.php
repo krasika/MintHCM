@@ -57,9 +57,9 @@ require_once 'Zend/Gdata/Docs/DocumentListEntry.php';
 class Zend_Gdata_Docs extends Zend_Gdata
 {
 
-    const DOCUMENTS_LIST_FEED_URI = 'https://docs.google.com/feeds/default/private/full';
-    const AUTH_SERVICE_NAME = 'writely';
-    const DEFAULT_MAJOR_PROTOCOL_VERSION = 3;
+    public const DOCUMENTS_LIST_FEED_URI = 'https://docs.google.com/feeds/default/private/full';
+    public const AUTH_SERVICE_NAME = 'writely';
+    public const DEFAULT_MAJOR_PROTOCOL_VERSION = 3;
 
     protected $_defaultPostUri = self::DOCUMENTS_LIST_FEED_URI;
 
@@ -68,34 +68,9 @@ class Zend_Gdata_Docs extends Zend_Gdata
          *
          * @var array
          */
-    public static $namespaces = array(
-       array('batch', 'http://schemas.google.com/gdata/batch', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0),
-       array('docs', 'http://schemas.google.com/docs/2007', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0),
-           array('gAcl', 'http://schemas.google.com/acl/2007', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0),
-           array('gd', 'http://schemas.google.com/g/2005', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0)
-    );
+    public static $namespaces = [['batch', 'http://schemas.google.com/gdata/batch', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0], ['docs', 'http://schemas.google.com/docs/2007', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0], ['gAcl', 'http://schemas.google.com/acl/2007', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0], ['gd', 'http://schemas.google.com/g/2005', self::DEFAULT_MAJOR_PROTOCOL_VERSION, 0]];
 
-    private static $SUPPORTED_FILETYPES = array(
-      'CSV' => 'text/csv',
-      'DOC' => 'application/msword',
-      'DOCX' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'HTML' =>'text/html',
-      'HTM' => 'text/html',
-      'JPG' => 'image/jpeg',
-      'ODS' => 'application/vnd.oasis.opendocument.spreadsheet',
-      'ODT' => 'application/vnd.oasis.opendocument.text',
-      'PDF' => 'application/pdf',
-      'PNG' => 'image/png',
-      'PPT' => 'application/vnd.ms-powerpoint',
-      'PPS' => 'application/vnd.ms-powerpoint',
-      'RTF' => 'application/rtf',
-      'SXW' => 'application/vnd.sun.xml.writer',
-      'TAB' => 'text/tab-separated-values',
-      'TXT' => 'text/plain',
-      'TEXT' => 'text/plain',
-      'TSV' => 'text/tab-separated-values',
-      'XLS' => 'application/vnd.ms-excel',
-      'XLSX' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    private static $SUPPORTED_FILETYPES = ['CSV' => 'text/csv', 'DOC' => 'application/msword', 'DOCX' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'HTML' =>'text/html', 'HTM' => 'text/html', 'JPG' => 'image/jpeg', 'ODS' => 'application/vnd.oasis.opendocument.spreadsheet', 'ODT' => 'application/vnd.oasis.opendocument.text', 'PDF' => 'application/pdf', 'PNG' => 'image/png', 'PPT' => 'application/vnd.ms-powerpoint', 'PPS' => 'application/vnd.ms-powerpoint', 'RTF' => 'application/rtf', 'SXW' => 'application/vnd.sun.xml.writer', 'TAB' => 'text/tab-separated-values', 'TXT' => 'text/plain', 'TEXT' => 'text/plain', 'TSV' => 'text/tab-separated-values', 'XLS' => 'application/vnd.ms-excel', 'XLSX' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 
     /**
      * Create Gdata_Docs object

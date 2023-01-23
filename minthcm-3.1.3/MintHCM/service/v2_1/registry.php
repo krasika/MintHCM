@@ -55,12 +55,12 @@ class registry_v2_1 extends registry {
 	 *
 	 */
 	protected function registerFunction() {
-		
+
 		$GLOBALS['log']->info('Begin: registry->registerFunction');
 		parent::registerFunction();
-		            
+
 	    $GLOBALS['log']->info('END: registry->registerFunction');
-	        
+
 		// END OF REGISTER FUNCTIONS
 	}
 	
@@ -78,9 +78,7 @@ class registry_v2_1 extends registry {
 			'struct',
 			'all',
 			'',
-			array(
-			'link_list'=>array('name'=>'link_list', 'type'=>'tns:link_list'),
-			)
+			['link_list'=>['name'=>'link_list', 'type'=>'tns:link_list']]
 		);
 	    
 		$this->serviceClass->registerType(
@@ -89,10 +87,8 @@ class registry_v2_1 extends registry {
 		   	 'array',
 		   	 '',
 		  	  'SOAP-ENC:Array',
-			array(),
-		    array(
-		        array('ref'=>'SOAP-ENC:arrayType', 'wsdl:arrayType'=>'tns:link_list2[]')
-		    ),
+			[],
+		    [['ref'=>'SOAP-ENC:arrayType', 'wsdl:arrayType'=>'tns:link_list2[]']],
 			'tns:link_list2'
 		);
 		
@@ -102,10 +98,8 @@ class registry_v2_1 extends registry {
 		   	 'array',
 		   	 '',
 		  	  'SOAP-ENC:Array',
-			array(),
-		    array(
-		        array('ref'=>'SOAP-ENC:arrayType', 'wsdl:arrayType'=>'tns:link_value2[]')
-		    ),
+			[],
+		    [['ref'=>'SOAP-ENC:arrayType', 'wsdl:arrayType'=>'tns:link_value2[]']],
 			'tns:link_value2'
 		);
 		
@@ -115,9 +109,7 @@ class registry_v2_1 extends registry {
 			'struct',
 			'all',
 			'',
-			array(
-			'link_value'=>array('name'=>'link_value', 'type'=>'tns:link_value'),
-			)
+			['link_value'=>['name'=>'link_value', 'type'=>'tns:link_value']]
 		);
 		$this->serviceClass->registerType(
 			'field_list2',
@@ -125,9 +117,7 @@ class registry_v2_1 extends registry {
 			'struct',
 			'all',
 			'',
-			array(
-			"field_list"=>array('name'=>'field_list', 'type'=>'tns:field_list'),
-			)
+			["field_list"=>['name'=>'field_list', 'type'=>'tns:field_list']]
 		);
 		$this->serviceClass->registerType(
 			'entry_list2',
@@ -135,9 +125,7 @@ class registry_v2_1 extends registry {
 			'struct',
 			'all',
 			'',
-			array(
-			"entry_list"=>array('name'=>'entry_list', 'type'=>'tns:entry_list'),
-			)
+			["entry_list"=>['name'=>'entry_list', 'type'=>'tns:entry_list']]
 		);	
 	}
 }

@@ -44,79 +44,11 @@
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$dictionary["securitygroups_positions_leader"] = array(
-   'true_relationship_type' => 'one-to-one',
-   'relationships' =>
-   array(
-      'securitygroups_positions_leader' =>
-      array(
-         'lhs_module' => 'SecurityGroups',
-         'lhs_table' => 'securitygroups',
-         'lhs_key' => 'id',
-         'rhs_module' => 'Positions',
-         'rhs_table' => 'positions',
-         'rhs_key' => 'id',
-         'relationship_type' => 'many-to-many',
-         'join_table' => 'securitygroups_positions_leader',
-         'join_key_lhs' => 'securitygroup_leader_id',
-         'join_key_rhs' => 'position_leader_id',
-      ),
-   ),
-   'table' => 'securitygroups_positions_leader',
-   'fields' =>
-   array(
-      array(
-         'name' => 'id',
-         'type' => 'varchar',
-         'len' => 36,
-      ),
-      array(
-         'name' => 'date_modified',
-         'type' => 'datetime',
-      ),
-      array(
-         'name' => 'deleted',
-         'type' => 'bool',
-         'len' => '1',
-         'default' => '0',
-         'required' => true,
-      ),
-      array(
-         'name' => 'securitygroup_leader_id',
-         'type' => 'varchar',
-         'len' => 36,
-      ),
-      array(
-         'name' => 'position_leader_id',
-         'type' => 'varchar',
-         'len' => 36,
-      ),
-   ),
-   'indices' =>
-   array(
-      array(
-         'name' => 'securitygroups_positions_leader_spk',
-         'type' => 'primary',
-         'fields' =>
-         array(
-            'id',
-         ),
-      ),
-      array(
-         'name' => 'securitygroups_lhs_alt',
-         'type' => 'index',
-         'fields' =>
-         array(
-            'securitygroup_leader_id',
-         ),
-      ),
-      array(
-         'name' => 'positions_rhs_alt',
-         'type' => 'index',
-         'fields' =>
-         array(
-            'position_leader_id',
-         ),
-      ),
-   ),
-);
+$dictionary["securitygroups_positions_leader"] = ['true_relationship_type' => 'one-to-one', 'relationships' =>
+['securitygroups_positions_leader' =>
+['lhs_module' => 'SecurityGroups', 'lhs_table' => 'securitygroups', 'lhs_key' => 'id', 'rhs_module' => 'Positions', 'rhs_table' => 'positions', 'rhs_key' => 'id', 'relationship_type' => 'many-to-many', 'join_table' => 'securitygroups_positions_leader', 'join_key_lhs' => 'securitygroup_leader_id', 'join_key_rhs' => 'position_leader_id']], 'table' => 'securitygroups_positions_leader', 'fields' =>
+[['name' => 'id', 'type' => 'varchar', 'len' => 36], ['name' => 'date_modified', 'type' => 'datetime'], ['name' => 'deleted', 'type' => 'bool', 'len' => '1', 'default' => '0', 'required' => true], ['name' => 'securitygroup_leader_id', 'type' => 'varchar', 'len' => 36], ['name' => 'position_leader_id', 'type' => 'varchar', 'len' => 36]], 'indices' =>
+[['name' => 'securitygroups_positions_leader_spk', 'type' => 'primary', 'fields' =>
+['id']], ['name' => 'securitygroups_lhs_alt', 'type' => 'index', 'fields' =>
+['securitygroup_leader_id']], ['name' => 'positions_rhs_alt', 'type' => 'index', 'fields' =>
+['position_leader_id']]]];

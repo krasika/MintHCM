@@ -56,7 +56,7 @@ require_once('service/core/SugarRestServiceImpl.php');
 class SugarRestService extends SugarWebService{
 	protected $implementationClass = 'SugarRestServiceImpl';
 	protected $restURL = "";
-	protected $registeredFunc = array();
+	protected $registeredFunc = [];
 
 	/**
 	 * Get Sugar REST class name for input/return type
@@ -122,7 +122,7 @@ class SugarRestService extends SugarWebService{
   	 */
 	function registerFunction($function, $input, $output){
 		if(in_array($function, $this->excludeFunctions))return;
-		$this->registeredFunc[$function] = array('input'=> $input, 'output'=>$output);
+		$this->registeredFunc[$function] = ['input'=> $input, 'output'=>$output];
 	} // fn
 
 	/**
@@ -146,7 +146,7 @@ class SugarRestService extends SugarWebService{
 	 *
 	 * @param Array $excludeFunctions - All the functions you don't want to register
 	 */
-	function register($excludeFunctions = array()){
+	function register($excludeFunctions = []){
 
 	} // fn
 

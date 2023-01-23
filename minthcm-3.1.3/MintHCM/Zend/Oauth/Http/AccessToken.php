@@ -60,14 +60,7 @@ class Zend_Oauth_Http_AccessToken extends Zend_Oauth_Http
      */
     public function assembleParams()
     {
-        $params = array(
-            'oauth_consumer_key'     => $this->_consumer->getConsumerKey(),
-            'oauth_nonce'            => $this->_httpUtility->generateNonce(),
-            'oauth_signature_method' => $this->_consumer->getSignatureMethod(),
-            'oauth_timestamp'        => $this->_httpUtility->generateTimestamp(),
-            'oauth_token'            => $this->_consumer->getLastRequestToken()->getToken(),
-            'oauth_version'          => $this->_consumer->getVersion(),
-        );
+        $params = ['oauth_consumer_key'     => $this->_consumer->getConsumerKey(), 'oauth_nonce'            => $this->_httpUtility->generateNonce(), 'oauth_signature_method' => $this->_consumer->getSignatureMethod(), 'oauth_timestamp'        => $this->_httpUtility->generateTimestamp(), 'oauth_token'            => $this->_consumer->getLastRequestToken()->getToken(), 'oauth_version'          => $this->_consumer->getVersion()];
 
         if (!empty($this->_parameters)) {
             $params = array_merge($params, $this->_parameters);
@@ -151,6 +144,7 @@ class Zend_Oauth_Http_AccessToken extends Zend_Oauth_Http
      */
     protected function _attemptRequest(array $params)
     {
+        $httpClient = null;
         switch ($this->_preferredRequestScheme) {
             case Zend_Oauth::REQUEST_SCHEME_HEADER:
                 $httpClient = $this->getRequestSchemeHeaderClient($params);

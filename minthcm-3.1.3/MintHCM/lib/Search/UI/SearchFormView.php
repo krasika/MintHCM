@@ -101,9 +101,9 @@ class SearchFormView extends View
             LoggerManager::getLogger()->warn('Configuration does not contains value for search pagination max');
         }
         
-        $min = isset($sugar_config['search']['pagination']['min']) ? $sugar_config['search']['pagination']['min'] : null;
-        $step = isset($sugar_config['search']['pagination']['step']) ? $sugar_config['search']['pagination']['step'] : null;
-        $max = isset($sugar_config['search']['pagination']['max']) ? $sugar_config['search']['pagination']['max'] : null;
+        $min = $sugar_config['search']['pagination']['min'] ?? null;
+        $step = $sugar_config['search']['pagination']['step'] ?? null;
+        $max = $sugar_config['search']['pagination']['max'] ?? null;
 
         try {
             return $this->makeSizes($min, $step, $max);

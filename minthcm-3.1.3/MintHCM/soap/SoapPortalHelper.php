@@ -45,7 +45,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$portal_modules = array('Contacts', 'Accounts', 'Notes');
+$portal_modules = ['Contacts', 'Accounts', 'Notes'];
 $portal_modules[] = 'Cases';
 $portal_modules[] = 'Bugs';
 
@@ -163,7 +163,7 @@ function get_notes_in_module($in, $module, $orderBy = '')
             require_once($beanFiles[$class_name]);
             $sugar = new $class_name();
         }else{
-            return array();
+            return [];
         }
 
         $note = new Note();
@@ -178,7 +178,7 @@ function get_notes_in_module($in, $module, $orderBy = '')
             require_once($beanFiles[$class_name]);
             $rel = new $class_name();
         }else{
-            return array();
+            return [];
         }
 
         //bail if the in is empty
@@ -210,7 +210,7 @@ function get_notes_in_module($in, $module, $orderBy = '')
             require_once($beanFiles[$class_name]);
             $sugar = new $class_name();
         }else{
-            return array();
+            return [];
         }
 
 
@@ -267,7 +267,7 @@ function get_related_list($in, $template, $where, $order_by, $row_offset = 0, $l
                 if(!$valid->validateQueryClauses($where)) {
                     $GLOBALS['log']->error("Bad query: $where");
                     // No way to directly pass back an error.
-                    return array();
+                    return [];
                 }
 
 				$q .= ' and ( '.$where.' ) ';
@@ -284,7 +284,7 @@ function build_relationship_tree($contact){
 
     get_accounts_from_contact($contact->id);
 
-    set_module_in(array('list'=>array($contact->id), 'in'=> "('".DBManagerFactory::getInstance()->quote($contact->id)."')"), 'Contacts');
+    set_module_in(['list'=>[$contact->id], 'in'=> "('".DBManagerFactory::getInstance()->quote($contact->id)."')"], 'Contacts');
 
     $accounts = $_SESSION['viewable']['Accounts'];
     foreach($accounts as $id){
@@ -308,7 +308,7 @@ function get_module_in($module_name){
     }
 
     $module_name_in = array_keys($_SESSION['viewable'][$module_name]);
-    $module_name_list = array();
+    $module_name_list = [];
     foreach ( $module_name_in as $name ) {
         $module_name_list[] = DBManagerFactory::getInstance()->quote($name);
     }
@@ -322,7 +322,7 @@ function get_module_in($module_name){
 function set_module_in($arrayList, $module_name){
 
         if(!isset($_SESSION['viewable'][$module_name])){
-            $_SESSION['viewable'][$module_name] = array();
+            $_SESSION['viewable'][$module_name] = [];
         }
         foreach($arrayList['list'] as $id){
             $_SESSION['viewable'][$module_name][$id] = $id;
@@ -333,7 +333,7 @@ function set_module_in($arrayList, $module_name){
 
         if(!empty($_SESSION['viewable'][strtolower($module_name).'_in'])){
             if($arrayList['in'] != '()') {
-                $newList = array();
+                $newList = [];
                 if ( is_array($_SESSION['viewable'][strtolower($module_name).'_in']) ) {
                     foreach($_SESSION['viewable'][strtolower($module_name).'_in'] as $name ) {
                         $newList[] = DBManagerFactory::getInstance()->quote($name);
@@ -377,15 +377,15 @@ function portal_get_entry_list_limited($session, $module_name,$where, $order_by,
     $error = new SoapError();
     if(! portal_validate_authenticated($session)){
         $error->set_error('invalid_session');
-        return array('result_count'=>-1, 'entry_list'=>array(), 'error'=>$error->get_soap_array());
+        return ['result_count'=>-1, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
     }
     if($_SESSION['type'] == 'lead' ){
         $error->set_error('no_access');
-        return array('result_count'=>-1, 'entry_list'=>array(), 'error'=>$error->get_soap_array());
+        return ['result_count'=>-1, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
     }
     if(empty($beanList[$module_name])){
         $error->set_error('no_module');
-        return array('result_count'=>-1, 'entry_list'=>array(), 'error'=>$error->get_soap_array());
+        return ['result_count'=>-1, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
     }
     if($module_name == 'Cases'){
 
@@ -401,7 +401,7 @@ function portal_get_entry_list_limited($session, $module_name,$where, $order_by,
 
         $sugar = new aCase();
 
-        $list = array();
+        $list = [];
         //if no Cases have been loaded into the session as viewable, then do not issue query, just return empty list
         //issuing a query with no cases loaded in session will return ALL the Cases, which is not a good thing
         if(!empty($_SESSION['viewable'][$module_name])){
@@ -426,7 +426,7 @@ function portal_get_entry_list_limited($session, $module_name,$where, $order_by,
                 if(!empty($a)) {get_bugs_in_accounts($a);}
             }
 
-        $list = array();
+        $list = [];
         //if no Bugs have been loaded into the session as viewable, then do not issue query, just return empty list
         //issuing a query with no bugs loaded in session will return ALL the Bugs, which is not a good thing
         if(!empty($_SESSION['viewable'][$module_name])){
@@ -436,12 +436,12 @@ function portal_get_entry_list_limited($session, $module_name,$where, $order_by,
     } else if ($module_name == 'FAQ') {
     } else{
         $error->set_error('no_module_support');
-        return array('result_count'=>-1, 'entry_list'=>array(), 'error'=>$error->get_soap_array());
+        return ['result_count'=>-1, 'entry_list'=>[], 'error'=>$error->get_soap_array()];
 
     }
 
-    $output_list = Array();
-    $field_list = array();
+    $output_list = [];
+    $field_list = [];
     foreach($list as $value)
     {
 
@@ -455,8 +455,8 @@ function portal_get_entry_list_limited($session, $module_name,$where, $order_by,
     $output_list = filter_return_list($output_list, $select_fields, $module_name);
     $field_list = filter_field_list($field_list,$select_fields, $module_name);
 
-    return array('result_count'=>sizeof($output_list), 'next_offset'=>0,'field_list'=>$field_list, 'entry_list'=>$output_list, 'error'=>$error->get_soap_array());
+    return ['result_count'=>sizeof($output_list), 'next_offset'=>0, 'field_list'=>$field_list, 'entry_list'=>$output_list, 'error'=>$error->get_soap_array()];
 }
 
-$invalid_contact_fields = array('portal_password'=>1, 'portal_active'=>1);
-$valid_modules_for_contact = array('Contacts'=>1, 'Cases'=>1, 'Notes'=>1, 'Bugs'=>1, 'Accounts'=>1, 'Leads'=>1, 'KBDocuments'=>1);
+$invalid_contact_fields = ['portal_password'=>1, 'portal_active'=>1];
+$valid_modules_for_contact = ['Contacts'=>1, 'Cases'=>1, 'Notes'=>1, 'Bugs'=>1, 'Accounts'=>1, 'Leads'=>1, 'KBDocuments'=>1];

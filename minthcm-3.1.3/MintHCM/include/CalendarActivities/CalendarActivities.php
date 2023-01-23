@@ -47,12 +47,12 @@
 class CalendarActivities {
 
    private static $initialized = false;
-   private static $activities = array();
+   private static $activities = [];
 
    private static function init() {
       if ( !self::$initialized ) {
          $conf_file_path = __DIR__ . '/config.php';
-         $activities = array();
+         $activities = [];
          if ( file_exists($conf_file_path) ) {
             include $conf_file_path;
             self::$activities = $activities;
@@ -124,7 +124,7 @@ class CalendarActivities {
       $end_field = $options['end_time_field'];
       $view_start_time = $cal_view_start_time->format('Y-m-d H:i:s');
       $view_end_time = $cal_view_end_time->format('Y-m-d H:i:s');
-      $fields = array( 'id', $start_field, $end_field, 'status' );
+      $fields = ['id', $start_field, $end_field, 'status'];
       $where = "deleted=0 AND "
               . "((DATE($start_field) BETWEEN DATE('$view_start_time') AND DATE('$view_end_time')) OR "
               . "(DATE($end_field) BETWEEN DATE('$view_start_time') AND DATE('$view_end_time')))";
@@ -142,7 +142,7 @@ class CalendarActivities {
    }
 
    private static function fetchActivities(SugarBean $bean, $view_start_time, $view_end_time, $user_id = null) {
-      $data = array();
+      $data = [];
       $query = self::buildSelectQuery($bean, $view_start_time, $view_end_time, $user_id);
       $result = $bean->db->query($query);
       while ( $row = $bean->db->fetchByAssoc($result) ) {
@@ -215,8 +215,7 @@ class CalendarActivities {
       self::init();
       $defs = static::$activities;
       if ( $module ) {
-         $defs = isset(static::$activities[$module]) ?
-                 static::$activities[$module] : false;
+         $defs = static::$activities[$module] ?? false;
       }
       return $defs;
    }

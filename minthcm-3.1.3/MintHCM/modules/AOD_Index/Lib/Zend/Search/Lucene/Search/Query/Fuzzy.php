@@ -35,21 +35,21 @@ require_once 'Zend/Search/Lucene/Search/Query.php';
 class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Query
 {
     /** Default minimum similarity */
-    const DEFAULT_MIN_SIMILARITY = 0.5;
+    public const DEFAULT_MIN_SIMILARITY = 0.5;
 
     /**
      * Maximum number of matched terms.
      * Apache Lucene defines this limitation as boolean query maximum number of clauses:
      * org.apache.lucene.search.BooleanQuery.getMaxClauseCount()
      */
-    const MAX_CLAUSE_COUNT = 1024;
+    public const MAX_CLAUSE_COUNT = 1024;
 
     /**
      * Array of precalculated max distances
      *
      * keys are integers representing a word size
      */
-    private $_maxDistances = array();
+    private $_maxDistances = [];
 
     /**
      * Base searching term.
@@ -136,7 +136,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
 
         $this->_term              = $term;
         $this->_minimumSimilarity = $minimumSimilarity;
-        $this->_prefixLength      = ($prefixLength !== null)? $prefixLength : self::$_defaultPrefixLength;
+        $this->_prefixLength      = $prefixLength ?? self::$_defaultPrefixLength;
     }
 
     /**
@@ -182,15 +182,15 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
      */
     public function rewrite(Zend_Search_Lucene_Interface $index)
     {
-        $this->_matches  = array();
-        $this->_scores   = array();
-        $this->_termKeys = array();
+        $this->_matches  = [];
+        $this->_scores   = [];
+        $this->_termKeys = [];
 
         if ($this->_term->field === null) {
             // Search through all fields
             $fields = $index->getFieldNames(true /* indexed fields list */);
         } else {
-            $fields = array($this->_term->field);
+            $fields = [$this->_term->field];
         }
 
         require_once 'Zend/Search/Lucene/Index/Term.php';
@@ -221,9 +221,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
                     // Calculate similarity
                     $target = substr($index->currentTerm()->text, $prefixByteLength);
 
-                    $maxDistance = isset($this->_maxDistances[strlen($target)])?
-                                       $this->_maxDistances[strlen($target)] :
-                                       $this->_calculateMaxDistance($prefixUtf8Length, $termRestLength, strlen($target));
+                    $maxDistance = $this->_maxDistances[strlen($target)] ?? $this->_calculateMaxDistance($prefixUtf8Length, $termRestLength, strlen($target));
 
                     if ($termRestLength == 0) {
                         // we don't have anything to compare.  That means if we just add
@@ -248,7 +246,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
                         $this->_termKeys[] = $index->currentTerm()->key();
                         $this->_scores[]   = ($similarity - $this->_minimumSimilarity)*$scaleFactor;
 
-                        if ($maxTerms != 0  &&  count($this->_matches) > $maxTerms) {
+                        if ($maxTerms != 0  &&  count((array) $this->_matches) > $maxTerms) {
                             require_once 'Zend/Search/Lucene/Exception.php';
                             throw new Zend_Search_Lucene_Exception('Terms per query limit is reached.');
                         }
@@ -263,9 +261,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
                     // Calculate similarity
                     $target = $index->currentTerm()->text;
 
-                    $maxDistance = isset($this->_maxDistances[strlen($target)])?
-                                       $this->_maxDistances[strlen($target)] :
-                                       $this->_calculateMaxDistance(0, $termRestLength, strlen($target));
+                    $maxDistance = $this->_maxDistances[strlen($target)] ?? $this->_calculateMaxDistance(0, $termRestLength, strlen($target));
 
                     if ($maxDistance < abs($termRestLength - strlen($target))){
                         //just adding the characters of term to target or vice-versa results in too many edits
@@ -284,7 +280,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
                         $this->_termKeys[] = $index->currentTerm()->key();
                         $this->_scores[]   = ($similarity - $this->_minimumSimilarity)*$scaleFactor;
 
-                        if ($maxTerms != 0  &&  count($this->_matches) > $maxTerms) {
+                        if ($maxTerms != 0  &&  count((array) $this->_matches) > $maxTerms) {
                             require_once 'Zend/Search/Lucene/Exception.php';
                             throw new Zend_Search_Lucene_Exception('Terms per query limit is reached.');
                         }
@@ -297,10 +293,10 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
             $index->closeTermsStream();
         }
 
-        if (count($this->_matches) == 0) {
+        if (count((array) $this->_matches) == 0) {
             require_once 'Zend/Search/Lucene/Search/Query/Empty.php';
             return new Zend_Search_Lucene_Search_Query_Empty();
-        } else if (count($this->_matches) == 1) {
+        } else if (count((array) $this->_matches) == 1) {
             require_once 'Zend/Search/Lucene/Search/Query/Term.php';
             return new Zend_Search_Lucene_Search_Query_Term(reset($this->_matches));
         } else {
@@ -420,7 +416,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
      */
     protected function _highlightMatches(Zend_Search_Lucene_Search_Highlighter_Interface $highlighter)
     {
-        $words = array();
+        $words = [];
 
         require_once 'Zend/Search/Lucene/Index/Term.php';
         $prefix           = Zend_Search_Lucene_Index_Term::getPrefix($this->_term->text, $this->_prefixLength);
@@ -445,9 +441,7 @@ class Zend_Search_Lucene_Search_Query_Fuzzy extends Zend_Search_Lucene_Search_Qu
                 // Calculate similarity
                 $target = substr($termText, $prefixByteLength);
 
-                $maxDistance = isset($this->_maxDistances[strlen($target)])?
-                                   $this->_maxDistances[strlen($target)] :
-                                   $this->_calculateMaxDistance($prefixUtf8Length, $termRestLength, strlen($target));
+                $maxDistance = $this->_maxDistances[strlen($target)] ?? $this->_calculateMaxDistance($prefixUtf8Length, $termRestLength, strlen($target));
 
                 if ($termRestLength == 0) {
                     // we don't have anything to compare.  That means if we just add

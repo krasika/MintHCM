@@ -60,7 +60,7 @@ class PackageManagerDisplay{
      * @param String active_form - the form to display first
      * @return String - a string of html which will be used to display the forms
      */
-    static function buildPackageDisplay($form1, $hidden_fields, $form_action, $types = array('module'), $active_form = 'form1', $install = false){
+    static function buildPackageDisplay($form1, $hidden_fields, $form_action, $types = ['module'], $active_form = 'form1', $install = false){
 		global $current_language;
 
         $mod_strings = return_module_language($current_language, "Administration");
@@ -152,7 +152,7 @@ class PackageManagerDisplay{
      * @param String active_form - the form to display first
      * @return String - a string of html which will be used to display the forms
      */
-    function buildPatchDisplay($form1, $hidden_fields, $form_action, $types = array('module'), $active_form = 'form1'){
+    function buildPatchDisplay($form1, $hidden_fields, $form_action, $types = ['module'], $active_form = 'form1'){
     	global $current_language;
         $mod_strings = return_module_language($current_language, "Administration");
         $ss = new Sugar_Smarty();
@@ -193,11 +193,11 @@ class PackageManagerDisplay{
 
         $form2 .= "</td></tr></table>";
         $form2 = '';
-        $packages = array();
-        $releases = array();
+        $packages = [];
+        $releases = [];
         if($isAlive){
-          	$filter = array();
-          	$count = count($types);
+          	$filter = [];
+          	$count = is_array($types) || $types instanceof \Countable ? count($types) : 0;
           	$index = 1;
           	$type_str = '"';
           	foreach($types as $type){
@@ -207,8 +207,8 @@ class PackageManagerDisplay{
           		$index++;
           	}
           	$type_str .= '"';
-          	$filter = array('type' => $type_str);
-          	$filter = PackageManager::toNameValueList($filter);
+          	$filter = ['type' => $type_str];
+          	$filter = (new PackageManager())->toNameValueList($filter);
             $pm = new PackageManager();
             /*if(in_array('patch', $types)){
             	$releases = $pm->getReleases('3', '3', $filter);
@@ -216,7 +216,7 @@ class PackageManagerDisplay{
             	$releases = $pm->getReleases('', '', $filter);
             }*/
         }
-        if($form_action == 'install.php' && (empty($releases) || count($releases['packages']) == 0)){
+        if($form_action == 'install.php' && (empty($releases) || (is_array($releases['packages']) || $releases['packages'] instanceof \Countable ? count($releases['packages']) : 0) == 0)){
         	//return false;
         }
         $tree = PackageManagerDisplay::buildTreeView('treeview', $isAlive);
@@ -230,7 +230,7 @@ class PackageManagerDisplay{
         return $str;
     }
 
-    static function buildInstalledGrid($mod_strings, $types = array('modules')){
+    static function buildInstalledGrid($mod_strings, $types = ['modules']){
     	  $descItemsInstalled = $mod_strings['LBL_UW_DESC_MODULES_INSTALLED'];
     	  $output = '<table width="100%" border="0" cellspacing="0" cellpadding="0" ><tr><td align="left">'.$descItemsInstalled.'</td>';
           $output .= '</td></tr></table>';
@@ -245,7 +245,7 @@ class PackageManagerDisplay{
 
         $output .= "</tr><tr><td>".$mod_strings['LBL_PASSWORD']."</td><td><input type='password' name='login_panel_password' id='login_panel_password'></td><td></td>";
 
-		$terms = PackageManager::getTermsAndConditions();
+		$terms = (new PackageManager())->getTermsAndConditions();
 		$output .= "</tr><tr><td colspan='6' valign='top'><b>".$mod_strings['LBL_TERMS_AND_CONDITIONS']."</b><br><textarea readonly cols=80 rows=8>" . $terms['terms'] . '</textarea></td>';
        	$_SESSION['SugarDepot_TermsVersion'] = (!empty($terms['version']) ? $terms['version'] : '');
 
@@ -309,9 +309,9 @@ class PackageManagerDisplay{
      */
     static function buildTreeView($div_id, $isAlive = true){
         $tree = new Tree($div_id);
-        $nodes = array();
+        $nodes = [];
         if($isAlive)
-        	$nodes = PackageManager::getCategories('');
+        	$nodes = (new PackageManager())->getCategories('');
 
         foreach($nodes as $arr_node){
             $node = new Node($arr_node['id'], $arr_node['label']);
@@ -380,7 +380,7 @@ class PackageManagerDisplay{
      *
      * @return String - the javascript required for the page
      */
-    static function getDisplayScript($install = false, $type = 'module', $releases = null, $types = array(), $isAlive = true){
+    static function getDisplayScript($install = false, $type = 'module', $releases = null, $types = [], $isAlive = true){
         global $sugar_version, $sugar_config;
         global $current_language;
 
@@ -399,7 +399,7 @@ class PackageManagerDisplay{
         //if($type == 'patch' && $releases != null){
         if($type == 'patch'){
             $ss->assign('module_load', 'false');
-            $patches = PackageManagerDisplay::createJavascriptPackageArray($releases);
+            $patches = (new PackageManagerDisplay())->createJavascriptPackageArray($releases);
             $ss->assign('PATCHES', $patches);
              $ss->assign('GRID_TYPE', implode(',', $types));
         }else{
@@ -427,28 +427,9 @@ class PackageManagerDisplay{
 			$mod_strings['LBL_ML_DELETE'] = 'Delete';
 		}
         //Add by jchi 6/23/2008 to fix the bug 21667
-		$filegrid_column_ary = array(
-			'Name' => $mod_strings['LBL_ML_NAME'],
-			'Install' => $mod_strings['LBL_ML_INSTALL'],
-			'Delete' => $mod_strings['LBL_ML_DELETE'],
-			'Type' => $mod_strings['LBL_ML_TYPE'],
-			'Version' => $mod_strings['LBL_ML_VERSION'],
-			'Published' => $mod_strings['LBL_ML_PUBLISHED'],
-			'Uninstallable' => $mod_strings['LBL_ML_UNINSTALLABLE'],
-			'Description' => $mod_strings['LBL_ML_DESCRIPTION']
-		);
+		$filegrid_column_ary = ['Name' => $mod_strings['LBL_ML_NAME'], 'Install' => $mod_strings['LBL_ML_INSTALL'], 'Delete' => $mod_strings['LBL_ML_DELETE'], 'Type' => $mod_strings['LBL_ML_TYPE'], 'Version' => $mod_strings['LBL_ML_VERSION'], 'Published' => $mod_strings['LBL_ML_PUBLISHED'], 'Uninstallable' => $mod_strings['LBL_ML_UNINSTALLABLE'], 'Description' => $mod_strings['LBL_ML_DESCRIPTION']];
 
-		$filegridinstalled_column_ary = array(
-			'Name' => $mod_strings['LBL_ML_NAME'],
-			'Install' => $mod_strings['LBL_ML_INSTALL'],
-			'Action' => $mod_strings['LBL_ML_ACTION'],
-			'Enable_Or_Disable' => $mod_strings['LBL_ML_ENABLE_OR_DISABLE'],
-			'Type' => $mod_strings['LBL_ML_TYPE'],
-			'Version' => $mod_strings['LBL_ML_VERSION'],
-			'Date_Installed' => $mod_strings['LBL_ML_INSTALLED'],
-			'Uninstallable' => $mod_strings['LBL_ML_UNINSTALLABLE'],
-			'Description' => $mod_strings['LBL_ML_DESCRIPTION']
-		);
+		$filegridinstalled_column_ary = ['Name' => $mod_strings['LBL_ML_NAME'], 'Install' => $mod_strings['LBL_ML_INSTALL'], 'Action' => $mod_strings['LBL_ML_ACTION'], 'Enable_Or_Disable' => $mod_strings['LBL_ML_ENABLE_OR_DISABLE'], 'Type' => $mod_strings['LBL_ML_TYPE'], 'Version' => $mod_strings['LBL_ML_VERSION'], 'Date_Installed' => $mod_strings['LBL_ML_INSTALLED'], 'Uninstallable' => $mod_strings['LBL_ML_UNINSTALLABLE'], 'Description' => $mod_strings['LBL_ML_DESCRIPTION']];
 
 		$ss->assign('ML_FILEGRID_COLUMN',$filegrid_column_ary);
 		$ss->assign('ML_FILEGRIDINSTALLED_COLUMN',$filegridinstalled_column_ary);
@@ -462,11 +443,11 @@ class PackageManagerDisplay{
 
     function createJavascriptPackageArray($releases){
         $output = "var mti_data = [";
-        $count = count($releases);
+        $count = is_array($releases) || $releases instanceof \Countable ? count($releases) : 0;
         $index = 1;
         if(!empty($releases['packages'])){
 	        foreach($releases['packages'] as $release){
-	            $release = PackageManager::fromNameValueList($release);
+	            $release = (new PackageManager())->fromNameValueList($release);
 	            $output .= "[";
 	            $output .= "'".$release['description']."', '".$release['version']."', '".$release['build_number']."', '".$release['id']."'";
 	            $output .= "]";
@@ -481,7 +462,7 @@ class PackageManagerDisplay{
 
     static function createJavascriptModuleArray($modules, $variable_name = 'mti_data'){
         $output = "var ".$variable_name." = [";
-        $count = count($modules);
+        $count = is_array($modules) || $modules instanceof \Countable ? count($modules) : 0;
         $index = 1;
         if(!empty($modules)){
 	        foreach($modules as $module){
@@ -538,23 +519,23 @@ class PackageManagerDisplay{
             	//$header_text = "<font color='red'><b>".$mod_strings['ERR_CREDENTIALS_MISSING']."</b></font>";
             }
             else{
-            	$result = PackageManagerComm::login();
+            	$result = (new PackageManagerComm())->login();
             	if((is_array($result) && !empty($result['faultcode'])) || $result == false){
             		$header_text = "<font color='red'><b>".$result['faultstring']."</b></font>";
             	}else{
-            		$header_text = PackageManager::getPromotion();
+            		$header_text = (new PackageManager())->getPromotion();
             		$isAlive = true;
             	}
             }
         }
-        return array('text' => $header_text, 'isAlive' => $isAlive, 'show_login' => $show_login);
+        return ['text' => $header_text, 'isAlive' => $isAlive, 'show_login' => $show_login];
     }
 
     function buildInstallGrid($view){
     	$uh = new UpgradeHistory();
     	$installeds = $uh->getAll();
 		$upgrades_installed = 0;
-		$installed_objects = array();
+		$installed_objects = [];
 		foreach($installeds as $installed)
 		{
 			$filename = from_html($installed->filename);
@@ -615,7 +596,7 @@ class PackageManagerDisplay{
 			{
 				$icon = getImageForType( $manifest['type'] );
 			}
-			$installed_objects[] = array('icon' => $icon, 'name' => $name, 'type' => $type, 'version' => $version, 'date_entered' => $date_entered, 'description' => $description, 'file' => $link);
+			$installed_objects[] = ['icon' => $icon, 'name' => $name, 'type' => $type, 'version' => $version, 'date_entered' => $date_entered, 'description' => $description, 'file' => $link];
 			//print( "<form action=\"" . $form_action . "_prepare\" method=\"post\">\n" );
 			//print( "<tr><td>$icon</td><td>$name</td><td>$type</td><td>$version</td><td>$date_entered</td><td>$description</td><td>$link</td></tr>\n" );
 			//print( "</form>\n" );

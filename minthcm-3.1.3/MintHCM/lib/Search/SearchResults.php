@@ -92,7 +92,7 @@ class SearchResults
         $this->searchTime = $searchTime;
         $this->total = $total;
 
-        if ($this->scores != null && count($hits) != count($scores)) {
+        if ($this->scores != null && count($hits) != count((array) $scores)) {
             throw new RuntimeException('The sizes of $hits and $scores must match.');
         }
     }

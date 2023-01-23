@@ -47,17 +47,15 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
 
 class ACLRole extends SugarBean{
-    var $module_dir = 'ACLRoles';
-    var $object_name = 'ACLRole';
-    var $table_name = 'acl_roles';
-    var $new_schema = true;
-    var $disable_row_level_security = true;
-    var $disable_custom_fields = true;
-    var $relationship_fields = array(
-                                    'user_id'=>'users'
-                                );
+    public $module_dir = 'ACLRoles';
+    public $object_name = 'ACLRole';
+    public $table_name = 'acl_roles';
+    public $new_schema = true;
+    public $disable_row_level_security = true;
+    public $disable_custom_fields = true;
+    public $relationship_fields = ['user_id'=>'users'];
 
-    var $created_by;
+    public $created_by;
 
     public function __construct(){
         parent::__construct();
@@ -95,8 +93,8 @@ class ACLRole extends SugarBean{
  * @param int $access - the access level ACL_ALLOW_ALL ACL_ALLOW_NONE ACL_ALLOW_OWNER...
  */
 function setAction($role_id, $action_id, $access){
-    $relationship_data = array('role_id'=>$role_id, 'action_id'=>$action_id,);
-    $additional_data = array('access_override'=>$access);
+    $relationship_data = ['role_id'=>$role_id, 'action_id'=>$action_id];
+    $additional_data = ['access_override'=>$access];
     $this->set_relationship('acl_roles_actions',$relationship_data,true, true,$additional_data);
 }
 
@@ -119,7 +117,7 @@ function getUserRoles($user_id, $getAsNameArray = true){
             "WHERE acl_roles.deleted=0 ";
 
         $result = DBManagerFactory::getInstance()->query($query);
-        $user_roles = array();
+        $user_roles = [];
 
         while($row = DBManagerFactory::getInstance()->fetchByAssoc($result) ){
             $role = new ACLRole();
@@ -154,7 +152,7 @@ function getUserRoleNames($user_id){
                 "WHERE acl_roles.deleted=0 ";
 
             $result = DBManagerFactory::getInstance()->query($query);
-            $user_roles = array();
+            $user_roles = [];
 
             while($row = DBManagerFactory::getInstance()->fetchByAssoc($result) ){
                 $user_roles[] = $row['name'];
@@ -179,7 +177,7 @@ function getAllRoles($returnAsArray = false){
                     WHERE acl_roles.deleted=0 ORDER BY name";
 
         $result = $db->query($query);
-        $roles = array();
+        $roles = [];
 
         while($row = $db->fetchByAssoc($result) ){
             $role = new ACLRole();
@@ -221,7 +219,7 @@ function getRoleActions($role_id, $type='module'){
         }
         $query .= " WHERE acl_actions.deleted=0 ORDER BY acl_actions.category, acl_actions.name";
         $result = $db->query($query);
-        $role_actions = array();
+        $role_actions = [];
 
         while($row = $db->fetchByAssoc($result) ){
             $action = new ACLAction();
@@ -239,7 +237,7 @@ function getRoleActions($role_id, $type='module'){
             //end
 
             if(!isset($role_actions[$action->category])){
-                $role_actions[$action->category] = array();
+                $role_actions[$action->category] = [];
             }
 
             $role_actions[$action->category][$action->acltype][$action->name] = $action->toArray();
@@ -259,9 +257,7 @@ function getRoleActions($role_id, $type='module'){
         // Fallback to array key if translation is empty
         $a = empty($app_list_strings['moduleList'][$a]) ? $a : $app_list_strings['moduleList'][$a];
         $b = empty($app_list_strings['moduleList'][$b]) ? $b : $app_list_strings['moduleList'][$b];
-        if ($a == $b)
-            return 0;
-        return ($a < $b) ? -1 : 1;
+        return $a <=> $b;
     }
 /**
  * function mark_relationships_deleted($id)
@@ -285,8 +281,8 @@ function mark_relationships_deleted($id){
     * @return array of fields with id, name, description
     */
     function toArray($dbOnly = false, $stringOnly = false, $upperKeys=false){
-        $array_fields = array('id', 'name', 'description');
-        $arr = array();
+        $array_fields = ['id', 'name', 'description'];
+        $arr = [];
         foreach($array_fields as $field){
             if(isset($this->$field)){
                 $arr[$field] = $this->$field;

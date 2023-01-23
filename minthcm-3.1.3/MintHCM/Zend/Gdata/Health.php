@@ -62,26 +62,26 @@ class Zend_Gdata_Health extends Zend_Gdata
     /**
      * URIs of the AuthSub/OAuth feeds.
      */
-    const AUTHSUB_PROFILE_FEED_URI =
+    public const AUTHSUB_PROFILE_FEED_URI =
         'https://www.google.com/health/feeds/profile/default';
-    const AUTHSUB_REGISTER_FEED_URI =
+    public const AUTHSUB_REGISTER_FEED_URI =
         'https://www.google.com/health/feeds/register/default';
 
     /**
      * URIs of the ClientLogin feeds.
      */
-    const CLIENTLOGIN_PROFILELIST_FEED_URI =
+    public const CLIENTLOGIN_PROFILELIST_FEED_URI =
         'https://www.google.com/health/feeds/profile/list';
-    const CLIENTLOGIN_PROFILE_FEED_URI =
+    public const CLIENTLOGIN_PROFILE_FEED_URI =
         'https://www.google.com/health/feeds/profile/ui';
-    const CLIENTLOGIN_REGISTER_FEED_URI =
+    public const CLIENTLOGIN_REGISTER_FEED_URI =
         'https://www.google.com/health/feeds/register/ui';
 
     /**
      * Authentication service names for Google Health and the H9 Sandbox.
      */
-    const HEALTH_SERVICE_NAME = 'health';
-    const H9_SANDBOX_SERVICE_NAME = 'weaver';
+    public const HEALTH_SERVICE_NAME = 'health';
+    public const H9_SANDBOX_SERVICE_NAME = 'weaver';
 
     /**
      * Profile ID used for all API interactions.  This can only be set when
@@ -100,11 +100,7 @@ class Zend_Gdata_Health extends Zend_Gdata
     private $_useH9Sandbox = false;
 
     public static $namespaces =
-        array('ccr' => 'urn:astm-org:CCR',
-              'batch' => 'http://schemas.google.com/gdata/batch',
-              'h9m' => 'http://schemas.google.com/health/metadata',
-              'gAcl' => 'http://schemas.google.com/acl/2007',
-              'gd' => 'http://schemas.google.com/g/2005');
+        ['ccr' => 'urn:astm-org:CCR', 'batch' => 'http://schemas.google.com/gdata/batch', 'h9m' => 'http://schemas.google.com/health/metadata', 'gAcl' => 'http://schemas.google.com/acl/2007', 'gd' => 'http://schemas.google.com/g/2005'];
 
     /**
      * Create Zend_Gdata_Health object
@@ -261,7 +257,7 @@ class Zend_Gdata_Health extends Zend_Gdata
         $entry = new Zend_Gdata_Health_ProfileEntry();
         $entry->title = $this->newTitle($subject);
         $entry->content = $this->newContent($body);
-        $entry->content->type = $bodyType ? $bodyType : 'text';
+        $entry->content->type = $bodyType ?: 'text';
         $entry->setCcr($ccrXML);
 
         // use correct feed for /h9 or /health

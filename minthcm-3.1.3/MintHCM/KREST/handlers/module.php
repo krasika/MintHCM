@@ -17,12 +17,12 @@
 class KRESTModuleHandler
 {
 
-    var $app = null;
-    var $sessionId = null;
-    var $tmpSessionId = null;
-    var $requestParams = array();
-    var $excludeAuthentication = array();
-    var $spiceFavoritesClass = null;
+    public $app = null;
+    public $sessionId = null;
+    public $tmpSessionId = null;
+    public $requestParams = [];
+    public $excludeAuthentication = [];
+    public $spiceFavoritesClass = null;
 
     public function __construct($app)
     {
@@ -35,7 +35,7 @@ class KRESTModuleHandler
 
     public function get_mod_language($modules, $lang)
     {
-        $modLang = array();
+        $modLang = [];
 
         foreach ($modules as $module)
             $modLang[$module] = return_module_language($lang, $module, true);
@@ -47,7 +47,7 @@ class KRESTModuleHandler
 
         global $beanList, $dictionary;
 
-        $dynamicDomains = array();
+        $dynamicDomains = [];
 
         foreach ($modules as $module) {
 
@@ -72,9 +72,7 @@ class KRESTModuleHandler
         global $current_user, $sugar_config, $dictionary;
 
         // whitelist currencies modules
-        $aclWhitelist = array(
-            'Currencies'
-        );
+        $aclWhitelist = ['Currencies'];
 
         // acl check if user can list
         if (!ACLController::checkAccess($beanModule, 'list', true) && !in_array($beanModule, $aclWhitelist)) {
@@ -89,13 +87,13 @@ class KRESTModuleHandler
         if (is_array(json_decode($searchParams['fields'], true))) {
             $returnFields = json_decode($searchParams['fields'], true);
         } else {
-            $returnFields = array();
+            $returnFields = [];
             $listFields = $this->getModuleListdefs($beanModule, $thisBean, ($searchParams['client'] == 'mobile' ? true : false));
             foreach ($listFields as $thisField)
                 $returnFields[] = $thisField['name'];
         }
-        $beanData = array();
-        $facets = array();
+        $beanData = [];
+        $facets = [];
         $totalcount = 0;
 
         // build the where claues is searchterm is specified
@@ -103,7 +101,7 @@ class KRESTModuleHandler
             $searchParams['whereclause'] = '';
             $searchtermArray = explode(' ', $searchParams['searchterm']);
             foreach ($searchtermArray as $thisSearchterm) {
-                $searchTerms = array();
+                $searchTerms = [];
                 $searchTermFields = $searchParams['searchtermfields'] ? json_decode(html_entity_decode($searchParams['searchtermfields']), true) : [];
                 if ($searchTermFields) {
                     foreach ($searchTermFields as $fieldName) {
@@ -172,12 +170,12 @@ class KRESTModuleHandler
             }
         }
 
-        $filterFields = array();
+        $filterFields = [];
         foreach ($returnFields as $returnField) {
             $filterFields[$returnField] = true;
         }
         // $beanList = $thisBean->get_list($searchParams['orderby'], $searchParams['whereclause'], $searchParams['offset'], $searchParams['limit']);
-        $queryArray = $thisBean->create_new_list_query($searchParams['orderby'], $searchParams['whereclause'], $filterFields, array(), false, '', true, $thisBean, true);
+        $queryArray = $thisBean->create_new_list_query($searchParams['orderby'], $searchParams['whereclause'], $filterFields, [], false, '', true, $thisBean, true);
 
         $spiceFavoritesClass = $this->getSpiceFavoritesClass();
         if ($spiceFavoritesClass) {
@@ -231,23 +229,12 @@ class KRESTModuleHandler
         // special handling for currencies since home currency is stored with id -99 and not in the DB
         if ($beanModule == 'Currencies') {
             global $sugar_config;
-            $beanData[] = array(
-                'id' => '-99',
-                'iso4217' => $sugar_config['default_currency_iso4217'],
-                'name' => $sugar_config['default_currency_name'],
-                'symbol' => $sugar_config['default_currency_symbol'],
-                'status' => 'Active',
-                'conversion_rate' => 1,
-                'deleted' => 0
-            );
+            $beanData[] = ['id' => '-99', 'iso4217' => $sugar_config['default_currency_iso4217'], 'name' => $sugar_config['default_currency_name'], 'symbol' => $sugar_config['default_currency_symbol'], 'status' => 'Active', 'conversion_rate' => 1, 'deleted' => 0];
 
             $totalcount++;
         }
 
-        return array(
-            'totalcount' => $totalcount,
-            'list' => $beanData
-        );
+        return ['totalcount' => $totalcount, 'list' => $beanData];
     }
 
     private
@@ -332,7 +319,7 @@ class KRESTModuleHandler
         $includeReminder = $requestParams['includeReminder'] ? true : false;
         $includeNotes = $requestParams['includeNotes'] ? true : false;
 
-        return $this->mapBeanToArray($beanModule, $thisBean, array(), $includeReminder, $includeNotes);
+        return $this->mapBeanToArray($beanModule, $thisBean, [], $includeReminder, $includeNotes);
 
         /*
           return array(
@@ -365,11 +352,7 @@ class KRESTModuleHandler
             $noteSoap = new NoteSoap();
             $fileData = $noteSoap->retrieveFile($thisBean->id, $thisBean->filename);
             if ($fileData >= -1)
-                return array(
-                    'filename' => $thisBean->filename,
-                    'file' => $fileData,
-                    'filetype' => $thisBean->file_mime_type
-                );
+                return ['filename' => $thisBean->filename, 'file' => $fileData, 'filetype' => $thisBean->file_mime_type];
         }
 
         // if we did not return before we did not find the file
@@ -418,7 +401,7 @@ class KRESTModuleHandler
         $relBeans = $thisBean->get_linked_beans($linkName);
         $relModule = $thisBean->field_defs[$linkName]['module'];
 
-        $retArray = array();
+        $retArray = [];
         foreach ($relBeans as $relBean) {
             if (empty($relBean->relid))
                 $relBean->relid = create_guid();
@@ -437,7 +420,7 @@ class KRESTModuleHandler
             echo('not authorized for module ' . $beanModule);
             exit;
         }
-        $retArray = array();
+        $retArray = [];
 
         $relatedIds = json_decode($this->app->request->getBody());
 
@@ -471,7 +454,7 @@ class KRESTModuleHandler
             echo('not authorized for module ' . $beanModule);
             exit;
         }
-        $retArray = array();
+        $retArray = [];
 
         $postParams = $this->app->request->get();
 
@@ -605,7 +588,7 @@ class KRESTModuleHandler
         if ($spiceFavoriteClass)
             return $spiceFavoriteClass::get_favorite($beanModule, $beanId);
         else
-            return array();
+            return [];
     }
 
     public
@@ -668,7 +651,7 @@ class KRESTModuleHandler
         }
 
 
-        $quicknotes = array();
+        $quicknotes = [];
 
         if ($GLOBALS['db']->dbType == 'mssql') {
             $quicknotesRes = $db->query("SELECT qn.*,u.user_name FROM $spiceNotesTable AS qn LEFT JOIN users AS u ON u.id=qn.user_id WHERE qn.bean_id='{$bean->id}' AND qn.bean_type='{$bean->module_dir}' AND (qn.user_id = '" . $current_user->id . "' OR qn.trglobal = '1') AND qn.deleted = 0 ORDER BY qn.trdate DESC");
@@ -678,17 +661,7 @@ class KRESTModuleHandler
 
         if ($GLOBALS['db']->dbType == 'mssql' || $db->getRowCount($quicknotesRes) > 0) {
             while ($thisQuickNote = $db->fetchByAssoc($quicknotesRes)) {
-                $quicknotes[] = array(
-                    'id' => $thisQuickNote['id'],
-                    'user_id' => $thisQuickNote['user_id'],
-                    'user_name' => $thisQuickNote['user_name'],
-                    'bean_id' => $bean->id,
-                    'bean_type' => $bean->module_dir,
-                    'own' => ($thisQuickNote['user_id'] == $current_user->id || $current_user->is_admin) ? '1' : '0',
-                    'date' => $thisQuickNote['trdate'],
-                    'text' => $thisQuickNote['text'],
-                    'global' => $thisQuickNote['trglobal'] ? 1 : 0
-                );
+                $quicknotes[] = ['id' => $thisQuickNote['id'], 'user_id' => $thisQuickNote['user_id'], 'user_name' => $thisQuickNote['user_name'], 'bean_id' => $bean->id, 'bean_type' => $bean->module_dir, 'own' => ($thisQuickNote['user_id'] == $current_user->id || $current_user->is_admin) ? '1' : '0', 'date' => $thisQuickNote['trdate'], 'text' => $thisQuickNote['text'], 'global' => $thisQuickNote['trglobal'] ? 1 : 0];
             }
         }
         return $quicknotes;
@@ -740,7 +713,7 @@ class KRESTModuleHandler
     function get_beandefs_multiple($beanModules)
     {
 
-        $retArray = array();
+        $retArray = [];
 
         foreach ($beanModules as $thisModule) {
             $retArray[$thisModule] = $this->get_beandefs($thisModule);
@@ -756,14 +729,11 @@ class KRESTModuleHandler
         global $current_language;
 
         $app_list_strings = return_app_list_strings_language($current_language);
-        $modArray = array();
+        $modArray = [];
         $mint_disabled_modules = getMintDisabledModulesList();
         foreach ($app_list_strings['moduleList'] as $module => $modulename) {
             if(!in_array($module,$mint_disabled_modules)){
-                $modArray[] = array(
-                    'module' => $module,
-                    'name' => $modulename
-                );
+                $modArray[] = ['module' => $module, 'name' => $modulename];
             }   
         }
         return $modArray;
@@ -773,8 +743,9 @@ class KRESTModuleHandler
     function get_beandefs($beanModule)
     {
 
+        $listViewDefsMobile = [];
         $thisBean = BeanFactory::getBean($beanModule);
-        $retArray = array();
+        $retArray = [];
         // get the listviewdefs
         $retArray['list'] = $this->getModuleListdefs($beanModule);
 
@@ -782,7 +753,7 @@ class KRESTModuleHandler
             require_once('modules/' . $thisBean->module_dir . '/metadata/listviewdefsmobile.php');
             $retArray['listmobile'] = $listViewDefsMobile[$beanModule];
         } else
-            $retArray['listmobile'] = array();
+            $retArray['listmobile'] = [];
 
         $retArray['vardefs'] = $this->get_bean_vardefs($beanModule);
         $retArray['detail'] = $this->getModuleViewdefs($beanModule, $thisBean);
@@ -800,16 +771,16 @@ class KRESTModuleHandler
 
 //private helper functions
     private
-    function mapBeanToArray($beanModule, $thisBean, $returnFields = array(), $includeReminder = false, $includeNotes = false)
+    function mapBeanToArray($beanModule, $thisBean, $returnFields = [], $includeReminder = false, $includeNotes = false)
     {
 
         global $current_language;
 
 
         $app_list_strings = return_app_list_strings_language($current_language);
-        $beanDataArray = array();
+        $beanDataArray = [];
         foreach ($thisBean->field_defs as $fieldId => $fieldData) {
-            if ($fieldId == 'id' || ($fieldData['type'] != 'link' && (count($returnFields) == 0 || (count($returnFields) > 0 && in_array($fieldId, $returnFields))))) {
+            if ($fieldId == 'id' || ($fieldData['type'] != 'link' && ((is_array($returnFields) || $returnFields instanceof \Countable ? count($returnFields) : 0) == 0 || ((is_array($returnFields) || $returnFields instanceof \Countable ? count($returnFields) : 0) > 0 && in_array($fieldId, $returnFields))))) {
                 $beanDataArray[$fieldId] = html_entity_decode($thisBean->$fieldId, ENT_QUOTES);
             }
         }
@@ -863,15 +834,10 @@ class KRESTModuleHandler
         // get the metadata
         require_once 'modules/' . $thisBean->module_dir . '/metadata/listviewdefs.php';
         $moduleLanguage = $this->get_bean_language($beanModule);
-        $retListViewDefs = array();
+        $retListViewDefs = [];
         foreach ($listViewDefs[$beanModule] as $fieldname => $fielddata) {
             if (($mobile && $fielddata['mobile'] == true) || !$mobile) {
-                $retListViewDefs[] = array(
-                    'name' => strtolower($fieldname),
-                    'label' => !empty($moduleLanguage[$fielddata['label']]) ? $moduleLanguage[$fielddata['label']] : $fieldname,
-                    'width' => strpos('%', $fielddata['width']) === false ? $fielddata['width'] . '%' : $fielddata['width'],
-                    'default' => $fielddata['default']
-                );
+                $retListViewDefs[] = ['name' => strtolower($fieldname), 'label' => !empty($moduleLanguage[$fielddata['label']]) ? $moduleLanguage[$fielddata['label']] : $fieldname, 'width' => strpos('%', $fielddata['width']) === false ? $fielddata['width'] . '%' : $fielddata['width'], 'default' => $fielddata['default']];
             }
         }
 
@@ -884,49 +850,34 @@ class KRESTModuleHandler
         require_once 'modules/' . $thisBean->module_dir . '/metadata/detailviewdefs.php';
 
         $moduleLanguage = $this->get_bean_language($beanModule);
-        $viewDefs = array();
+        $viewDefs = [];
         foreach ($viewdefs[$beanModule]['DetailView']['panels'] as $panelName => $panelData) {
-            $panelDataArray = array();
+            $panelDataArray = [];
             foreach ($panelData as $panelRow) {
-                $panelRowArray = array();
+                $panelRowArray = [];
                 foreach ($panelRow as $panelField) {
                     if (is_array($panelField)) {
-                        $panelRowArray[] = array(
-                            'name' => $panelField['name'],
-                            'label' => !empty($panelField['label']) && !empty($moduleLanguage[$panelField['label']]) ? $moduleLanguage[$panelField['label']] : $panelField['name']
-                        );
+                        $panelRowArray[] = ['name' => $panelField['name'], 'label' => !empty($panelField['label']) && !empty($moduleLanguage[$panelField['label']]) ? $moduleLanguage[$panelField['label']] : $panelField['name']];
                     } else {
-                        $panelRowArray[] = array(
-                            'name' => $panelField,
-                            'label' => !empty($thisBean->field_defs[$panelField]['vname']) ? $moduleLanguage[$thisBean->field_defs[$panelField]['vname']] : $panelField
-                        );
+                        $panelRowArray[] = ['name' => $panelField, 'label' => !empty($thisBean->field_defs[$panelField]['vname']) ? $moduleLanguage[$thisBean->field_defs[$panelField]['vname']] : $panelField];
                     }
                 };
                 $panelDataArray[] = $panelRowArray;
             };
-            $viewDefs[] = array(
-                'label' => !empty($moduleLanguage[strtoupper($panelName)]) ? $moduleLanguage[strtoupper($panelName)] : $panelName,
-                'rows' => $panelDataArray
-            );
+            $viewDefs[] = ['label' => !empty($moduleLanguage[strtoupper($panelName)]) ? $moduleLanguage[strtoupper($panelName)] : $panelName, 'rows' => $panelDataArray];
         }
 
         // get the subpanelDefs
-        $subpanelDataArray = array();
+        $subpanelDataArray = [];
         if (file_exists('modules/' . $thisBean->module_dir . '/metadata/subpaneldefs.php')) {
             require_once 'modules/' . $thisBean->module_dir . '/metadata/subpaneldefs.php';
             foreach ($layout_defs[$beanModule]['subpanel_setup'] as $subpanelId => $subpanelDetails) {
-                $subpanelDataArray[] = array(
-                    'subpanelid' => $subpanelId,
-                    'label' => $moduleLanguage[$subpanelDetails['title_key']]
-                );
+                $subpanelDataArray[] = ['subpanelid' => $subpanelId, 'label' => $moduleLanguage[$subpanelDetails['title_key']]];
             }
         }
 
 
-        return array(
-            'viewdefs' => $viewDefs,
-            'subpaneldefs' => $subpanelDataArray
-        );
+        return ['viewdefs' => $viewDefs, 'subpaneldefs' => $subpanelDataArray];
     }
 
 // for the emails
@@ -935,7 +886,7 @@ class KRESTModuleHandler
     {
         global $db;
 
-        $inboundEmails = array();
+        $inboundEmails = [];
         while ($inboundEmails[] = $db->fetchByAssoc($db->query("SELECT id, name, email_user FROM inbound_email")))
             return $inboundEmails;
     }
@@ -946,20 +897,10 @@ class KRESTModuleHandler
         global $db;
 
         $emailsobj = $db->query("SELECT *, (SELECT count(id) FROM notes WHERE parent_id=emails.id) attachmentcount FROM emails, emails_text WHERE emails.id = emails_text.email_id AND mailbox_id='" . $mailboxid . "' ORDER BY date_sent DESC");
-        $emailsArray = array();
+        $emailsArray = [];
         while ($emailsEntry = $db->fetchByAssoc($emailsobj)) {
 
-            $emailsArray[] = array(
-                'id' => $emailsEntry['id'],
-                'date_entered' => $emailsEntry['date_entered'],
-                'date_sent' => $emailsEntry['date_sent'],
-                'name' => $emailsEntry['name'],
-                'type' => $emailsEntry['type'],
-                'status' => $emailsEntry['status'],
-                'from_addr' => html_entity_decode($emailsEntry['from_addr']),
-                'to_addrs' => html_entity_decode($emailsEntry['to_addrs']),
-                'attachmentcount' => $emailsEntry['attachmentcount']
-            );
+            $emailsArray[] = ['id' => $emailsEntry['id'], 'date_entered' => $emailsEntry['date_entered'], 'date_sent' => $emailsEntry['date_sent'], 'name' => $emailsEntry['name'], 'type' => $emailsEntry['type'], 'status' => $emailsEntry['status'], 'from_addr' => html_entity_decode($emailsEntry['from_addr']), 'to_addrs' => html_entity_decode($emailsEntry['to_addrs']), 'attachmentcount' => $emailsEntry['attachmentcount']];
         };
 
         return $emailsArray;
@@ -972,27 +913,12 @@ class KRESTModuleHandler
 
         $emailsEntry = $db->fetchByAssoc($db->query("SELECT * FROM emails, emails_text WHERE emails.id = emails_text.email_id AND id='" . $emailId . "'"));
 
-        $attachements = array();
+        $attachements = [];
         $attachementObj = $db->query("SELECT * FROM notes WHERE parent_id='" . $emailId . "'");
         while ($attachement = $db->fetchByAssoc($attachementObj))
             $attachements[] = $attachement;
 
-        return array(
-            'id' => $emailsEntry['id'],
-            'date_entered' => $emailsEntry['date_entered'],
-            'date_sent' => $emailsEntry['date_sent'],
-            'name' => $emailsEntry['name'],
-            'type' => $emailsEntry['type'],
-            'status' => $emailsEntry['status'],
-            'from_addr' => html_entity_decode($emailsEntry['from_addr']),
-            'to_addrs' => html_entity_decode($emailsEntry['to_addrs']),
-            'cc_addrs' => html_entity_decode($emailsEntry['cc_addrs']),
-            'bcc_addrs' => html_entity_decode($emailsEntry['bcc_addrs']),
-            'reply_to_addr' => html_entity_decode($emailsEntry['reply_to_addr']),
-            'description' => html_entity_decode($emailsEntry['description']),
-            'description_html' => html_entity_decode($emailsEntry['description_html']),
-            'attachements' => $attachements
-        );
+        return ['id' => $emailsEntry['id'], 'date_entered' => $emailsEntry['date_entered'], 'date_sent' => $emailsEntry['date_sent'], 'name' => $emailsEntry['name'], 'type' => $emailsEntry['type'], 'status' => $emailsEntry['status'], 'from_addr' => html_entity_decode($emailsEntry['from_addr']), 'to_addrs' => html_entity_decode($emailsEntry['to_addrs']), 'cc_addrs' => html_entity_decode($emailsEntry['cc_addrs']), 'bcc_addrs' => html_entity_decode($emailsEntry['bcc_addrs']), 'reply_to_addr' => html_entity_decode($emailsEntry['reply_to_addr']), 'description' => html_entity_decode($emailsEntry['description']), 'description_html' => html_entity_decode($emailsEntry['description_html']), 'attachements' => $attachements];
     }
 
     private
@@ -1042,7 +968,7 @@ class KRESTModuleHandler
             return $domain;
             
         } else {
-            return array();
+            return [];
         }
     }
 

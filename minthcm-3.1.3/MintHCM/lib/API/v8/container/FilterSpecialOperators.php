@@ -51,7 +51,5 @@ use Slim\Exception\ContainerValueNotFoundException;
  * @return SuiteCRM\API\JsonApi\v1\Filters\Interfaces\OperatorInterface[]
  */
 $container['FilterSpecialOperators'] = function ($container) {
-    return array(
-        new \SuiteCRM\API\JsonApi\v1\Filters\Operators\SpecialOperator($container)
-    );
+    return [new \SuiteCRM\API\JsonApi\v1\Filters\Operators\SpecialOperator($container)];
 };

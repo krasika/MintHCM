@@ -54,7 +54,6 @@ class Zend_Gdata_MimeBodyString
     public function __construct($sourceString)
     {
         $this->_sourceString = $sourceString;
-        $this->_bytesRead = 0;
     }
 
     /**

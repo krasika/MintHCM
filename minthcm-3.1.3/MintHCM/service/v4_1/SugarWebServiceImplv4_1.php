@@ -129,8 +129,8 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
             return;
         } // if
 
-        $output_list = array();
-        $linkoutput_list = array();
+        $output_list = [];
+        $linkoutput_list = [];
 
         // get all the related modules data.
         $result = self::$helperObject->getRelationshipResults($mod, $link_field_name, $related_fields,
@@ -173,7 +173,7 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
 
         $GLOBALS['log']->info('End: SugarWebServiceImpl->get_relationships');
 
-        return array('entry_list' => $output_list, 'relationship_list' => $linkoutput_list);
+        return ['entry_list' => $output_list, 'relationship_list' => $linkoutput_list];
     }
 
 
@@ -211,36 +211,24 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
         $max_results,
         $deleted = 0,
         $module_user_id = '',
-        $select_fields = array(),
+        $select_fields = [],
         $relationship_name = '',
         $deletion_date = ''
     ) {
         global $beanList, $beanFiles, $current_user;
         $error = new SoapError();
-        $output_list = array();
+        $output_list = [];
 
         if (empty($from_date)) {
             $error->set_error('invalid_call_error, missing from_date');
 
-            return array(
-                'result_count' => 0,
-                'next_offset' => 0,
-                'field_list' => $select_fields,
-                'entry_list' => array(),
-                'error' => $error->get_soap_array()
-            );
+            return ['result_count' => 0, 'next_offset' => 0, 'field_list' => $select_fields, 'entry_list' => [], 'error' => $error->get_soap_array()];
         }
 
         if (empty($to_date)) {
             $error->set_error('invalid_call_error, missing to_date');
 
-            return array(
-                'result_count' => 0,
-                'next_offset' => 0,
-                'field_list' => $select_fields,
-                'entry_list' => array(),
-                'error' => $error->get_soap_array()
-            );
+            return ['result_count' => 0, 'next_offset' => 0, 'field_list' => $select_fields, 'entry_list' => [], 'error' => $error->get_soap_array()];
         }
 
         self::$helperObject = new SugarWebServiceUtilv4_1();
@@ -255,13 +243,7 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
         if (empty($beanList[$module_name]) || empty($beanList[$related_module])) {
             $error->set_error('no_module');
 
-            return array(
-                'result_count' => 0,
-                'next_offset' => 0,
-                'field_list' => $select_fields,
-                'entry_list' => array(),
-                'error' => $error->get_soap_array()
-            );
+            return ['result_count' => 0, 'next_offset' => 0, 'field_list' => $select_fields, 'entry_list' => [], 'error' => $error->get_soap_array()];
         }
 
         global $current_user;
@@ -270,13 +252,7 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
         ) {
             $error->set_error('no_access');
 
-            return array(
-                'result_count' => 0,
-                'next_offset' => 0,
-                'field_list' => $select_fields,
-                'entry_list' => array(),
-                'error' => $error->get_soap_array()
-            );
+            return ['result_count' => 0, 'next_offset' => 0, 'field_list' => $select_fields, 'entry_list' => [], 'error' => $error->get_soap_array()];
         }
 
         if ($max_results > 0 || $max_results == '-99') {
@@ -300,7 +276,7 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
         }
 
         //if($related_module == 'Meetings' || $related_module == 'Calls' || $related_module = 'Contacts'){
-        $query = string_format($query, array('m1'));
+        $query = string_format($query, ['m1']);
         //}
 
         require_once('soap/SoapRelationshipHelper.php');
@@ -315,12 +291,7 @@ class SugarWebServiceImplv4_1 extends SugarWebServiceImplv4
 
         $next_offset = $offset + count($output_list);
 
-        return array(
-            'result_count' => count($output_list),
-            'next_offset' => $next_offset,
-            'entry_list' => $output_list,
-            'error' => $error->get_soap_array()
-        );
+        return ['result_count' => count($output_list), 'next_offset' => $next_offset, 'entry_list' => $output_list, 'error' => $error->get_soap_array()];
     }
 
 }

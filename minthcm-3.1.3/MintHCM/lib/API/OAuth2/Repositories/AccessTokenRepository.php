@@ -53,7 +53,7 @@ use SuiteCRM\API\OAuth2\Entities\AccessTokenEntity;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
-    const ACCESS_TOKEN_FIELD = 'access_token';
+    public const ACCESS_TOKEN_FIELD = 'access_token';
     /**
      * {@inheritdoc}
      */

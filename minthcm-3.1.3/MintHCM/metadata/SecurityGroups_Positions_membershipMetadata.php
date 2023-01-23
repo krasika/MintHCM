@@ -45,72 +45,10 @@
  */
 
 // created: 2018-10-13 15:14:30 
-$dictionary["securitygroups_positions_membership"] = array(
-   'true_relationship_type' => 'many-to-many',
-   'relationships' =>
-   array(
-      'securitygroups_positions_membership' =>
-      array(
-         'lhs_module' => 'SecurityGroups',
-         'lhs_table' => 'securitygroups',
-         'lhs_key' => 'id',
-         'rhs_module' => 'Positions',
-         'rhs_table' => 'positions',
-         'rhs_key' => 'id',
-         'relationship_type' => 'many-to-many',
-         'join_table' => 'securitygroups_positions_membership',
-         'join_key_lhs' => 'securitygroup_id',
-         'join_key_rhs' => 'position_id',
-      ),
-   ),
-   'table' => 'securitygroups_positions_membership',
-   'fields' =>
-   array(
-      array(
-         'name' => 'id',
-         'type' => 'varchar',
-         'len' => 36,
-      ),
-      array(
-         'name' => 'date_modified',
-         'type' => 'datetime',
-      ),
-      array(
-         'name' => 'deleted',
-         'type' => 'bool',
-         'len' => '1',
-         'default' => '0',
-         'required' => true,
-      ),
-      array(
-         'name' => 'securitygroup_id',
-         'type' => 'varchar',
-         'len' => 36,
-      ),
-      array(
-         'name' => 'position_id',
-         'type' => 'varchar',
-         'len' => 36,
-      ),
-   ),
-   'indices' =>
-   array(
-      array(
-         'name' => 'id_index',
-         'type' => 'primary',
-         'fields' =>
-         array(
-            'id',
-         ),
-      ),
-      array(
-         'name' => 'securitygroups_positions_id',
-         'type' => 'alternate_key',
-         'fields' =>
-         array(
-            'securitygroup_id',
-            'position_id',
-         ),
-      ),
-   ),
-);
+$dictionary["securitygroups_positions_membership"] = ['true_relationship_type' => 'many-to-many', 'relationships' =>
+['securitygroups_positions_membership' =>
+['lhs_module' => 'SecurityGroups', 'lhs_table' => 'securitygroups', 'lhs_key' => 'id', 'rhs_module' => 'Positions', 'rhs_table' => 'positions', 'rhs_key' => 'id', 'relationship_type' => 'many-to-many', 'join_table' => 'securitygroups_positions_membership', 'join_key_lhs' => 'securitygroup_id', 'join_key_rhs' => 'position_id']], 'table' => 'securitygroups_positions_membership', 'fields' =>
+[['name' => 'id', 'type' => 'varchar', 'len' => 36], ['name' => 'date_modified', 'type' => 'datetime'], ['name' => 'deleted', 'type' => 'bool', 'len' => '1', 'default' => '0', 'required' => true], ['name' => 'securitygroup_id', 'type' => 'varchar', 'len' => 36], ['name' => 'position_id', 'type' => 'varchar', 'len' => 36]], 'indices' =>
+[['name' => 'id_index', 'type' => 'primary', 'fields' =>
+['id']], ['name' => 'securitygroups_positions_id', 'type' => 'alternate_key', 'fields' =>
+['securitygroup_id', 'position_id']]]];

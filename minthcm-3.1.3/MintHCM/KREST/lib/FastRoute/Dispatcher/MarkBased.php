@@ -6,7 +6,7 @@ class MarkBased extends RegexBasedAbstract
 {
     public function __construct($data)
     {
-        list($this->staticRouteMap, $this->variableRouteData) = $data;
+        [$this->staticRouteMap, $this->variableRouteData] = $data;
     }
 
     protected function dispatchVariableRoute($routeData, $uri)
@@ -16,7 +16,7 @@ class MarkBased extends RegexBasedAbstract
                 continue;
             }
 
-            list($handler, $varNames) = $data['routeMap'][$matches['MARK']];
+            [$handler, $varNames] = $data['routeMap'][$matches['MARK']];
 
             $vars = [];
             $i = 0;

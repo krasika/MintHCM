@@ -66,14 +66,15 @@ abstract class PHP5Soap extends SugarSoapService{
 	 * @return
 	 */
 	public function serve(){
-		ob_clean();
+		$_SERVER = [];
+  ob_clean();
 		global $HTTP_RAW_POST_DATA;
 		$GLOBALS['log']->debug("I am here1 ". $HTTP_RAW_POST_DATA);
 		$qs = '';
 		if (isset($_SERVER['QUERY_STRING'])) {
 			$qs = $_SERVER['QUERY_STRING'];
-		} elseif (isset($HTTP_SERVER_VARS['QUERY_STRING'])) {
-			$qs = $HTTP_SERVER_VARS['QUERY_STRING'];
+		} elseif (isset($_SERVER['QUERY_STRING'])) {
+			$qs = $_SERVER['QUERY_STRING'];
 		} else {
 			$qs = '';
 		}
@@ -99,7 +100,7 @@ abstract class PHP5Soap extends SugarSoapService{
 	private function generateSoapServer() {
 		if ($this->server == null) {
 			$soap_url = $this->getSoapURL() . "?wsdl";
-			$this->server = new SoapServer($this->getWSDLPath(true), array('soap_version'=>SOAP_1_2, 'encoding'=>'ISO-8859-1'));
+			$this->server = new SoapServer($this->getWSDLPath(true), ['soap_version'=>SOAP_1_2, 'encoding'=>'ISO-8859-1']);
 		}
 	} // fn
 
@@ -160,7 +161,7 @@ abstract class PHP5Soap extends SugarSoapService{
 		$this->registryClass = $registryClass;
 	}
 
-	public function registerType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs=array(), $arrayType=''){
+	public function registerType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs=[], $arrayType=''){
 		$this->nusoap_server->wsdl->addComplexType($name, $typeClass, $phpType, $compositor, $restrictionBase, $elements, $attrs, $arrayType);
   	}
 

@@ -110,7 +110,7 @@ class SugarRelationshipFactory
 
         $def = $this->relationships[$relationshipName];
 
-        $type = isset($def['true_relationship_type']) ? $def['true_relationship_type'] : $def['relationship_type'];
+        $type = $def['true_relationship_type'] ?? $def['relationship_type'];
         switch ($type) {
             case 'many-to-many':
                 if (isset($def['rhs_module']) && $def['rhs_module'] === 'EmailAddresses') {
@@ -188,22 +188,22 @@ class SugarRelationshipFactory
         }
         //Reload ALL the module vardefs....
         foreach ($beanList as $moduleName => $beanName) {
-            VardefManager::loadVardef($moduleName, BeanFactory::getObjectName($moduleName), false, array(
+            VardefManager::loadVardef($moduleName, BeanFactory::getObjectName($moduleName), false, [
                 //If relationships are not yet loaded, we can't figure out the rel_calc_fields.
                 'ignore_rel_calc_fields' => true,
-            ));
+            ]);
         }
 
-        $relationships = array();
+        $relationships = [];
 
         //Grab all the relationships from the dictionary.
         foreach ($dictionary as $key => $def) {
             if (!empty($def['relationships'])) {
                 foreach ($def['relationships'] as $relKey => $relDef) {
                     if ($key === $relKey) { //Relationship only entry, we need to capture everything
-                        $relationships[$key] = array_merge(array('name' => $key), (array) $def, (array) $relDef);
+                        $relationships[$key] = array_merge(['name' => $key], (array) $def, (array) $relDef);
                     } else {
-                        $relationships[$relKey] = array_merge(array('name' => $relKey), (array) $relDef);
+                        $relationships[$relKey] = array_merge(['name' => $relKey], (array) $relDef);
                         if (!empty($relationships[$relKey]['join_table']) && empty($relationships[$relKey]['fields'])
                             && isset($dictionary[$relationships[$relKey]['join_table']]['fields'])
                         ) {

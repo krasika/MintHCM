@@ -82,33 +82,33 @@ require_once 'Zend/Gdata/Gapps/EmailListRecipientFeed.php';
 class Zend_Gdata_Gapps extends Zend_Gdata
 {
 
-    const APPS_BASE_FEED_URI = 'https://apps-apis.google.com/a/feeds';
-    const AUTH_SERVICE_NAME = 'apps';
+    public const APPS_BASE_FEED_URI = 'https://apps-apis.google.com/a/feeds';
+    public const AUTH_SERVICE_NAME = 'apps';
 
     /**
      * Path to user feeds on the Google Apps server.
      */
-    const APPS_USER_PATH = '/user/2.0';
+    public const APPS_USER_PATH = '/user/2.0';
 
     /**
      * Path to nickname feeds on the Google Apps server.
      */
-    const APPS_NICKNAME_PATH = '/nickname/2.0';
+    public const APPS_NICKNAME_PATH = '/nickname/2.0';
 
     /**
      * Path to group feeds on the Google Apps server.
      */
-    const APPS_GROUP_PATH = '/group/2.0';
+    public const APPS_GROUP_PATH = '/group/2.0';
 
     /**
      * Path to email list feeds on the Google Apps server.
      */
-    const APPS_EMAIL_LIST_PATH = '/emailList/2.0';
+    public const APPS_EMAIL_LIST_PATH = '/emailList/2.0';
 
     /**
      * Path to email list recipient feeds on the Google Apps server.
      */
-    const APPS_EMAIL_LIST_RECIPIENT_POSTFIX = '/recipient';
+    public const APPS_EMAIL_LIST_RECIPIENT_POSTFIX = '/recipient';
 
     /**
      * The domain which is being administered via the Provisioning API.
@@ -122,9 +122,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
      *
      * @var array
      */
-    public static $namespaces = array(
-        array('apps', 'http://schemas.google.com/apps/2006', 1, 0)
-    );
+    public static $namespaces = [['apps', 'http://schemas.google.com/apps/2006', 1, 0]];
 
     /**
      * Create Gdata_Gapps object
@@ -216,7 +214,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
      * @throws Zend_Gdata_Gapps_ServiceException
      * @return Zend_Http_Response
      */
-    public function get($uri, $extraHeaders = array())
+    public function get($uri, $extraHeaders = [])
     {
         try {
             return parent::get($uri, $extraHeaders);
@@ -874,7 +872,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
             if ($foundClassName != null) {
                 $reflectionObj = new ReflectionClass($foundClassName);
                 // Prepend the domain to the query
-                $args = array_merge(array($this->getDomain()), $args);
+                $args = array_merge([$this->getDomain()], $args);
                 return $reflectionObj->newInstanceArgs($args);
             } else {
                 require_once 'Zend/Gdata/App/Exception.php';
@@ -1176,6 +1174,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
      */
     public function createGroup($groupId, $groupName, $description = null, $emailPermission = null)
     {
+        $properties = [];
         $i = 0;
         $group = $this->newGroupEntry();
         
@@ -1293,6 +1292,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
      */
     public function addMemberToGroup($recipientAddress, $groupId)
     {
+        $properties = [];
         $member = $this->newMemberEntry();
 
         $properties[] = $this->newProperty();
@@ -1343,6 +1343,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
      */
     public function addOwnerToGroup($email, $groupId)
     {
+        $properties = [];
         $owner = $this->newOwnerEntry();
 
         $properties[] = $this->newProperty();
@@ -1425,6 +1426,7 @@ class Zend_Gdata_Gapps extends Zend_Gdata
     public function updateGroup($groupId, $groupName = null, $description = null,
             $emailPermission = null)
     {
+        $properties = [];
         $i = 0;
         $group = $this->newGroupEntry();
         

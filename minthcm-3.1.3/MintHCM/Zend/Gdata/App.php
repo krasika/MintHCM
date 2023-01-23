@@ -59,13 +59,13 @@ class Zend_Gdata_App
       *
       * @see _majorProtocolVersion
       */
-    const DEFAULT_MAJOR_PROTOCOL_VERSION = 1;
+    public const DEFAULT_MAJOR_PROTOCOL_VERSION = 1;
 
     /** Default minor protocol version.
       *
       * @see _minorProtocolVersion
       */
-    const DEFAULT_MINOR_PROTOCOL_VERSION = null;
+    public const DEFAULT_MINOR_PROTOCOL_VERSION = null;
 
     /**
      * Client object used to communicate
@@ -115,9 +115,7 @@ class Zend_Gdata_App
      *
      * @var array
      */
-    protected $_registeredPackages = array(
-            'Zend_Gdata_App_Extension',
-            'Zend_Gdata_App');
+    protected $_registeredPackages = ['Zend_Gdata_App_Extension', 'Zend_Gdata_App'];
 
     /**
      * Maximum number of redirects to follow during HTTP operations
@@ -251,9 +249,7 @@ class Zend_Gdata_App
         $userAgent = $applicationId . ' Zend_Framework_Gdata/' .
             Zend_Version::VERSION;
         $client->setHeaders('User-Agent', $userAgent);
-        $client->setConfig(array(
-            'strictredirects' => true
-            )
+        $client->setConfig(['strictredirects' => true]
         );
         $this->_httpClient = $client;
         self::setStaticHttpClient($client);
@@ -285,9 +281,7 @@ class Zend_Gdata_App
             $client = new Zend_Http_Client();
             $userAgent = 'Zend_Framework_Gdata/' . Zend_Version::VERSION;
             $client->setHeaders('User-Agent', $userAgent);
-            $client->setConfig(array(
-                'strictredirects' => true
-                )
+            $client->setConfig(['strictredirects' => true]
             );
             self::$_staticHttpClient = $client;
         }
@@ -482,14 +476,14 @@ class Zend_Gdata_App
      */
     public function prepareRequest($method,
                                    $url = null,
-                                   $headers = array(),
+                                   $headers = [],
                                    $data = null,
                                    $contentTypeOverride = null)
     {
         // As a convenience, if $headers is null, we'll convert it back to
         // an empty array.
         if ($headers === null) {
-            $headers = array();
+            $headers = [];
         }
 
         $rawData = null;
@@ -566,9 +560,7 @@ class Zend_Gdata_App
             $finalContentType = $contentTypeOverride;
         }
 
-        return array('method' => $method, 'url' => $url,
-            'data' => $rawData, 'headers' => $headers,
-            'contentType' => $finalContentType);
+        return ['method' => $method, 'url' => $url, 'data' => $rawData, 'headers' => $headers, 'contentType' => $finalContentType];
     }
 
     /**
@@ -594,7 +586,7 @@ class Zend_Gdata_App
             $remainingRedirects = self::getMaxRedirects();
         }
         if ($headers === null) {
-            $headers = array();
+            $headers = [];
         }
         // Append a Gdata version header if protocol v2 or higher is in use.
         // (Protocol v1 does not use this header.)
@@ -636,7 +628,7 @@ class Zend_Gdata_App
         // In addition to standard headers to reset via resetParameters(),
         // also reset the Slug and If-Match headers
         $this->_httpClient->resetParameters();
-        $this->_httpClient->setHeaders(array('Slug', 'If-Match'));
+        $this->_httpClient->setHeaders(['Slug', 'If-Match']);
 
         // Set the params for the new request to be performed
         $this->_httpClient->setHeaders($headers);
@@ -649,7 +641,7 @@ class Zend_Gdata_App
         }
 
 
-        $this->_httpClient->setConfig(array('maxredirects' => 0));
+        $this->_httpClient->setConfig(['maxredirects' => 0]);
 
         // Set the proper adapter if we are handling a streaming upload
         $usingMimeStream = false;
@@ -757,7 +749,7 @@ class Zend_Gdata_App
      *                                    useObjectMapping() function.
      */
     public function importUrl($url, $className='Zend_Gdata_App_Feed',
-        $extraHeaders = array())
+        $extraHeaders = [])
     {
         $response = $this->get($url, $extraHeaders);
 
@@ -808,6 +800,7 @@ class Zend_Gdata_App
         $className='Zend_Gdata_App_Feed', $majorProtocolVersion = null,
         $minorProtocolVersion = null)
     {
+        $php_errormsg = null;
         if (!class_exists($className, false)) {
           require_once 'Zend/Loader.php';
           @Zend_Loader::loadClass($className);
@@ -846,6 +839,7 @@ class Zend_Gdata_App
     public static function importFile($filename,
             $className='Zend_Gdata_App_Feed', $useIncludePath = false)
     {
+        $php_errormsg = null;
         @ini_set('track_errors', 1);
         $feed = @file_get_contents($filename, $useIncludePath);
         @ini_restore('track_errors');
@@ -866,7 +860,7 @@ class Zend_Gdata_App
      * @throws Zend_Gdata_App_HttpException
      * @return Zend_Http_Response
      */
-    public function get($uri, $extraHeaders = array())
+    public function get($uri, $extraHeaders = [])
     {
         $requestData = $this->prepareRequest('GET', $uri, $extraHeaders);
         return $this->performHttpRequest(
@@ -938,7 +932,7 @@ class Zend_Gdata_App
         if (is_string($data)) {
             $requestData = $this->prepareRequest('DELETE', $data);
         } else {
-            $headers = array();
+            $headers = [];
 
             $requestData = $this->prepareRequest(
                 'DELETE', null, $headers, $data);
@@ -964,7 +958,7 @@ class Zend_Gdata_App
      *         insertion.
      */
     public function insertEntry($data, $uri, $className='Zend_Gdata_App_Entry',
-        $extraHeaders = array())
+        $extraHeaders = [])
     {
         if (!class_exists($className, false)) {
           require_once 'Zend/Loader.php';
@@ -999,7 +993,7 @@ class Zend_Gdata_App
      * @throws Zend_Gdata_App_Exception
      */
     public function updateEntry($data, $uri = null, $className = null,
-        $extraHeaders = array())
+        $extraHeaders = [])
     {
         if ($className === null && $data instanceof Zend_Gdata_App_Entry) {
             $className = get_class($data);
@@ -1120,10 +1114,7 @@ class Zend_Gdata_App
      */
     public function enableRequestDebugLogging($logfile)
     {
-        $this->_httpClient->setConfig(array(
-            'adapter' => 'Zend_Gdata_App_LoggingHttpClientAdapterSocket',
-            'logfile' => $logfile
-            ));
+        $this->_httpClient->setConfig(['adapter' => 'Zend_Gdata_App_LoggingHttpClientAdapterSocket', 'logfile' => $logfile]);
     }
 
     /**

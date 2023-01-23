@@ -61,36 +61,14 @@ use SuiteCRM\Utility\SuiteLogger as Logger;
  */
 class Resource extends ResourceIdentifier
 {
-    protected static $JSON_API_SKIP_RESERVED_KEYWORDS = array(
-        'id',
-        'type',
-    );
+    protected static $JSON_API_SKIP_RESERVED_KEYWORDS = ['id', 'type'];
 
-    protected static $JSON_API_RESERVED_KEYWORDS = array(
-        'id',
-        'type',
-        'data',
-        self::META,
-        'jsonapi',
-        self::LINKS,
-        'included',
-        'self',
-        'related',
-        self::ATTRIBUTES,
-        self::RELATIONSHIPS,
-        'href',
-        'first',
-        'last',
-        'prev',
-        'next',
-        'related',
-        'errors',
-    );
-    const DATA_RELATIONSHIPS = '/data/relationships/';
-    const RELATIONSHIPS = 'relationships';
-    const LINKS = 'links';
-    const META = 'meta';
-    const ATTRIBUTES = 'attributes';
+    protected static $JSON_API_RESERVED_KEYWORDS = ['id', 'type', 'data', self::META, 'jsonapi', self::LINKS, 'included', 'self', 'related', self::ATTRIBUTES, self::RELATIONSHIPS, 'href', 'first', 'last', 'prev', 'next', 'related', 'errors'];
+    public const DATA_RELATIONSHIPS = '/data/relationships/';
+    public const RELATIONSHIPS = 'relationships';
+    public const LINKS = 'links';
+    public const META = 'meta';
+    public const ATTRIBUTES = 'attributes';
 
     /**
      * @var array $attributes
@@ -171,7 +149,7 @@ class Resource extends ResourceIdentifier
      */
     public function toJsonApiResponseWithFields(array $fields)
     {
-        $response = array();
+        $response = [];
 
         $response['id'] = $this->id;
         $response['type'] = $this->type;
@@ -312,7 +290,7 @@ class Resource extends ResourceIdentifier
         global $sugar_config;
         foreach ($data[self::ATTRIBUTES] as $attributeName => $attributeValue) {
             if ($this->attributes === null) {
-                $this->attributes = array();
+                $this->attributes = [];
             }
 
             // Filter security sensitive information from attributes

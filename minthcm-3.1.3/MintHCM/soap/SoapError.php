@@ -47,9 +47,9 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
 require_once('soap/SoapErrorDefinitions.php');
 class SoapError{
-	var $name;
-	var $number;
-	var $description;
+	public $name;
+	public $number;
+	public $description;
 
 	function __construct(){
 		$this->set_error('no_error');
@@ -84,9 +84,7 @@ class SoapError{
 	}
 
 	function get_soap_array(){
-		return Array('number'=>$this->number,
-					 'name'=>$this->name,
-					 'description'=>$this->description);
+		return ['number'=>$this->number, 'name'=>$this->name, 'description'=>$this->description];
 
 	}
 

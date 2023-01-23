@@ -249,7 +249,7 @@ class FilterInterpreter
                 $index = 0;
                 $end = count($fieldOperations);
                 $lastOperator = null;
-                $operands = array();
+                $operands = [];
                 while ($index < $end) {
                     // Lets play: Is this element an operator or an operand?
                     if ($operator->hasOperator(current($fieldOperations))) {
@@ -277,7 +277,7 @@ class FilterInterpreter
                         );
 
                         // Clear the operands for the next operator
-                        $operands = array();
+                        $operands = [];
 
                         // We need to start again.
                         // So lets keep going ...
@@ -327,12 +327,12 @@ class FilterInterpreter
         }
 
         // Lets build the last operation into a SQL Query
-        $sqlField = implode('.', array($tableName, $filterOperator->stripFilterTag($field)));
+        $sqlField = implode('.', [$tableName, $filterOperator->stripFilterTag($field)]);
         $sqlOperator = $lastOperator->toSqlOperator();
         $sqlOperands = $lastOperator->toSqlOperands($operands);
 
         // Here's where the real magic happens
-       return implode(' ', array($sqlField, $sqlOperator, $sqlOperands));
+       return implode(' ', [$sqlField, $sqlOperator, $sqlOperands]);
     }
 
 

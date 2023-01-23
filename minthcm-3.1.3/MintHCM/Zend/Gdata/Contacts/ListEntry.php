@@ -93,9 +93,9 @@ class Zend_Gdata_Contacts_ListEntry extends Zend_Gdata_Entry
 
     protected $_names = null;
     protected $_birthday = null;
-    protected $_phones = array();
-    protected $_emails = array();
-    protected $_addresses = array();
+    protected $_phones = [];
+    protected $_emails = [];
+    protected $_addresses = [];
     protected $_organization = null;
 
 
@@ -160,12 +160,7 @@ class Zend_Gdata_Contacts_ListEntry extends Zend_Gdata_Entry
 
     public function toArray()
     {
-        $entry = array( 'first_name' => '', 'last_name' => '', 'full_name' => '', 'id' => '', 'birthday' => '','email1' => '','email2' => '',
-                        'title' => '', 'account_name' => '', 'notes' => '', 'phone_main' => '','phone_mobile' => '',
-                        'alt_address_street' => '','alt_address_postcode' => '','alt_address_city' => '','alt_address_state' => '','alt_address_country' => '',
-                        'primary_address_street' => '','primary_address_postcode' => '','primary_address_city' => '','primary_address_state' => '','primary_address_country' => '',
-                        'team_name' => '', 'assigned_user_name' => ''
-                        );
+        $entry = ['first_name' => '', 'last_name' => '', 'full_name' => '', 'id' => '', 'birthday' => '', 'email1' => '', 'email2' => '', 'title' => '', 'account_name' => '', 'notes' => '', 'phone_main' => '', 'phone_mobile' => '', 'alt_address_street' => '', 'alt_address_postcode' => '', 'alt_address_city' => '', 'alt_address_state' => '', 'alt_address_country' => '', 'primary_address_street' => '', 'primary_address_postcode' => '', 'primary_address_city' => '', 'primary_address_state' => '', 'primary_address_country' => '', 'team_name' => '', 'assigned_user_name' => ''];
 
         if($this->_names != null)
             $entry = array_merge($entry, $this->_names->toArray() );
@@ -218,7 +213,7 @@ class Zend_Gdata_Contacts_ListEntry extends Zend_Gdata_Entry
 
     protected function getEmailAddresses()
     {
-        $results = array();
+        $results = [];
         $primaryEmail = $this->getPrimaryEmail();
         if($primaryEmail !== FALSE)
             $results['email1'] =  $primaryEmail;
@@ -228,7 +223,7 @@ class Zend_Gdata_Contacts_ListEntry extends Zend_Gdata_Entry
             if($nonPrimaryEmail !== FALSE)
                 $results['email1'] = $nonPrimaryEmail;
             else
-                return array();
+                return [];
         }
 
         $secondaryEmail = $this->getNextNonPrimaryEmail();

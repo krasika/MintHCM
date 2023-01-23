@@ -52,10 +52,10 @@ if (!defined('sugarEntry') || !sugarEntry) {
  */
 class DetailView extends ListView {
 
-	var $list_row_count = null;
-	var $return_to_list_only=false;
-	var $offset_key_mismatch=false;
-	var $no_record_found=false;
+	public $list_row_count = null;
+	public $return_to_list_only=false;
+	public $offset_key_mismatch=false;
+	public $no_record_found=false;
 
 	function __construct(){
 		parent::__construct();
@@ -94,9 +94,9 @@ class DetailView extends ListView {
 		$isfirstview = 0;
 
 		$nav_history_set=false;
-		$nav_history_array=array();
+		$nav_history_array=[];
 		$nav_offset='';
-		$nav_ids_visited=array();
+		$nav_ids_visited=[];
 		$nav_stamp='';
 
 		//from list				 					offset is there but $bNavHistorySet is false.
@@ -268,11 +268,7 @@ class DetailView extends ListView {
         if($display_audit_link && (!isset($sugar_config['disc_client']) || $sugar_config['disc_client'] == false))
         {
             //Audit link
-            $popup_request_data = array(
-		        'call_back_function' => 'set_return',
-		        'form_name' => 'EditView',
-		        'field_to_name_array' => array(),
-		    );
+            $popup_request_data = ['call_back_function' => 'set_return', 'form_name' => 'EditView', 'field_to_name_array' => []];
             $json = getJSONobj();
             $encoded_popup_request_data = $json->encode($popup_request_data);
             $audit_link = "<a href='javascript:void(0)' onclick='open_popup(\"Audit\", \"600\", \"400\", \"&record=".$_REQUEST['record']."&module_name=".$_REQUEST['module']."\", true, false, $encoded_popup_request_data);'>".$this->local_app_strings['LNK_VIEW_CHANGE_LOG']."</a>";

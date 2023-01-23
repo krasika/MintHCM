@@ -41,58 +41,8 @@
  * Appropriate Legal Notices must display the words "Powered by SugarCRM" and 
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
-$dictionary['AOP_Case_Events'] = array(
-    'table' => 'aop_case_events',
-    'audited' => true,
-    'duplicate_merge' => true,
-    'fields' => array(
-        'case' => array(
-            'name' => 'case',
-            'type' => 'link',
-            'relationship' => 'cases_aop_case_events',
-            'module' => 'Cases',
-            'bean_name' => 'Case',
-            'link_type' => 'one',
-            'source' => 'non-db',
-            'vname' => 'LBL_CASE',
-            'side' => 'left',
-            'id_name' => 'case_id',
-        ),
-        'case_name' => array(
-            'name' => 'case_name',
-            'type' => 'relate',
-            'source' => 'non-db',
-            'vname' => 'LBL_CASE_NAME',
-            'save' => true,
-            'id_name' => 'case_id',
-            'link' => 'cases_aop_case_events',
-            'table' => 'cases',
-            'module' => 'Cases',
-            'rname' => 'name',
-        ),
-        'case_id' => array(
-            'name' => 'case_id',
-            'type' => 'id',
-            'reportable' => false,
-            'vname' => 'LBL_CASE_ID',
-        ),
-    ),
-    'relationships' => array(
-
-        'cases_aop_case_events' => array(
-            'lhs_module' => 'Cases',
-            'lhs_table' => 'cases',
-            'lhs_key' => 'id',
-            'rhs_module' => 'AOP_Case_Events',
-            'rhs_table' => 'aop_case_events',
-            'rhs_key' => 'case_id',
-            'relationship_type' => 'one-to-many',
-        ),
-    ),
-    'optimistic_locking' => true,
-    'unified_search' => true,
-);
+$dictionary['AOP_Case_Events'] = ['table' => 'aop_case_events', 'audited' => true, 'duplicate_merge' => true, 'fields' => ['case' => ['name' => 'case', 'type' => 'link', 'relationship' => 'cases_aop_case_events', 'module' => 'Cases', 'bean_name' => 'Case', 'link_type' => 'one', 'source' => 'non-db', 'vname' => 'LBL_CASE', 'side' => 'left', 'id_name' => 'case_id'], 'case_name' => ['name' => 'case_name', 'type' => 'relate', 'source' => 'non-db', 'vname' => 'LBL_CASE_NAME', 'save' => true, 'id_name' => 'case_id', 'link' => 'cases_aop_case_events', 'table' => 'cases', 'module' => 'Cases', 'rname' => 'name'], 'case_id' => ['name' => 'case_id', 'type' => 'id', 'reportable' => false, 'vname' => 'LBL_CASE_ID']], 'relationships' => ['cases_aop_case_events' => ['lhs_module' => 'Cases', 'lhs_table' => 'cases', 'lhs_key' => 'id', 'rhs_module' => 'AOP_Case_Events', 'rhs_table' => 'aop_case_events', 'rhs_key' => 'case_id', 'relationship_type' => 'one-to-many']], 'optimistic_locking' => true, 'unified_search' => true];
 if (!class_exists('VardefManager')) {
     require_once 'include/SugarObjects/VardefManager.php';
 }
-VardefManager::createVardef('AOP_Case_Events', 'AOP_Case_Events', array('basic', 'assignable'));
+VardefManager::createVardef('AOP_Case_Events', 'AOP_Case_Events', ['basic', 'assignable']);

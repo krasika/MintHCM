@@ -53,9 +53,9 @@ use SuiteCRM\Enumerator\ExceptionCode;
 class EmptyBodyException extends ApiException
 {
     
-    const MSG_PREFIX = '[EmptyBody]';
-    const DEFAULT_CODE = 8015;
-    const HTTP_STATUS = 400;
-    const DETAIL_TEXT_LABEL = 'LBL_EMPTY_BODY_EXCEPTION_DETAIL';
+    public const MSG_PREFIX = '[EmptyBody]';
+    public const DEFAULT_CODE = 8015;
+    public const HTTP_STATUS = 400;
+    public const DETAIL_TEXT_LABEL = 'LBL_EMPTY_BODY_EXCEPTION_DETAIL';
 
 }

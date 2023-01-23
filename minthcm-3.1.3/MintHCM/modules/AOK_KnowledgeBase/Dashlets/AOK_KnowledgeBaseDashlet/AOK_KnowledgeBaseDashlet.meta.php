@@ -55,8 +55,4 @@ if (!defined('sugarEntry') || !sugarEntry) {
  
 global $app_strings;
 
-$dashletMeta['AOK_KnowledgeBaseDashlet'] = array('module'		=> 'AOK_KnowledgeBase',
-										  'title'       => translate('LBL_HOMEPAGE_TITLE', 'AOK_KnowledgeBase'), 
-                                          'description' => 'A customizable view into AOK_KnowledgeBase',
-                                          'icon'        => 'icon_AOK_KnowledgeBase_32.gif',
-                                          'category'    => 'Module Views');
+$dashletMeta['AOK_KnowledgeBaseDashlet'] = ['module'		=> 'AOK_KnowledgeBase', 'title'       => translate('LBL_HOMEPAGE_TITLE', 'AOK_KnowledgeBase'), 'description' => 'A customizable view into AOK_KnowledgeBase', 'icon'        => 'icon_AOK_KnowledgeBase_32.gif', 'category'    => 'Module Views'];

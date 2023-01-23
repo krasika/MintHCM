@@ -61,7 +61,7 @@ class EmailAddressRelationship extends M2MRelationship
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
-    public function add($lhs, $rhs, $additionalFields = array())
+    public function add($lhs, $rhs, $additionalFields = [])
     {
         $lhsLinkName = $this->lhsLink;
 
@@ -120,10 +120,7 @@ class EmailAddressRelationship extends M2MRelationship
             }
         }
 
-        $dataToRemove = array(
-            $this->def['join_key_lhs'] => $lhs->id,
-            $this->def['join_key_rhs'] => $rhs->id
-        );
+        $dataToRemove = [$this->def['join_key_lhs'] => $lhs->id, $this->def['join_key_rhs'] => $rhs->id];
 
         $this->removeRow($dataToRemove);
 

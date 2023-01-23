@@ -122,7 +122,7 @@ class Response extends Message implements ResponseInterface
      *
      * @var string
      */
-     const EOL = "\r\n";
+     public const EOL = "\r\n";
 
     /**
      * Create new HTTP response.
@@ -134,8 +134,8 @@ class Response extends Message implements ResponseInterface
     public function __construct($status = 200, HeadersInterface $headers = null, StreamInterface $body = null)
     {
         $this->status = $this->filterStatus($status);
-        $this->headers = $headers ? $headers : new Headers();
-        $this->body = $body ? $body : new Body(fopen('php://temp', 'r+'));
+        $this->headers = $headers ?: new Headers();
+        $this->body = $body ?: new Body(fopen('php://temp', 'r+'));
     }
 
     /**

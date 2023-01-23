@@ -58,68 +58,61 @@ require_once 'Zend/Gdata/Photos/PhotoFeed.php';
 class Zend_Gdata_Photos extends Zend_Gdata
 {
 
-    const PICASA_BASE_URI = 'http://picasaweb.google.com/data';
-    const PICASA_BASE_FEED_URI = 'http://picasaweb.google.com/data/feed';
-    const AUTH_SERVICE_NAME = 'lh2';
+    public const PICASA_BASE_URI = 'http://picasaweb.google.com/data';
+    public const PICASA_BASE_FEED_URI = 'http://picasaweb.google.com/data/feed';
+    public const AUTH_SERVICE_NAME = 'lh2';
 
     /**
      * Default projection when interacting with the Picasa server.
      */
-    const DEFAULT_PROJECTION = 'api';
+    public const DEFAULT_PROJECTION = 'api';
 
     /**
      * The default visibility to filter events by.
      */
-    const DEFAULT_VISIBILITY = 'all';
+    public const DEFAULT_VISIBILITY = 'all';
 
     /**
      * The default user to retrieve feeds for.
      */
-    const DEFAULT_USER = 'default';
+    public const DEFAULT_USER = 'default';
 
     /**
      * Path to the user feed on the Picasa server.
      */
-    const USER_PATH = 'user';
+    public const USER_PATH = 'user';
 
     /**
      * Path to album feeds on the Picasa server.
      */
-    const ALBUM_PATH = 'albumid';
+    public const ALBUM_PATH = 'albumid';
 
     /**
      * Path to photo feeds on the Picasa server.
      */
-    const PHOTO_PATH = 'photoid';
+    public const PHOTO_PATH = 'photoid';
 
     /**
      * The path to the community search feed on the Picasa server.
      */
-    const COMMUNITY_SEARCH_PATH = 'all';
+    public const COMMUNITY_SEARCH_PATH = 'all';
 
     /**
      * The path to use for finding links to feeds within entries
      */
-    const FEED_LINK_PATH = 'http://schemas.google.com/g/2005#feed';
+    public const FEED_LINK_PATH = 'http://schemas.google.com/g/2005#feed';
 
     /**
      * The path to use for the determining type of an entry
      */
-    const KIND_PATH = 'http://schemas.google.com/g/2005#kind';
+    public const KIND_PATH = 'http://schemas.google.com/g/2005#kind';
 
     /**
      * Namespaces used for Zend_Gdata_Photos
      *
      * @var array
      */
-    public static $namespaces = array(
-        array('gphoto', 'http://schemas.google.com/photos/2007', 1, 0),
-        array('photo', 'http://www.pheed.com/pheed/', 1, 0),
-        array('exif', 'http://schemas.google.com/photos/exif/2007', 1, 0),
-        array('georss', 'http://www.georss.org/georss', 1, 0),
-        array('gml', 'http://www.opengis.net/gml', 1, 0),
-        array('media', 'http://search.yahoo.com/mrss/', 1, 0)
-    );
+    public static $namespaces = [['gphoto', 'http://schemas.google.com/photos/2007', 1, 0], ['photo', 'http://www.pheed.com/pheed/', 1, 0], ['exif', 'http://schemas.google.com/photos/exif/2007', 1, 0], ['georss', 'http://www.georss.org/georss', 1, 0], ['gml', 'http://www.opengis.net/gml', 1, 0], ['media', 'http://search.yahoo.com/mrss/', 1, 0]];
 
     /**
      * Create Zend_Gdata_Photos object

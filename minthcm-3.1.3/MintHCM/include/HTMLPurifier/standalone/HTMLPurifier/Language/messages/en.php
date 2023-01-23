@@ -2,16 +2,15 @@
 
 $fallback = false;
 
-$messages = array(
-
+$messages = [
     'HTMLPurifier' => 'HTML Purifier',
-// for unit testing purposes
+    // for unit testing purposes
     'LanguageFactoryTest: Pizza' => 'Pizza',
     'LanguageTest: List' => '$1',
     'LanguageTest: Hash' => '$1.Keys; $1.Values',
     'Item separator' => ', ',
-    'Item separator last' => ' and ', // non-Harvard style
-
+    'Item separator last' => ' and ',
+    // non-Harvard style
     'ErrorCollector: No errors' => 'No errors detected. However, because error reporting is still incomplete, there may have been errors that the error collector was not notified of; please inspect the output HTML carefully.',
     'ErrorCollector: At line' => ' at line $line',
     'ErrorCollector: Incidental errors' => 'Incidental errors',
@@ -44,12 +43,8 @@ $messages = array(
     'Strategy_FixNesting: Node contents removed' => 'Contents of $CurrentToken.Compact node removed',
     'AttrValidator: Attributes transformed' => 'Attributes on $CurrentToken.Compact transformed from $1.Keys to $2.Keys',
     'AttrValidator: Attribute removed' => '$CurrentAttr.Name attribute on $CurrentToken.Compact removed',
-);
+];
 
-$errorNames = array(
-    E_ERROR => 'Error',
-    E_WARNING => 'Warning',
-    E_NOTICE => 'Notice'
-);
+$errorNames = [E_ERROR => 'Error', E_WARNING => 'Warning', E_NOTICE => 'Notice'];
 
 // vim: et sw=4 sts=4

@@ -113,7 +113,7 @@ class CliLoggerFormatter implements FormatterInterface
         $level = $record['level'];
         $message = $record['message'];
 
-        list($color, $code) = $this->getColourAndCode($level);
+        [$color, $code] = $this->getColourAndCode($level);
 
         if ($level >= Logger::WARNING || $this->alwaysColourLine) {
             $message = $color . $message . $this->colors['reset'];

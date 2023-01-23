@@ -48,12 +48,5 @@ if (!defined('sugarEntry') || !sugarEntry) {
 $module_name = 'AOD_IndexEvent';
 $object_name = 'AOD_IndexEvent';
 $_module_name = 'aod_indexevent';
-$popupMeta = array('moduleMain' => $module_name,
-						'varName' => $object_name,
-						'orderBy' => $_module_name.'.name',
-						'whereClauses' => 
-							array('name' => $_module_name . '.name', 
-								),
-						    'searchInputs'=> array($_module_name. '_number', 'name', 'priority','status'),
-							
-						);
+$popupMeta = ['moduleMain' => $module_name, 'varName' => $object_name, 'orderBy' => $_module_name.'.name', 'whereClauses' => 
+							['name' => $_module_name . '.name'], 'searchInputs'=> [$_module_name. '_number', 'name', 'priority', 'status']];

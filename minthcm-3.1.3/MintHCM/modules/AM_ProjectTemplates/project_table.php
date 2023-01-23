@@ -63,7 +63,7 @@ class AM_ProjectTemplatesTable {
 		$resources1 = $project_template->get_linked_beans('am_projecttemplates_users_1','User');
 		$resources2 = $project_template->get_linked_beans('am_projecttemplates_contacts_1','Contact');
 		//Combine resources into array of objects
-		$resource_array = array();
+		$resource_array = [];
 		foreach($resources1 as $user){
 			$resource = new stdClass;
 			$resource->id = $user->id;

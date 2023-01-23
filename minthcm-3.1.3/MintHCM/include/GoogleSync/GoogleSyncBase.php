@@ -72,7 +72,7 @@ class GoogleSyncBase
     protected $gService;
 
     /** @var array The Google AuthcConfig json */
-    protected $authJson = array();
+    protected $authJson = [];
 
     /** @var string The local timezone */
     protected $timezone;
@@ -81,7 +81,7 @@ class GoogleSyncBase
     protected $calendarId;
 
     /** @var array An array of MintHCM meeting id's that we've already synced this session */
-    protected $syncedList = array();
+    protected $syncedList = [];
 
     /** @var object A Database Instance */
     protected $db;
@@ -303,7 +303,7 @@ class GoogleSyncBase
         $query = "SELECT id FROM meetings WHERE assigned_user_id = '" . $userId . "' AND date_start <= now() + interval 3 month";
         $result = $this->db->query($query);
 
-        $meetings = array();
+        $meetings = [];
         while ($row = $this->db->fetchByAssoc($result)) {
             $meeting = BeanFactory::getBean('Meetings');
             if (!$meeting) {
@@ -387,13 +387,7 @@ class GoogleSyncBase
         }
 
         // Set Options for what events we get from Google
-        $optParams = array(
-            'maxResults' => 500,
-            'showDeleted' => true,
-            'singleEvents' => true,
-            'timeMin' => date('c', strtotime('-1 month')),
-            'timeMax' => date('c', strtotime('+3 month')),
-        );
+        $optParams = ['maxResults' => 500, 'showDeleted' => true, 'singleEvents' => true, 'timeMin' => date('c', strtotime('-1 month')), 'timeMax' => date('c', strtotime('+3 month'))];
 
         $results_g = $this->gService->events->listEvents($this->calendarId, $optParams);
 
@@ -403,7 +397,7 @@ class GoogleSyncBase
         if (empty($results)) {
             $this->logger->info(__FILE__ . ':' . __LINE__ . ' ' . __METHOD__ . ' - ' . 'No events found.');
         } else {
-            $this->logger->info(__FILE__ . ':' . __LINE__ . ' ' . __METHOD__ . ' - ' . 'Found ' . count($results) . ' Google Events');
+            $this->logger->info(__FILE__ . ':' . __LINE__ . ' ' . __METHOD__ . ' - ' . 'Found ' . (is_array($results) || $results instanceof \Countable ? count($results) : 0) . ' Google Events');
         }
         
         return $results;
@@ -582,6 +576,7 @@ class GoogleSyncBase
      */
     protected function returnExtendedProperties(Google_Service_Calendar_Event $event_remote, Meeting $event_local)
     {
+        $private = [];
         // We pull the existing extendedProperties, and change our values
         // That way we don't mess with anything else that's using other values.
         $extendedProperties = $event_remote->getExtendedProperties();
@@ -590,7 +585,7 @@ class GoogleSyncBase
             $private = $extendedProperties->getPrivate();
         } elseif (empty($extendedProperties)) {
             $extendedProperties = new Google_Service_Calendar_EventExtendedProperties;
-            $private = array();
+            $private = [];
         }
 
         $private['suitecrm_id'] = $event_local->id;
@@ -857,8 +852,8 @@ class GoogleSyncBase
         $event_remote->setLocation($event_local->location);
 
         $timedate = new TimeDate;
-        $localStart = $timedate->to_db($event_local->date_start, false);
-        $localEnd = $timedate->to_db($event_local->date_end, false);
+        $localStart = $timedate->to_db($event_local->date_start);
+        $localEnd = $timedate->to_db($event_local->date_end);
 
         $startDateTime = new Google_Service_Calendar_EventDateTime;
         $startDateTime->setDateTime(date(DATE_ATOM, strtotime($localStart . ' UTC')));
@@ -884,7 +879,7 @@ class GoogleSyncBase
         if ($reminders_local) {
             $reminders_remote = new Google_Service_Calendar_EventReminders;
             $reminders_remote->setUseDefault(false);
-            $reminders_array = array();
+            $reminders_array = [];
             foreach ($reminders_local as $reminder_local) {
                 $reminder_remote = new Google_Service_Calendar_EventReminder;
                 $reminder_remote->setMethod('popup');
@@ -911,7 +906,7 @@ class GoogleSyncBase
         $event_remote_empty = new Google_Service_Calendar_Event;
 
         $extendedProperties = new Google_Service_Calendar_EventExtendedProperties;
-        $extendedProperties->setPrivate(array());
+        $extendedProperties->setPrivate([]);
 
         $event_remote_empty->setExtendedProperties($extendedProperties);
 

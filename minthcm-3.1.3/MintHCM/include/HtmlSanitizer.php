@@ -38,13 +38,13 @@ class HtmlSanitizer
 
         $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
         $config->set('Core.Encoding', 'UTF-8');
-        $hidden_tags = array('script' => true, 'style' => true, 'title' => true, 'head' => true);
+        $hidden_tags = ['script' => true, 'style' => true, 'title' => true, 'head' => true];
         $config->set('Core.HiddenElements', $hidden_tags);
         $config->set('Cache.SerializerPath', sugar_cached("htmlclean"));
-        $config->set('URI.Base', isset($sugar_config['site_url']) ? $sugar_config['site_url'] : null);
+        $config->set('URI.Base', $sugar_config['site_url'] ?? null);
         $config->set('CSS.Proprietary', true);
         $config->set('HTML.TidyLevel', 'light');
-        $config->set('HTML.ForbiddenElements', array('body' => true, 'html' => true));
+        $config->set('HTML.ForbiddenElements', ['body' => true, 'html' => true]);
         $config->set('AutoFormat.RemoveEmpty', true);
         $config->set('Cache.SerializerPermissions', 0775);
         $config->set('Filter.ExtractStyleBlocks.TidyImpl', false);
@@ -53,7 +53,7 @@ class HtmlSanitizer
             $config->set('HTML.SafeEmbed', true);
         }
         $config->set('Output.FlashCompat', true);
-        $config->set('Filter.Custom', array(new HTMLPurifierFilterXmp()));
+        $config->set('Filter.Custom', [new HTMLPurifierFilterXmp()]);
         $config->set('HTML.DefinitionID', 'Sugar HTML Def');
         $config->set('HTML.DefinitionRev', 2);
         $config->set('Cache.SerializerPath', sugar_cached('htmlclean/'));
@@ -66,19 +66,10 @@ class HtmlSanitizer
                 'Flow',
                 'Optional: #PCDATA | Flow | Block',
                 'Core',
-                array(
-                    'src*' => 'URI',
-                    'frameborder' => 'Enum#0,1',
-                    'marginwidth' => 'Pixels',
-                    'marginheight' => 'Pixels',
-                    'scrolling' => 'Enum#|yes,no,auto',
-                    'align' => 'Enum#top,middle,bottom,left,right,center',
-                    'height' => 'Length',
-                    'width' => 'Length',
-                )
+                ['src*' => 'URI', 'frameborder' => 'Enum#0,1', 'marginwidth' => 'Pixels', 'marginheight' => 'Pixels', 'scrolling' => 'Enum#|yes,no,auto', 'align' => 'Enum#top,middle,bottom,left,right,center', 'height' => 'Length', 'width' => 'Length']
             );
 
-            $iframe->excludes = array('iframe');
+            $iframe->excludes = ['iframe'];
         }
 
         /** @var \HTMLPurifier_URIDefinition $uri */

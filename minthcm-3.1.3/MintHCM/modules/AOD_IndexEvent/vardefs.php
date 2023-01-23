@@ -42,87 +42,10 @@
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$dictionary['AOD_IndexEvent'] = array(
-	'table'=>'aod_indexevent',
-	'audited'=>true,
-		'duplicate_merge'=>true,
-		'fields'=>array (
-  'error' => 
-  array (
-    'required' => false,
-    'name' => 'error',
-    'vname' => 'LBL_ERROR',
-    'type' => 'varchar',
-    'massupdate' => 0,
-    'no_default' => false,
-    'comments' => '',
-    'help' => '',
-    'importable' => 'true',
-    'duplicate_merge' => 'disabled',
-    'duplicate_merge_dom_value' => '0',
-    'audited' => false,
-    'reportable' => true,
-    'unified_search' => false,
-    'merge_filter' => 'disabled',
-    'len' => '255',
-    'size' => '20',
-  ),
-  'success' => 
-  array (
-    'required' => false,
-    'name' => 'success',
-    'vname' => 'LBL_SUCCESS',
-    'type' => 'bool',
-    'massupdate' => 0,
-    'default' => '0',
-    'no_default' => false,
-    'comments' => '',
-    'help' => '',
-    'importable' => 'true',
-    'duplicate_merge' => 'disabled',
-    'duplicate_merge_dom_value' => '0',
-    'audited' => false,
-    'reportable' => true,
-    'unified_search' => false,
-    'merge_filter' => 'disabled',
-    'size' => '20',
-  ),
-  'record_id' => array (
-    'name' => 'record_id',
-    'type' => 'id',
-    'reportable' => false,
-    'vname' => 'LBL_RECORD_ID',
-  ),
-  'record_module' => array (
-    'required' => false,
-    'name' => 'record_module',
-    'vname' => 'LBL_RECORD_MODULE',
-    'type' => 'varchar',
-    'massupdate' => 0,
-    'no_default' => false,
-    'comments' => '',
-    'help' => '',
-    'importable' => 'true',
-    'duplicate_merge' => 'disabled',
-    'duplicate_merge_dom_value' => '0',
-    'audited' => false,
-    'reportable' => true,
-    'unified_search' => false,
-    'merge_filter' => 'disabled',
-    'len' => '255',
-    'size' => '20',
-  ),
-),
-	'relationships'=>array (
-),
-    'indices' => array (
-        array('name' =>'idx_record_module' , 'type'=>'index' , 'fields'=>array('record_module')),
-        array('name' =>'idx_record_id', 'type' =>'index', 'fields'=>array('record_id')),
-    ),
-	'optimistic_locking'=>true,
-		'unified_search'=>false,
-	);
+$dictionary['AOD_IndexEvent'] = ['table'=>'aod_indexevent', 'audited'=>true, 'duplicate_merge'=>true, 'fields'=>['error' => 
+['required' => false, 'name' => 'error', 'vname' => 'LBL_ERROR', 'type' => 'varchar', 'massupdate' => 0, 'no_default' => false, 'comments' => '', 'help' => '', 'importable' => 'true', 'duplicate_merge' => 'disabled', 'duplicate_merge_dom_value' => '0', 'audited' => false, 'reportable' => true, 'unified_search' => false, 'merge_filter' => 'disabled', 'len' => '255', 'size' => '20'], 'success' => 
+['required' => false, 'name' => 'success', 'vname' => 'LBL_SUCCESS', 'type' => 'bool', 'massupdate' => 0, 'default' => '0', 'no_default' => false, 'comments' => '', 'help' => '', 'importable' => 'true', 'duplicate_merge' => 'disabled', 'duplicate_merge_dom_value' => '0', 'audited' => false, 'reportable' => true, 'unified_search' => false, 'merge_filter' => 'disabled', 'size' => '20'], 'record_id' => ['name' => 'record_id', 'type' => 'id', 'reportable' => false, 'vname' => 'LBL_RECORD_ID'], 'record_module' => ['required' => false, 'name' => 'record_module', 'vname' => 'LBL_RECORD_MODULE', 'type' => 'varchar', 'massupdate' => 0, 'no_default' => false, 'comments' => '', 'help' => '', 'importable' => 'true', 'duplicate_merge' => 'disabled', 'duplicate_merge_dom_value' => '0', 'audited' => false, 'reportable' => true, 'unified_search' => false, 'merge_filter' => 'disabled', 'len' => '255', 'size' => '20']], 'relationships'=>[], 'indices' => [['name' =>'idx_record_module', 'type'=>'index', 'fields'=>['record_module']], ['name' =>'idx_record_id', 'type' =>'index', 'fields'=>['record_id']]], 'optimistic_locking'=>true, 'unified_search'=>false];
 if (!class_exists('VardefManager')){
         require_once('include/SugarObjects/VardefManager.php');
 }
-VardefManager::createVardef('AOD_IndexEvent','AOD_IndexEvent', array('basic','assignable'));
+VardefManager::createVardef('AOD_IndexEvent','AOD_IndexEvent', ['basic', 'assignable']);

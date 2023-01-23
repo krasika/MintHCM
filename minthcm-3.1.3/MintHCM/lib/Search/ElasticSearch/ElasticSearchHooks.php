@@ -106,9 +106,7 @@ class ElasticSearchHooks
     {
         try {
             $this->reIndex($bean);
-        } catch (SearchException $exception) {
-            $this->handleError($exception);
-        } catch (\Exception $exception) {
+        } catch (SearchException|\Exception $exception) {
             $this->handleError($exception);
         } catch (\Throwable $throwable) {
             $this->handleError($throwable);

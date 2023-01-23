@@ -78,7 +78,7 @@ class JSON
 
         if ($encodeSpecial)
         {
-            $charMap = array('<' => '\u003C', '>' => '\u003E', "'" => '\u0027', '&' => '\u0026');
+            $charMap = ['<' => '\u003C', '>' => '\u003E', "'" => '\u0027', '&' => '\u0026'];
             foreach($charMap as $c => $enc)
             {
                 $encodedString = str_replace($c, $enc, $encodedString);

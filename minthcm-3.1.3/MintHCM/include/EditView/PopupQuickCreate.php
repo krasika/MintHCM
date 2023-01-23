@@ -55,7 +55,7 @@ class PopupQuickCreate extends SubpanelQuickCreate{
 	function __construct($module, $view='QuickCreate'){
 		$this->defaultProcess = false;
 		parent::__construct($module, $view, true);
-		$this->ev->defs['templateMeta']['form']['buttons'] = array('POPUPSAVE', 'POPUPCANCEL');
+		$this->ev->defs['templateMeta']['form']['buttons'] = ['POPUPSAVE', 'POPUPCANCEL'];
 	}
 
     /**

@@ -46,6 +46,4 @@ if (!defined('sugarEntry') || !sugarEntry) {
  */
 
 $searchFields['ACLRoles'] = 
-	array (
-		'name' => array( 'query_type'=>'default'),
-		);
+	['name' => ['query_type'=>'default']];

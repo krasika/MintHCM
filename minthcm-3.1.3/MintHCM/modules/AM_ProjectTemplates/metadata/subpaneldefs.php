@@ -45,92 +45,38 @@ if (!defined('sugarEntry') || !sugarEntry) {
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$layout_defs["AM_ProjectTemplates"] = array(
-    'subpanel_setup' => array(
-        'am_tasktemplates_am_projecttemplates' =>
-            array(
-                'order' => 100,
-                'module' => 'AM_TaskTemplates',
-                'subpanel_name' => 'default',
-                'sort_order' => 'asc',
-                'sort_by' => 'id',
-                'title_key' => 'LBL_AM_TASKTEMPLATES_AM_PROJECTTEMPLATES_FROM_AM_TASKTEMPLATES_TITLE',
-                'get_subpanel_data' => 'am_tasktemplates_am_projecttemplates',
-                'top_buttons' =>
-                    array(
-                        0 =>
-                            array(
-                                'widget_class' => 'SubPanelTopButtonQuickCreate',
-                            ),
-                        1 =>
-                            array(
-                                'widget_class' => 'SubPanelTopSelectButton',
-                                'mode' => 'MultiSelect',
-                            ),
-                    ),
-            ),
-        /*
-		'am_projecttemplates_contacts_1' =>
-            array(
-                'order' => 101,
-                'module' => 'Contacts',
-                'subpanel_name' => 'default',
-                'sort_order' => 'asc',
-                'sort_by' => 'id',
-                'title_key' => 'LBL_AM_PROJECTTEMPLATES_RESOURCES_TITLE',
-                'get_subpanel_data' => 'am_projecttemplates_contacts_1',
-                'top_buttons' =>
-                    array(
-                        0 =>
-                            array(
-                                'widget_class' => 'SubPanelTopButtonQuickCreate',
-                            ),
-                        1 =>
-                            array(
-                                'widget_class' => 'SubPanelTopSelectButton',
-                                'mode' => 'MultiSelect',
-                            ),
-                    ),
-            ),
-		*/
-        'am_projecttemplates_resources' => array(
-            'order' => 101,
-            'module' => 'AM_ProjectTemplates',
-            'subpanel_name' => 'AM_ProjectTemplates',
-            'type' => 'collection',
-            'sort_order' => 'asc',
-            'sort_by' => 'id',
-            'title_key' => 'LBL_AM_PROJECTTEMPLATES_RESOURCES_TITLE',
-            'top_buttons' =>
+$layout_defs["AM_ProjectTemplates"] = ['subpanel_setup' => [
+    'am_tasktemplates_am_projecttemplates' =>
+        ['order' => 100, 'module' => 'AM_TaskTemplates', 'subpanel_name' => 'default', 'sort_order' => 'asc', 'sort_by' => 'id', 'title_key' => 'LBL_AM_TASKTEMPLATES_AM_PROJECTTEMPLATES_FROM_AM_TASKTEMPLATES_TITLE', 'get_subpanel_data' => 'am_tasktemplates_am_projecttemplates', 'top_buttons' =>
+            [0 =>
+                ['widget_class' => 'SubPanelTopButtonQuickCreate'], 1 =>
+                ['widget_class' => 'SubPanelTopSelectButton', 'mode' => 'MultiSelect']]],
+    /*
+    'am_projecttemplates_contacts_1' =>
                 array(
-                    0 =>
-                        array(
-                            'widget_class' => 'SubPanelTopSelectUsersButton', 'mode' => 'MultiSelect',
-                        ),
-                    1 =>
-                        array(
-                            'widget_class' => 'SubPanelTopSelectContactsButton', 'mode' => 'MultiSelect',
-                        ),
-                ),
-            'collection_list' => array(
-                'users' => array(
-                    'module' => 'Users',
-                    'subpanel_name' => 'ForProject',
-                    'get_subpanel_data' => 'am_projecttemplates_users_1',
-                ),
-				'contacts' => array(
+                    'order' => 101,
                     'module' => 'Contacts',
-                    'subpanel_name' => 'ForProject',
+                    'subpanel_name' => 'default',
+                    'sort_order' => 'asc',
+                    'sort_by' => 'id',
+                    'title_key' => 'LBL_AM_PROJECTTEMPLATES_RESOURCES_TITLE',
                     'get_subpanel_data' => 'am_projecttemplates_contacts_1',
+                    'top_buttons' =>
+                        array(
+                            0 =>
+                                array(
+                                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                                ),
+                            1 =>
+                                array(
+                                    'widget_class' => 'SubPanelTopSelectButton',
+                                    'mode' => 'MultiSelect',
+                                ),
+                        ),
                 ),
-
-            )
-        ),
-		
-
-
-
-    ),
-
-
-);
+    */
+    'am_projecttemplates_resources' => ['order' => 101, 'module' => 'AM_ProjectTemplates', 'subpanel_name' => 'AM_ProjectTemplates', 'type' => 'collection', 'sort_order' => 'asc', 'sort_by' => 'id', 'title_key' => 'LBL_AM_PROJECTTEMPLATES_RESOURCES_TITLE', 'top_buttons' =>
+        [0 =>
+            ['widget_class' => 'SubPanelTopSelectUsersButton', 'mode' => 'MultiSelect'], 1 =>
+            ['widget_class' => 'SubPanelTopSelectContactsButton', 'mode' => 'MultiSelect']], 'collection_list' => ['users' => ['module' => 'Users', 'subpanel_name' => 'ForProject', 'get_subpanel_data' => 'am_projecttemplates_users_1'], 'contacts' => ['module' => 'Contacts', 'subpanel_name' => 'ForProject', 'get_subpanel_data' => 'am_projecttemplates_contacts_1']]],
+]];

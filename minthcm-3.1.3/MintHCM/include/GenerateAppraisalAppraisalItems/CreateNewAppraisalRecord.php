@@ -121,11 +121,11 @@ class CreateNewAppraisalRecord {
    }
 
    protected function getRolesBeans($transformed_record_bean) {
-      return ($this->transformed_module_name == static::$EMPLOYEES_MODULE_NAME ? $this->getRolesBeansFromEmployee($transformed_record_bean) : array());
+      return ($this->transformed_module_name == static::$EMPLOYEES_MODULE_NAME ? $this->getRolesBeansFromEmployee($transformed_record_bean) : []);
    }
 
    protected function getRolesBeansFromEmployee($employee_bean) {
-      $roles_beans = array();
+      $roles_beans = [];
 
       $linked_roles_from_employee = $employee_bean->get_linked_beans('roles', 'EmployeeRoles');
       if ( gettype($linked_roles_from_employee) == 'array' ) {

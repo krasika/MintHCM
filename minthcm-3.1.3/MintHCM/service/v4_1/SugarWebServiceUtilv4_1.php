@@ -127,7 +127,7 @@ class SugarWebServiceUtilv4_1 extends SugarWebServiceUtilv4
 
 		if (isset($bean->$link_field_name)) {
 			//First get all the related beans
-            $params = array();
+            $params = [];
             $params['offset'] = $offset;
             $params['limit'] = $limit;
 
@@ -138,8 +138,8 @@ class SugarWebServiceUtilv4_1 extends SugarWebServiceUtilv4
 
             $related_beans = $bean->$link_field_name->getBeans($params);
             //Create a list of field/value rows based on $link_module_fields
-			$list = array();
-            $filterFields = array();
+			$list = [];
+            $filterFields = [];
             if (!empty($order_by) && !empty($related_beans))
             {
                 $related_beans = order_beans($related_beans, $order_by);
@@ -150,7 +150,7 @@ class SugarWebServiceUtilv4_1 extends SugarWebServiceUtilv4
                 {
                     $filterFields = $this->filter_fields($bean, $link_module_fields);
                 }
-                $row = array();
+                $row = [];
                 foreach ($filterFields as $field) {
                     if (isset($bean->$field))
                     {
@@ -173,7 +173,7 @@ class SugarWebServiceUtilv4_1 extends SugarWebServiceUtilv4
                 $list[] = $row;
             }
             $GLOBALS['log']->info('End: SoapHelperWebServices->getRelationshipResults');
-            return array('rows' => $list, 'fields_set_on_rows' => $filterFields);
+            return ['rows' => $list, 'fields_set_on_rows' => $filterFields];
 		} else {
 			$GLOBALS['log']->info('End: SoapHelperWebServices->getRelationshipResults - ' . $link_field_name . ' relationship does not exists');
 			return false;

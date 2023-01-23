@@ -194,7 +194,7 @@ EOD;
     );
 
     foreach ($updates as $update) {
-        $html .= display_single_update($update, $hideImage);
+        $html .= display_single_update($update);
     }
     $html .= '</div>';
     $html .= quick_edit_case_updates($focus);

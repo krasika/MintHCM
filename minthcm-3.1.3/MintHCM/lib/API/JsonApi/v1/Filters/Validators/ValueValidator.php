@@ -57,7 +57,7 @@ class ValueValidator implements ValidatorInterface
     /**
      * @var array
      */
-    private static $BANNED_RESERVED_CHARACTERS = array(
+    private static $BANNED_RESERVED_CHARACTERS = [
         // commented out characters are the allowed
         '+',
         // ',',
@@ -75,8 +75,8 @@ class ValueValidator implements ValidatorInterface
         ')',
         '*',
         '/',
-//        ':',
-//        ';',
+        //        ':',
+        //        ';',
         '<',
         '=',
         '>',
@@ -84,13 +84,12 @@ class ValueValidator implements ValidatorInterface
         '@',
         "\\",
         '^',
-//        '`',
+        //        '`',
         '{',
         '|',
         '}',
         '~',
-//        ' '
-    );
+    ];
 
     /**
      * @param mixed $value

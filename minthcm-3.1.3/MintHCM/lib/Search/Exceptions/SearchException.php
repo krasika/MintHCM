@@ -54,8 +54,8 @@ if (!defined('sugarEntry') || !sugarEntry) {
 class SearchException extends \RuntimeException
 {
     
-    const ZERO_SIZE = 100;
-    const ES_DISABLED = 101;
-    const ES_MODULE_BLACKLISTED = 102;
+    public const ZERO_SIZE = 100;
+    public const ES_DISABLED = 101;
+    public const ES_MODULE_BLACKLISTED = 102;
 
 }

@@ -52,53 +52,6 @@ if ( !defined('sugarEntry') || !sugarEntry ) {
  * Reserved. Contributor(s): ______________________________________..
  * ******************************************************************************* */
 
-$dictionary['AddressBook'] = array( 'table' => 'address_book',
-   'fields' => array(
-      'id' => array(
-         'name' => 'id',
-         'type' => 'varchar',
-         'len' => '36',
-      ),
-      'assigned_user_id' => array(
-         'name' => 'assigned_user_id',
-         'vname' => 'LBL_USER_ID',
-         'type' => 'id',
-         'required' => true,
-         'reportable' => false,
-      ),
-      'bean' => array(
-         'name' => 'bean',
-         'vname' => 'LBL_BEAN',
-         'type' => 'varchar',
-         'len' => '50',
-         'required' => true,
-         'reportable' => false,
-      ),
-      'bean_id' => array(
-         'name' => 'bean_id',
-         'vname' => 'LBL_BEAN_ID',
-         'type' => 'id',
-         'required' => true,
-         'reportable' => false,
-      ),
-   ),
-   'indices' => array(
-      array(
-         'name' => 'address_bookpk',
-         'type' => 'primary',
-         'fields' =>
-         array(
-            'id',
-         ),
-      ),
-      array(
-         'name' => 'ab_user_bean_idx',
-         'type' => 'index',
-         'fields' => array(
-            'assigned_user_id',
-            'bean',
-         )
-      ),
-   ), /* end indices */
-);
+$dictionary['AddressBook'] = ['table' => 'address_book', 'fields' => ['id' => ['name' => 'id', 'type' => 'varchar', 'len' => '36'], 'assigned_user_id' => ['name' => 'assigned_user_id', 'vname' => 'LBL_USER_ID', 'type' => 'id', 'required' => true, 'reportable' => false], 'bean' => ['name' => 'bean', 'vname' => 'LBL_BEAN', 'type' => 'varchar', 'len' => '50', 'required' => true, 'reportable' => false], 'bean_id' => ['name' => 'bean_id', 'vname' => 'LBL_BEAN_ID', 'type' => 'id', 'required' => true, 'reportable' => false]], 'indices' => [['name' => 'address_bookpk', 'type' => 'primary', 'fields' =>
+['id']], ['name' => 'ab_user_bean_idx', 'type' => 'index', 'fields' => ['assigned_user_id', 'bean']]]];
 

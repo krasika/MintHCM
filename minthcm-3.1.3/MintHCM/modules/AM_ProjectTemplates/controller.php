@@ -31,13 +31,14 @@ class AM_ProjectTemplatesController extends SugarController {
 
     function action_create_project(){
 
+        $enddate_array = [];
         global $current_user, $db, $mod_strings;
 
         $project_name = $_POST['p_name'];
         $template_id = $_POST['template_id'];
         $project_start = $_POST['start_date'];
         $copy_all = isset($_POST['copy_all_tasks']) ? 1 : 0;
-        $copy_tasks = isset($_POST['tasks']) ? $_POST['tasks'] : array() ;
+        $copy_tasks = $_POST['tasks'] ?? [] ;
 
 
 
@@ -62,9 +63,9 @@ class AM_ProjectTemplatesController extends SugarController {
 
 		$dateformat = $current_user->getPreference('datef');
 
-        $days = array("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
+        $days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         $businessHours = BeanFactory::getBean("AOBH_BusinessHours");
-        $bhours = array();
+        $bhours = [];
         foreach ($days as $day) {
             $bh = $businessHours->getBusinessHoursForDay($day);
 
@@ -97,7 +98,7 @@ class AM_ProjectTemplatesController extends SugarController {
 
         //default business hours array
         if ($override_business_hours != 1 || empty($bhours)) {
-            $bhours = array('Monday' => 8,'Tuesday' => 8,'Wednesday' => 8, 'Thursday' => 8, 'Friday' => 8, 'Saturday' => 0, 'Sunday' => 0);
+            $bhours = ['Monday' => 8, 'Tuesday' => 8, 'Wednesday' => 8, 'Thursday' => 8, 'Friday' => 8, 'Saturday' => 0, 'Sunday' => 0];
         }
         //---------------------------
 
@@ -245,11 +246,7 @@ class AM_ProjectTemplatesController extends SugarController {
 
         //redirct to new project
         SugarApplication::appendErrorMessage($mod_strings["LBL_NEW_PROJECT_CREATED"]);
-        $params = array(
-            'module'=> 'Project',
-            'action'=>'DetailView',
-            'record' => $project->id,
-        );
+        $params = ['module'=> 'Project', 'action'=>'DetailView', 'record' => $project->id];
         SugarApplication::redirect('index.php?' . http_build_query($params));
     }
 
@@ -263,7 +260,7 @@ class AM_ProjectTemplatesController extends SugarController {
         $project_template = new AM_ProjectTemplates();
 		$pid = $_POST["pid"];
         $project_template->retrieve($pid);
-        
+
 		//Get project tasks
 		$project_template->load_relationship('am_tasktemplates_am_projecttemplates');
 		$tasks = $project_template->get_linked_beans('am_tasktemplates_am_projecttemplates','AM_TaskTemplates');
@@ -273,7 +270,7 @@ class AM_ProjectTemplatesController extends SugarController {
         $start_date =  Date('Y-m-d');
 
         $query = "select max(duration) +1 from am_tasktemplates inner join am_tasktemplates_am_projecttemplates_c on am_tasktemplates_am_projecttemplatesam_tasktemplates_idb = am_tasktemplates.id and am_tasktemplates_am_projecttemplatesam_projecttemplates_ida = '{$pid}'";
-        
+
         $duration = $db->getOne($query);
 
         if ($duration < 31) {
@@ -316,6 +313,7 @@ class AM_ProjectTemplatesController extends SugarController {
     //Create new project task
     function action_update_GanttChart(){
 
+        $milestone_flag = null;
         global $current_user, $db;
 
         $task_name = $_POST['task_name'];
@@ -376,7 +374,7 @@ class AM_ProjectTemplatesController extends SugarController {
         $project_template->load_relationship('am_tasktemplates_am_projecttemplates');
         $tasks = $project_template->get_linked_beans('am_tasktemplates_am_projecttemplates', 'AM_TaskTemplates');
 
-        $tid = count($tasks) + 1 ;
+        $tid = (is_array($tasks) || $tasks instanceof \Countable ? count($tasks) : 0) + 1 ;
 
         if($this->IsNullOrEmptyString($task_id)){
             $this->create_task($task_name,$start,$enddate,$project_id, $milestone_flag,$status, $tid, $predecessor, $rel_type, $duration,$duration_unit,$resource,$percent,$note,$actual_duration,$tid);

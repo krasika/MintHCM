@@ -75,7 +75,7 @@ class Cookies implements CookiesInterface
      */
     public function get($name, $default = null)
     {
-        return isset($this->requestCookies[$name]) ? $this->requestCookies[$name] : $default;
+        return $this->requestCookies[$name] ?? $default;
     }
 
     /**
@@ -166,7 +166,7 @@ class Cookies implements CookiesInterface
     public static function parseHeader($header)
     {
         if (is_array($header) === true) {
-            $header = isset($header[0]) ? $header[0] : '';
+            $header = $header[0] ?? '';
         }
 
         if (is_string($header) === false) {

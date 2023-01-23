@@ -111,6 +111,7 @@ abstract class DashletGenericChart extends Dashlet
         array $options = null
         )
     {
+        $dashletData = [];
         parent::__construct($id);
 
         if ( isset($options) ) {
@@ -139,7 +140,7 @@ abstract class DashletGenericChart extends Dashlet
         // fake a reporter object here just to pass along the db type used in many widgets.
         // this should be taken out when sugarwidgets change
         $db = DBManagerFactory::getInstance();
-        $temp = (object) array('db' => &$db, 'report_def_str' => '');
+        $temp = (object) ['db' => &$db, 'report_def_str' => ''];
         $this->layoutManager->setAttributePtr('reporter', $temp);
     }
 
@@ -207,7 +208,7 @@ abstract class DashletGenericChart extends Dashlet
     {
         global $timedate;
 
-        $options = array();
+        $options = [];
 
         foreach($req as $name => $value)
             if(!is_array($value)) $req[$name] = trim($value);
@@ -241,13 +242,13 @@ abstract class DashletGenericChart extends Dashlet
      */
     public function displayOptions()
     {
-        $currentSearchFields = array();
+        $currentSearchFields = [];
 
         if ( is_array($this->_searchFields) ) {
             foreach($this->_searchFields as $name=>$params) {
                 if(!empty($name)) {
                     $name = strtolower($name);
-                    $currentSearchFields[$name] = array();
+                    $currentSearchFields[$name] = [];
 
                     $widgetDef = $params;
                     if ( isset($this->getSeedBean()->field_defs[$name]) )
@@ -321,7 +322,7 @@ abstract class DashletGenericChart extends Dashlet
      */
     protected function constructGroupBy()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -376,7 +377,7 @@ abstract class DashletGenericChart extends Dashlet
     function getChartData($query)
     {
         global $app_list_strings, $db;
-        $dataSet = array();
+        $dataSet = [];
         $result = $db->query($query);
 
         $row = $db->fetchByAssoc($result);
@@ -402,16 +403,17 @@ abstract class DashletGenericChart extends Dashlet
      * @return        The sorted and translated data.
      */
     function sortData($data_set, $keycolname1=null, $translate1=false, $keycolname2=null, $translate2=false, $ifsort2=false) {
+        $sortby1 = [];
         //You can set whether the columns need to be translated or sorted. It the column needn't to be translated, the sorting must be done in SQL, this function will not do the sorting.
         global $app_list_strings;
-        $sortby1[] = array();
+        $sortby1[] = [];
         foreach ($data_set as $row) {
             $sortby1[]  = $row[$keycolname1];
         }
         $sortby1 = array_unique($sortby1);
         //The data is from the database, the sorting should be done in the sql. So I will not do the sort here.
         if($translate1) {
-            $temp_sortby1 = array();
+            $temp_sortby1 = [];
             foreach(array_keys($app_list_strings[$keycolname1.'_dom']) as $sortby1_value) {
                 if(in_array($sortby1_value, $sortby1)) {
                     $temp_sortby1[] = $sortby1_value;
@@ -421,19 +423,19 @@ abstract class DashletGenericChart extends Dashlet
         }
 
         //if(isset($sortby1[0]) && $sortby1[0]=='') unset($sortby1[0]);//the beginning of lead_source_dom is blank.
-        if(isset($sortby1[0]) && $sortby1[0]==array()) unset($sortby1[0]);//the beginning of month after search is blank.
+        if(isset($sortby1[0]) && $sortby1[0]==[]) unset($sortby1[0]);//the beginning of month after search is blank.
 
-        if($ifsort2==false) $sortby2=array(0);
+        if($ifsort2==false) $sortby2=[0];
 
         if($keycolname2!=null) {
-            $sortby2 = array();
+            $sortby2 = [];
             foreach ($data_set as $row) {
                 $sortby2[]  = $row[$keycolname2];
             }
             //The data is from the database, the sorting should be done in the sql. So I will not do the sort here.
             $sortby2 = array_unique($sortby2);
             if($translate2) {
-                $temp_sortby2 = array();
+                $temp_sortby2 = [];
                 foreach(array_keys($app_list_strings[$keycolname2.'_dom']) as $sortby2_value) {
                     if(in_array($sortby2_value, $sortby2)) {
                         $temp_sortby2[] = $sortby2_value;
@@ -443,7 +445,7 @@ abstract class DashletGenericChart extends Dashlet
             }
         }
 
-        $data=array();
+        $data=[];
 
         foreach($sortby1 as $sort1) {
             foreach($sortby2 as $sort2) {
@@ -464,7 +466,7 @@ abstract class DashletGenericChart extends Dashlet
                     }
                 }
                 if($ifsort2 && $a==0) {//Add 0 for sorting by the second column, if the first row doesn't have a certain col, it will fill the column with 0.
-                    $val=array();
+                    $val=[];
                     $val['total'] = 0;
                     $val['count'] = 0;
                     if($translate1) {

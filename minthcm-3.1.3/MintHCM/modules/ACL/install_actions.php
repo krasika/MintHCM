@@ -50,7 +50,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
 global $current_user,$beanList, $beanFiles, $mod_strings;
 
-$installed_classes = array();
+$installed_classes = [];
 $ACLbeanList=$beanList;
 
 

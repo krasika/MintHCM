@@ -58,7 +58,8 @@ require_once('modules/AOK_KnowledgeBase/AOK_KnowledgeBase.php');
 
 class AOK_KnowledgeBaseDashlet extends DashletGeneric {
     function __construct($id, $def = null) {
-		global $current_user, $app_strings;
+		$dashletData = [];
+  global $current_user, $app_strings;
 		require('modules/AOK_KnowledgeBase/metadata/dashletviewdefs.php');
 
         parent::__construct($id, $def);

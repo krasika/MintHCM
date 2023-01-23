@@ -61,7 +61,7 @@ class GoogleSync extends GoogleSyncBase
 {
     
     /** @var array An array of user id's we are going to sync for */
-    protected $users = array();
+    protected $users = [];
 
     /**
      * Gets the combined titles of a Meeting/Event pair for Logging
@@ -73,6 +73,7 @@ class GoogleSync extends GoogleSyncBase
      */
     protected function getTitle(Meeting $meeting = null, Google_Service_Calendar_Event $event = null)
     {
+        $title = null;
         $meetingTitle = isset($meeting) ? $meeting->name : null;
         $eventTitle = isset($event) ? $event->getSummary() : null;
 

@@ -68,7 +68,7 @@ class Container extends PimpleContainer implements ContainerInterface
     {
         parent::__construct($values);
 
-        $userSettings = isset($values['settings']) ? $values['settings'] : [];
+        $userSettings = $values['settings'] ?? [];
         $this->registerDefaultServices($userSettings);
     }
 

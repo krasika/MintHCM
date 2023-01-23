@@ -144,14 +144,14 @@ class Uri implements UriInterface
         }
 
         $parts = parse_url($uri);
-        $scheme = isset($parts['scheme']) ? $parts['scheme'] : '';
-        $user = isset($parts['user']) ? $parts['user'] : '';
-        $pass = isset($parts['pass']) ? $parts['pass'] : '';
-        $host = isset($parts['host']) ? $parts['host'] : '';
-        $port = isset($parts['port']) ? $parts['port'] : null;
-        $path = isset($parts['path']) ? $parts['path'] : '';
-        $query = isset($parts['query']) ? $parts['query'] : '';
-        $fragment = isset($parts['fragment']) ? $parts['fragment'] : '';
+        $scheme = $parts['scheme'] ?? '';
+        $user = $parts['user'] ?? '';
+        $pass = $parts['pass'] ?? '';
+        $host = $parts['host'] ?? '';
+        $port = $parts['port'] ?? null;
+        $path = $parts['path'] ?? '';
+        $query = $parts['query'] ?? '';
+        $fragment = $parts['fragment'] ?? '';
 
         return new static($scheme, $host, $port, $path, $query, $fragment, $user, $pass);
     }

@@ -137,9 +137,7 @@ class SearchWrapper
     {
         $config = self::getSearchConfig('defaultEngine');
 
-        return $config === null
-            ? key(self::$engines) // first engine in the array
-            : $config;
+        return $config ?? key(self::$engines);
     }
 
     /**
@@ -189,9 +187,7 @@ class SearchWrapper
             throw new SearchEngineNotFoundException("'$engineName' is not a valid class name. Only letters, digits and underscores are allowed.");
         }
 
-        $filename = isset(self::$engines[$engineName])
-            ? self::$engines[$engineName]
-            : self::$customEnginePath . $engineName . '.php';
+        $filename = self::$engines[$engineName] ?? self::$customEnginePath . $engineName . '.php';
 
         if (!file_exists($filename)) {
             throw new SearchEngineNotFoundException("Unable to find search file '$filename'' for engine '$engineName''.");

@@ -63,18 +63,18 @@ class DashletCacheBuilder {
      */
     function buildCache() {
         global $beanList;
-        $dashletFiles = array();
-        $dashletFilesCustom = array();
+        $dashletFiles = [];
+        $dashletFilesCustom = [];
         
         getFiles($dashletFiles, 'modules', '/^.*\/Dashlets\/[^\.]*\.php$/');
         getFiles($dashletFilesCustom, 'custom/modules', '/^.*\/Dashlets\/[^\.]*\.php$/');
         $cacheDir = create_cache_directory('dashlets/');
         $allDashlets = array_merge($dashletFiles, $dashletFilesCustom);
-        $dashletFiles = array();
+        $dashletFiles = [];
         foreach($allDashlets as $num => $file) {
             if(substr_count($file, '.meta') == 0) { // ignore meta data files
                 $class = substr($file, strrpos($file, '/') + 1, -4);
-                $dashletFiles[$class] = array();
+                $dashletFiles[$class] = [];
                 $dashletFiles[$class]['file'] = $file;
                 $dashletFiles[$class]['class'] = $class;
                 if(is_file(preg_replace('/(.*\/.*)(\.php)/Uis', '$1.meta$2', $file))) { // is there an associated meta data file?
@@ -84,7 +84,7 @@ class DashletCacheBuilder {
                         $dashletFiles[$class]['module'] = $dashletMeta[$class]['module'];
                 }
                 
-                $filesInDirectory = array();
+                $filesInDirectory = [];
                 getFiles($filesInDirectory, substr($file, 0, strrpos($file, '/')), '/^.*\/Dashlets\/[^\.]*\.icon\.(jpg|jpeg|gif|png)$/i');
                 if(!empty($filesInDirectory)) {
                     $dashletFiles[$class]['icon'] = $filesInDirectory[0]; // take the first icon we see

@@ -73,7 +73,7 @@ class AOBH_BusinessHours extends Basic
     public $day;
     public $open;
 
-    private $cached = array();
+    private $cached = [];
     private $businessHoursSet = null;
 
     /**
@@ -92,7 +92,7 @@ class AOBH_BusinessHours extends Basic
     public function areBusinessHoursSet()
     {
         if ($this->businessHoursSet === null) {
-            $this->businessHoursSet = count($this->get_full_list());
+            $this->businessHoursSet = is_array($this->get_full_list()) || $this->get_full_list() instanceof \Countable ? count($this->get_full_list()) : 0;
         }
 
         return $this->businessHoursSet;

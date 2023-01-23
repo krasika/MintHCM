@@ -69,12 +69,12 @@
  	static function play($module, $offset){
  		//given some global offset try to determine if we have this
  		//in our array.
- 		$ids = array();
+ 		$ids = [];
  		if(!empty($_SESSION[$module.'QUERY_ARRAY']))
  			$ids = $_SESSION[$module.'QUERY_ARRAY'];
  		if(empty($ids[$offset]) || empty($ids[$offset+1]) || empty($ids[$offset-1]))
  			$ids = SugarVCR::record($module, $offset);
- 		$menu = array();
+ 		$menu = [];
  		if(!empty($ids[$offset])){
  			//return the control given this id
  			$menu['PREV'] = ($offset > 1) ? $ids[$offset-1] : '';
@@ -168,7 +168,7 @@
  		$result = $db->limitQuery(SugarVCR::retrieve($module),$start,($offset+VCREND),false);
  		$index++;
 
- 		$ids = array();
+ 		$ids = [];
  		while(($row = $db->fetchByAssoc($result)) != null){
  			$ids[$index] = $row['id'];
  			$index++;
@@ -181,7 +181,7 @@
  	static function recordIDs($module, $rids, $offset, $totalCount){
  		$index = $offset;
  		$index++;
- 		$ids = array();
+ 		$ids = [];
  		foreach($rids as $id){
  			$ids[$index] = $id;
  			$index++;

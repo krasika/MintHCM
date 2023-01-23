@@ -57,12 +57,12 @@ class ErrorMessage
     /**
      * integer
      */
-    const DEFAULT_CODE = 1;
+    public const DEFAULT_CODE = 1;
 
     /**
      * string
      */
-    const DEFAULT_LOG_LEVEL = 'fatal';
+    public const DEFAULT_LOG_LEVEL = 'fatal';
 
     /**
      *

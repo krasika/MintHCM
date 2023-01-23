@@ -48,16 +48,7 @@
 class CaseEventsHook
 {
 
-    private static $diffFields = array(
-        array('field' => 'priority', 'display_field' => 'priority', 'display_name' => 'Priority'),
-        array('field' => 'status', 'display_field' => 'status', 'display_name' => 'Status'),
-        array(
-            'field'         => 'assigned_user_id',
-            'display_field' => 'assigned_user_name',
-            'display_name'  => 'Assigned User'
-        ),
-        array('field' => 'type', 'display_field' => 'type', 'display_name' => 'Type'),
-    );
+    private static $diffFields = [['field' => 'priority', 'display_field' => 'priority', 'display_name' => 'Priority'], ['field' => 'status', 'display_field' => 'status', 'display_name' => 'Status'], ['field'         => 'assigned_user_id', 'display_field' => 'assigned_user_name', 'display_name'  => 'Assigned User'], ['field' => 'type', 'display_field' => 'type', 'display_name' => 'Type']];
 
     /**
      * @param SugarBean $old
@@ -67,13 +58,13 @@ class CaseEventsHook
      */
     private function compareBeans($old, $new)
     {
-        $events = array();
+        $events = [];
         foreach (self::$diffFields as $field) {
             $fieldName = $field['field'];
             $displayField = $field['display_field'];
             $name = $field['display_name'];
-            if ((isset($old->$fieldName) ? $old->$fieldName : null) !==
-                (isset($new->$fieldName) ? $new->$fieldName : null)
+            if (($old->$fieldName ?? null) !==
+                ($new->$fieldName ?? null)
             ) {
                 $event = new AOP_Case_Events();
                 $oldDisplay = $old->$displayField;

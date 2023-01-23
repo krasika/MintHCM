@@ -647,7 +647,7 @@ class Request extends Message implements ServerRequestInterface
         $contentTypeParams = [];
         if ($contentType) {
             $contentTypeParts = preg_split('/\s*[;,]\s*/', $contentType);
-            $contentTypePartsLength = count($contentTypeParts);
+            $contentTypePartsLength = is_array($contentTypeParts) || $contentTypeParts instanceof \Countable ? count($contentTypeParts) : 0;
             for ($i = 1; $i < $contentTypePartsLength; $i++) {
                 $paramParts = explode('=', $contentTypeParts[$i]);
                 $contentTypeParams[strtolower($paramParts[0])] = $paramParts[1];
@@ -885,7 +885,7 @@ class Request extends Message implements ServerRequestInterface
     {
         $serverParams = $this->getServerParams();
 
-        return isset($serverParams[$key]) ? $serverParams[$key] : $default;
+        return $serverParams[$key] ?? $default;
     }
 
     /*******************************************************************************
@@ -1018,6 +1018,8 @@ class Request extends Message implements ServerRequestInterface
      */
     public function getParsedBody()
     {
+        $parts = [];
+        $mediaType = null;
         if ($this->bodyParsed !== false) {
             return $this->bodyParsed;
         }

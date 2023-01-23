@@ -56,9 +56,9 @@ class TransformAppraisal extends SugarController {
    public $appraisal_name = '';
 
    public function __construct($data) {
-      $this->transformed_module_name = (isset($data['module'])) ? $data['module'] : null;
-      $this->transformed_record_id = (isset($data['record_id'])) ? $data['record_id'] : null;
-      $this->appraisal_name = (isset($data['appraisal_name'])) ? $data['appraisal_name'] : null;
+      $this->transformed_module_name = $data['module'] ?? null;
+      $this->transformed_record_id = $data['record_id'] ?? null;
+      $this->appraisal_name = $data['appraisal_name'] ?? null;
    }
 
    public function transformRecordToAppraisal() {

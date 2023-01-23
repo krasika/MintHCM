@@ -45,7 +45,7 @@
  require_once('include/ListView/ListViewSmarty.php');
 
 class ListViewPackages extends ListViewSmarty{
-    var $secondaryDisplayColumns;
+    public $secondaryDisplayColumns;
     /**
      * Constructor  Call ListViewSmarty
      */
@@ -74,7 +74,7 @@ class ListViewPackages extends ListViewSmarty{
      * @param data  the data to display on the page
      * @param file  the template file to parse
      */
-    function setup($data, $file, $where, $params = Array(), $offset = 0, $limit = -1, $filter_fields = Array(), $id_field = 'id', $id=NULL) {
+    function setup($data, $file, $where, $params = [], $offset = 0, $limit = -1, $filter_fields = [], $id_field = 'id', $id=NULL) {
         $this->data = $data;
         $this->tpl = $file;
     }
@@ -84,8 +84,8 @@ class ListViewPackages extends ListViewSmarty{
      */
     function display($end = true){
         global $odd_bg, $even_bg, $app_strings;
-        $this->ss->assign('rowColor', array('oddListRow', 'evenListRow'));
-        $this->ss->assign('bgColor', array($odd_bg, $even_bg));
+        $this->ss->assign('rowColor', ['oddListRow', 'evenListRow']);
+        $this->ss->assign('bgColor', [$odd_bg, $even_bg]);
         $this->ss->assign('displayColumns', $this->displayColumns);
         $this->ss->assign('secondaryDisplayColumns', $this->secondaryDisplayColumns);
         $this->ss->assign('data', $this->data);

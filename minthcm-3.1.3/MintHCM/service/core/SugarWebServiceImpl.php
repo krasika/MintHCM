@@ -71,7 +71,7 @@ class SugarWebServiceImpl{
 */
 function get_entry($session, $module_name, $id,$select_fields, $link_name_to_fields_array){
 	$GLOBALS['log']->info('Begin: SugarWebServiceImpl->get_entry');
-	return self::get_entries($session, $module_name, array($id), $select_fields, $link_name_to_fields_array);
+	return self::get_entries($session, $module_name, [$id], $select_fields, $link_name_to_fields_array);
 	$GLOBALS['log']->info('end: SugarWebServiceImpl->get_entry');
 }
 
@@ -93,8 +93,8 @@ function get_entries($session, $module_name, $ids, $select_fields, $link_name_to
 	global  $beanList, $beanFiles;
 	$error = new SoapError();
 
-	$linkoutput_list = array();
-	$output_list = array();
+	$linkoutput_list = [];
+	$output_list = [];
     $using_cp = false;
     if($module_name == 'CampaignProspects'){
         $module_name = 'Prospects';
@@ -126,13 +126,10 @@ function get_entries($session, $module_name, $ids, $select_fields, $link_name_to
 		}
 
 		if ($seed->deleted == 1) {
-			$list = array();
-			$list[] = array('name'=>'warning', 'value'=>'Access to this object is denied since it has been deleted or does not exist');
-			$list[] = array('name'=>'deleted', 'value'=>'1');
-			$output_list[] = Array('id'=>$id,
-									'module_name'=> $module_name,
-									'name_value_list'=>$list,
-									);
+			$list = [];
+			$list[] = ['name'=>'warning', 'value'=>'Access to this object is denied since it has been deleted or does not exist'];
+			$list[] = ['name'=>'deleted', 'value'=>'1'];
+			$output_list[] = ['id'=>$id, 'module_name'=> $module_name, 'name_value_list'=>$list];
 			continue;
     }
 	    if (!self::$helperObject->checkACLAccess($seed, 'DetailView', $error, 'no_access')) {
@@ -144,7 +141,7 @@ function get_entries($session, $module_name, $ids, $select_fields, $link_name_to
 		}
 	}
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_entries');
-	return array('entry_list'=>$output_list, 'relationship_list' => $linkoutput_list);
+	return ['entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
 }
 
 
@@ -219,8 +216,8 @@ function get_entry_list($session, $module_name, $query, $order_by,$offset, $sele
     } // else
 	$list = $response['list'];
 
-	$output_list = array();
-	$linkoutput_list = array();
+	$output_list = [];
+	$linkoutput_list = [];
 
 	foreach($list as $value) {
 		if(isset($value->emailAddress)){
@@ -238,7 +235,7 @@ function get_entry_list($session, $module_name, $query, $order_by,$offset, $sele
 	$next_offset = $offset + sizeof($output_list);
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_entry_list');
-	return array('result_count'=>sizeof($output_list), 'next_offset'=>$next_offset, 'entry_list'=>$output_list, 'relationship_list' => $linkoutput_list);
+	return ['result_count'=>sizeof($output_list), 'next_offset'=>$next_offset, 'entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
 } // fn
 
 
@@ -269,7 +266,7 @@ function set_relationship($session, $module_name, $module_id, $link_field_name, 
 	$deletedCount = 0;
 	$failed = 0;
 	$deleted = 0;
-	$name_value_array = array();
+	$name_value_array = [];
 	if (is_array($name_value_list)) {
 		$name_value_array = $name_value_list;
 	}
@@ -287,7 +284,7 @@ function set_relationship($session, $module_name, $module_id, $link_field_name, 
 		$failed++;
 	} // else
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->set_relationship');
-	return array('created'=>$count , 'failed'=>$failed, 'deleted' => $deletedCount);
+	return ['created'=>$count, 'failed'=>$failed, 'deleted' => $deletedCount];
 }
 
 /**
@@ -328,7 +325,7 @@ function set_relationships($session, $module_names, $module_ids, $link_field_nam
 	$counter = 0;
 	$deleted = 0;
 	foreach($module_names as $module_name) {
-		$name_value_list = array();
+		$name_value_list = [];
 		if (is_array($name_value_lists) && isset($name_value_lists[$counter])) {
 			$name_value_list = $name_value_lists[$counter];
 		}
@@ -347,7 +344,7 @@ function set_relationships($session, $module_names, $module_ids, $link_field_nam
 		$counter++;
 	} // foreach
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->set_relationships');
-	return array('created'=>$count , 'failed'=>$failed, 'deleted' => $deletedCount);
+	return ['created'=>$count, 'failed'=>$failed, 'deleted' => $deletedCount];
 } // fn
 
 /**
@@ -391,8 +388,8 @@ function get_relationships($session, $module_name, $module_id, $link_field_name,
     	return;
     } // if
 
-    $output_list = array();
-	$linkoutput_list = array();
+    $output_list = [];
+	$linkoutput_list = [];
 
 	// get all the related mmodules data.
     $result = self::$helperObject->getRelationshipResults($mod, $link_field_name, $related_fields, $related_module_query);
@@ -430,7 +427,7 @@ function get_relationships($session, $module_name, $module_id, $link_field_name,
 	} // if
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_relationships');
-	return array('entry_list'=>$output_list, 'relationship_list' => $linkoutput_list);
+	return ['entry_list'=>$output_list, 'relationship_list' => $linkoutput_list];
 
 } // fn
 
@@ -491,7 +488,7 @@ function set_entry($session,$module_name, $name_value_list){
 		$seed->mark_deleted($seed->id);
 	}
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->set_entry');
-	return array('id'=>$seed->id);
+	return ['id'=>$seed->id];
 } // fn
 
 /**
@@ -545,7 +542,7 @@ public function login($user_auth, $application, $name_value_list){
 	$system_config->retrieveSettings('system');
 	$authController = new AuthenticationController();
 	//rrs
-	$isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], array('passwordEncrypted' => true));
+	$isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], ['passwordEncrypted' => true]);
 	$usr_id=$user->retrieve_user_id($user_auth['user_name']);
 	if($usr_id) {
 		$user->retrieve($usr_id);
@@ -593,7 +590,7 @@ public function login($user_auth, $application, $name_value_list){
 		$_SESSION['unique_key'] = $sugar_config['unique_key'];
 		$current_user->call_custom_logic('after_login');
 		$GLOBALS['log']->info('End: SugarWebServiceImpl->login - succesful login');
-		$nameValueArray = array();
+		$nameValueArray = [];
 		global $current_language;
 		$nameValueArray['user_id'] = self::$helperObject->get_name_value('user_id', $current_user->id);
 		$nameValueArray['user_name'] = self::$helperObject->get_name_value('user_name', $current_user->user_name);
@@ -604,7 +601,7 @@ public function login($user_auth, $application, $name_value_list){
 		$currencyObject->retrieve($cur_id);
 		$nameValueArray['user_currency_name'] = self::$helperObject->get_name_value('user_currency_name', $currencyObject->name);
 		$_SESSION['user_language'] = $current_language;
-		return array('id'=>session_id(), 'module_name'=>'Users', 'name_value_list'=>$nameValueArray);
+		return ['id'=>session_id(), 'module_name'=>'Users', 'name_value_list'=>$nameValueArray];
 } // if
 	LogicHook::initialize();
 	$GLOBALS['logic_hook']->call_custom_logic('Users', 'login_failed');
@@ -661,7 +658,7 @@ function get_server_info(){
 	}
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_server_info');
-	return array('flavor' => $sugar_flavor, 'version' => $sugar_version, 'gmt_time' => TimeDate::getInstance()->nowDb());
+	return ['flavor' => $sugar_flavor, 'version' => $sugar_version, 'gmt_time' => TimeDate::getInstance()->nowDb()];
 } // fn
 
 /**
@@ -692,11 +689,11 @@ function get_user_id($session){
  *                  'link_fields' -- Array - The vardef information on the link fields
  * @exception 'SoapFault' -- The SOAP error, if any
  */
-function get_module_fields($session, $module_name, $fields = array()){
+function get_module_fields($session, $module_name, $fields = []){
 	$GLOBALS['log']->info('Begin: SugarWebServiceImpl->get_module_fields for ' . $module_name);
 	global  $beanList, $beanFiles;
 	$error = new SoapError();
-	$module_fields = array();
+	$module_fields = [];
 
 	if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', $module_name, 'read', 'no_access', $error)) {
 		$GLOBALS['log']->error('End: SugarWebServiceImpl->get_module_fields FAILED on checkSessionAndModuleAccess for ' . $module_name);
@@ -766,7 +763,7 @@ function set_note_attachment($session, $note) {
 	require_once('modules/Notes/NoteSoap.php');
 	$ns = new NoteSoap();
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->set_note_attachment');
-	return array('id'=>$ns->newSaveFile($note));
+	return ['id'=>$ns->newSaveFile($note)];
 } // fn
 
 /**
@@ -807,7 +804,7 @@ function get_note_attachment($session,$id) {
 	}
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_note_attachment');
-	return array('note_attachment'=>array('id'=>$id, 'filename'=>$note->filename, 'file'=>$file, 'related_module_id' => $note->parent_id, 'related_module_name' => $note->parent_type));
+	return ['note_attachment'=>['id'=>$id, 'filename'=>$note->filename, 'file'=>$file, 'related_module_id' => $note->parent_id, 'related_module_name' => $note->parent_type]];
 
 } // fn
 
@@ -834,7 +831,7 @@ function set_document_revision($session, $document_revision) {
 	require_once('modules/Documents/DocumentSoap.php');
 	$dr = new DocumentSoap();
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->set_document_revision');
-	return array('id'=>$dr->saveFile($document_revision));
+	return ['id'=>$dr->saveFile($document_revision)];
 }
 
 /**
@@ -872,7 +869,7 @@ function get_document_revision($session, $id) {
         }
         $contents = base64_encode($contents);
         $GLOBALS['log']->info('End: SugarWebServiceImpl->get_document_revision');
-        return array('document_revision'=>array('id' => $dr->id, 'document_name' => $dr->document_name, 'revision' => $dr->revision, 'filename' => $dr->filename, 'file' => $contents));
+        return ['document_revision'=>['id' => $dr->id, 'document_name' => $dr->document_name, 'revision' => $dr->revision, 'filename' => $dr->filename, 'file' => $contents]];
     }else{
         $error->set_error('no_records');
         self::$helperObject->setFaultObject($error);
@@ -894,12 +891,13 @@ function get_document_revision($session, $id) {
  * @exception 'SoapFault' -- The SOAP error, if any
  */
 function search_by_module($session, $search_string, $modules, $offset, $max_results){
-	$GLOBALS['log']->info('Begin: SugarWebServiceImpl->search_by_module');
+	$unified_search_modules = [];
+ $GLOBALS['log']->info('Begin: SugarWebServiceImpl->search_by_module');
 	global  $beanList, $beanFiles;
 	global $sugar_config,$current_language;
 
 	$error = new SoapError();
-	$output_list = array();
+	$output_list = [];
 	if (!self::$helperObject->checkSessionAndModuleAccess($session, 'invalid_session', '', '', '', $error)) {
 		$error->set_error('invalid_login');
 		$GLOBALS['log']->info('End: SugarWebServiceImpl->search_by_module');
@@ -918,10 +916,10 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
     }
 
 	include($cachedfile);
-	$modules_to_search = array();
-	$unified_search_modules['Users'] =   array('fields' => array());
+	$modules_to_search = [];
+	$unified_search_modules['Users'] =   ['fields' => []];
 
-	$unified_search_modules['ProjectTask'] =   array('fields' => array());
+	$unified_search_modules['ProjectTask'] =   ['fields' => []];
 
     foreach($unified_search_modules as $module=>$data) {
     	if (in_array($module, $modules)) {
@@ -934,8 +932,8 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 	if(!empty($search_string) && isset($search_string)) {
 		$search_string = trim(DBManagerFactory::getInstance()->quote(securexss(from_html(clean_string($search_string, 'UNIFIED_SEARCH')))));
     	foreach($modules_to_search as $name => $beanName) {
-    		$where_clauses_array = array();
-			$unifiedSearchFields = array () ;
+    		$where_clauses_array = [];
+			$unifiedSearchFields = [] ;
 			foreach ($unified_search_modules[$name]['fields'] as $field=>$def ) {
 				$unifiedSearchFields[$name] [ $field ] = $def ;
 				$unifiedSearchFields[$name] [ $field ]['value'] = $search_string;
@@ -960,17 +958,17 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 			    ) {
 				$searchForm = new SearchForm ($seed, $name ) ;
 
-				$searchForm->setup(array ($name => array()) ,$unifiedSearchFields , '' , 'saved_views' /* hack to avoid setup doing further unwanted processing */ ) ;
+				$searchForm->setup([$name => []] ,$unifiedSearchFields , '' , 'saved_views' /* hack to avoid setup doing further unwanted processing */ ) ;
 				$where_clauses = $searchForm->generateSearchWhere() ;
 				require_once 'include/SearchForm/SearchForm2.php' ;
 				$searchForm = new SearchForm ($seed, $name ) ;
 
-				$searchForm->setup(array ($name => array()) ,$unifiedSearchFields , '' , 'saved_views' /* hack to avoid setup doing further unwanted processing */ ) ;
+				$searchForm->setup([$name => []] ,$unifiedSearchFields , '' , 'saved_views' /* hack to avoid setup doing further unwanted processing */ ) ;
 				$where_clauses = $searchForm->generateSearchWhere() ;
 				$emailQuery = false;
 
 				$where = '';
-				if (count($where_clauses) > 0 ) {
+				if ((is_array($where_clauses) || $where_clauses instanceof \Countable ? count($where_clauses) : 0) > 0 ) {
 					$where = '('. implode(' ) OR ( ', $where_clauses) . ')';
 				}
 
@@ -980,7 +978,7 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 				}else{
 					require_once('modules/'.$seed->module_dir.'/metadata/listviewdefs.php');
 				}
-	            $filterFields = array();
+	            $filterFields = [];
 				foreach($listViewDefs[$seed->module_dir] as $colName => $param) {
 	                if(!empty($param['default']) && $param['default'] == true) {
 	                    $filterFields[] = strtolower($colName);
@@ -990,8 +988,8 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 	            if (!in_array('id', $filterFields)) {
 	            	$filterFields[] = 'id';
 	            } // if
-				$ret_array = $seed->create_new_list_query('', $where, $filterFields, array(), 0, '', true, $seed, true);
-		        if(empty($params) or !is_array($params)) $params = array();
+				$ret_array = $seed->create_new_list_query('', $where, $filterFields, [], 0, '', true, $seed, true);
+		        if(empty($params) or !is_array($params)) $params = [];
 		        if(!isset($params['custom_select'])) $params['custom_select'] = '';
 		        if(!isset($params['custom_from'])) $params['custom_from'] = '';
 		        if(!isset($params['custom_where'])) $params['custom_where'] = '';
@@ -1000,7 +998,7 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 			} else {
 				if ($beanName == "User") {
                     // $search_string gets cleaned above, so we can use it here
-					$filterFields = array('id', 'user_name', 'first_name', 'last_name', 'email_address');
+					$filterFields = ['id', 'user_name', 'first_name', 'last_name', 'email_address'];
 					$main_query = "select users.id, ea.email_address, users.user_name, first_name, last_name from users ";
 					$main_query = $main_query . " LEFT JOIN email_addr_bean_rel eabl ON eabl.bean_module = '{$seed->module_dir}'
 LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
@@ -1008,7 +1006,7 @@ LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
 				} // if
 				if ($beanName == "ProjectTask") {
                     // $search_string gets cleaned above, so we can use it here
-					$filterFields = array('id', 'name', 'project_id', 'project_name');
+					$filterFields = ['id', 'name', 'project_id', 'project_name'];
 					$main_query = "select {$seed->table_name}.project_task_id id,{$seed->table_name}.project_id, {$seed->table_name}.name, project.name project_name from {$seed->table_name} ";
 					$seed->add_team_security_where_clause($main_query);
 					$main_query .= "LEFT JOIN teams ON $seed->table_name.team_id=teams.id AND (teams.deleted=0) ";
@@ -1030,24 +1028,24 @@ LEFT JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
 	            $result = $seed->db->limitQuery($main_query, $offset, $limit + 1);
 			}
 
-			$rowArray = array();
+			$rowArray = [];
 			while($row = $seed->db->fetchByAssoc($result)) {
-				$nameValueArray = array();
+				$nameValueArray = [];
 				foreach ($filterFields as $field) {
-					$nameValue = array();
+					$nameValue = [];
 					if (isset($row[$field])) {
 						$nameValueArray[$field] = self::$helperObject->get_name_value($field, $row[$field]);
 					} // if
 				} // foreach
 				$rowArray[] = $nameValueArray;
 			} // while
-			$output_list[] = array('name' => $name, 'records' => $rowArray);
+			$output_list[] = ['name' => $name, 'records' => $rowArray];
     	} // foreach
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->search_by_module');
-	return array('entry_list'=>$output_list);
+	return ['entry_list'=>$output_list];
 	} // if
-	return array('entry_list'=>$output_list);
+	return ['entry_list'=>$output_list];
 } // fn
 
 
@@ -1068,11 +1066,11 @@ function get_available_modules($session){
 		return;
 	} // if
 
-	$modules = array();
+	$modules = [];
 	$modules = array_keys($_SESSION['avail_modules']);
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_available_modules');
-	return array('modules'=> $modules);
+	return ['modules'=> $modules];
 } // fn
 
 
@@ -1149,7 +1147,7 @@ function get_entries_count($session, $module_name, $query, $deleted) {
     $sql .= $customJoin['join'];
 
 	// build WHERE clauses, if any
-	$where_clauses = array();
+	$where_clauses = [];
 	if (!empty($query)) {
 	    $where_clauses[] = $query;
 	}
@@ -1166,9 +1164,7 @@ function get_entries_count($session, $module_name, $query, $deleted) {
 	$row = DBManagerFactory::getInstance()->fetchByAssoc($res);
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_entries_count');
-	return array(
-		'result_count' => $row['result_count'],
-	);
+	return ['result_count' => $row['result_count']];
 }
 
 

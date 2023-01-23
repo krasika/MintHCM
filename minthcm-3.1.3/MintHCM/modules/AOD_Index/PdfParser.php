@@ -52,7 +52,7 @@ class PdfParser
      */
     $a_obj    = self::getDataArray($data, 'obj', 'endobj');
     $j        = 0;
-    $a_chunks = array();
+    $a_chunks = [];
 
     /**
      * Attempt to extract each part of the PDF document into a 'filter'
@@ -123,14 +123,14 @@ class PdfParser
 
     foreach ($lines as $line) {
       $line = trim($line);
-      $matches = array();
+      $matches = [];
 
       // Parse each lines to extract command and operator values
       if (preg_match('/^(?<command>.*[\)\] ])(?<operator>[a-z]+[\*]?)$/i', $line, $matches)) {
         $command = trim($matches['command']);
 
         // Convert octal encoding
-        $found_octal_values = array();
+        $found_octal_values = [];
         preg_match_all('/\\\\([0-9]{3})/', $command, $found_octal_values);
 
         foreach($found_octal_values[0] as $value) {
@@ -147,7 +147,7 @@ class PdfParser
         $command = preg_replace('/\\\\[\r\n]/', '', $command);
         $command = preg_replace('/\\\\[rnftb ]/', ' ', $command);
         // Force UTF-8 charset
-        $encoding = mb_detect_encoding($command, array('ASCII', 'UTF-8', 'Windows-1252', 'ISO-8859-1'));
+        $encoding = mb_detect_encoding($command, ['ASCII', 'UTF-8', 'Windows-1252', 'ISO-8859-1']);
         if (strtoupper($encoding) != 'UTF-8') {
           if ($decoded = @iconv('CP1252', 'UTF-8//TRANSLIT//IGNORE', $command)) {
             $command = $decoded;
@@ -254,7 +254,7 @@ class PdfParser
       }
     }
 
-    $text = str_replace(array('\\(', '\\)'), array('(', ')'), $text);
+    $text = str_replace(['\\(', '\\)'], ['(', ')'], $text);
 
     return $text;
   }
@@ -320,7 +320,7 @@ class PdfParser
   {
     $start     = 0;
     $end       = 0;
-    $a_results = array();
+    $a_results = [];
 
     while ($start !== false && $end !== false) {
       $start = strpos($data, $start_word, $end);

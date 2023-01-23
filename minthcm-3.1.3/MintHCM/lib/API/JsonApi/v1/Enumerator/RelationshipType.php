@@ -50,6 +50,6 @@ namespace SuiteCRM\API\JsonApi\v1\Enumerator;
  */
 class RelationshipType
 {
-    const TO_ONE = 'TO_ONE';
-    const TO_MANY = 'TO_MANY';
+    public const TO_ONE = 'TO_ONE';
+    public const TO_MANY = 'TO_MANY';
 }

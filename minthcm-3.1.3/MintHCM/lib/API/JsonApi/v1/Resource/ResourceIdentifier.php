@@ -156,7 +156,7 @@ class ResourceIdentifier implements LoggerAwareInterface, JsonApiResponseInterfa
      */
     public function toJsonApiResponse()
     {
-        $response = array();
+        $response = [];
 
         // id can be empty in order to create a new record
         if(empty($this->getType()) === false) {

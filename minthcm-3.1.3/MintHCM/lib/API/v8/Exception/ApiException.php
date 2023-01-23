@@ -59,10 +59,10 @@ if (!defined('sugarEntry') || !sugarEntry) {
  */
 class ApiException extends LangException
 {
-    const MSG_PREFIX = '[SuiteCRM] [API]';
-    const DEFAULT_CODE = 8000;
-    const HTTP_STATUS = 500;
-    const DETAIL_TEXT_LABEL = 'LBL_API_EXCEPTION_DETAIL';
+    public const MSG_PREFIX = '[SuiteCRM] [API]';
+    public const DEFAULT_CODE = 8000;
+    public const HTTP_STATUS = 500;
+    public const DETAIL_TEXT_LABEL = 'LBL_API_EXCEPTION_DETAIL';
     
     /**
      *
@@ -85,7 +85,7 @@ class ApiException extends LangException
      */
     public function __construct($message = "", $code = 0, \Exception $previous = null, LangText $langMessage = null)
     {
-        parent::__construct((self::MSG_PREFIX === $this::MSG_PREFIX ? $this::MSG_PREFIX : self::MSG_PREFIX . ' ' . $this::MSG_PREFIX) . ' ' . $message, $code ? $code : self::DEFAULT_CODE, $previous, $langMessage);
+        parent::__construct((self::MSG_PREFIX === $this::MSG_PREFIX ? $this::MSG_PREFIX : self::MSG_PREFIX . ' ' . $this::MSG_PREFIX) . ' ' . $message, $code ?: self::DEFAULT_CODE, $previous, $langMessage);
     }
 
     /**
@@ -94,7 +94,7 @@ class ApiException extends LangException
      */
     public function getDetail()
     {
-        $text = $this->detail ? $this->detail : new LangText($this::DETAIL_TEXT_LABEL);
+        $text = $this->detail ?: new LangText($this::DETAIL_TEXT_LABEL);
         return $text;
     }
 

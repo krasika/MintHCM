@@ -121,29 +121,29 @@ class AM_ProjectTemplates extends AM_ProjectTemplates_sugar {
             if (!empty($_POST['user_invitees'])) {
                 $userInvitees = explode(',', trim($_POST['user_invitees'], ','));
             } else {
-                $userInvitees = array();
+                $userInvitees = [];
             }
 
 
             if (!empty($_POST['contact_invitees'])) {
                 $contactInvitees = explode(',', trim($_POST['contact_invitees'], ','));
             } else {
-                $contactInvitees = array();
+                $contactInvitees = [];
             }
 
 
-            $deleteUsers = array();
-            $existingUsers = array();
+            $deleteUsers = [];
+            $existingUsers = [];
 
-            $deleteContacts = array();
-            $existingContacts = array();
+            $deleteContacts = [];
+            $existingContacts = [];
 
             if (!empty($this->id)) {
 
 
                 ////	REMOVE RESOURCE RELATIONSHIPS
                 // Calculate which users to flag as deleted and which to add
-                
+
                 // Get all users for the project template
                 $focus->load_relationship('users');
                 $users = $focus->get_linked_beans('am_projecttemplates_users_1', 'User');
@@ -189,15 +189,15 @@ class AM_ProjectTemplates extends AM_ProjectTemplates_sugar {
                     $focus->db->query($sql);
                     echo $sql;
                 }
-        
+
                 ////	END REMOVE
             }
-            
+
             $return_id = parent::save($check_notify);
             $focus->retrieve($return_id);
 
             ////	REBUILD INVITEE RELATIONSHIPS
-            
+
             // Process users
             $focus->load_relationship('users');
             $focus->get_linked_beans('am_projecttemplates_users_1', 'User');

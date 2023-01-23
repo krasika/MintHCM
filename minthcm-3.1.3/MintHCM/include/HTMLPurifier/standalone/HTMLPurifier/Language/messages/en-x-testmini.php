@@ -5,8 +5,6 @@
 
 $fallback = 'en';
 
-$messages = array(
-    'HTMLPurifier' => 'HTML Purifier XNone'
-);
+$messages = ['HTMLPurifier' => 'HTML Purifier XNone'];
 
 // vim: et sw=4 sts=4

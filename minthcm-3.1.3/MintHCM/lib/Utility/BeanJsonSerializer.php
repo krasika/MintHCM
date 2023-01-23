@@ -119,7 +119,7 @@ class BeanJsonSerializer
             $bean->load_relationships();
         }
 
-        list($fields, $keys) = $this->getFieldsAndKeys($bean);
+        [$fields, $keys] = $this->getFieldsAndKeys($bean);
 
         $prettyBean = [];
 
@@ -364,7 +364,7 @@ class BeanJsonSerializer
             $bean->load_relationships();
         }
 
-        list($fields, $keys) = $this->getFieldsAndKeys($bean);
+        [$fields, $keys] = $this->getFieldsAndKeys($bean);
 
         $this->mapper->setMappable($fields);
         $this->mapper->setHideEmptyValues($hideEmptyValues);

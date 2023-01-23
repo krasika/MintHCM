@@ -46,25 +46,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
     die('Not A Valid Entry Point');
 }
 
-$dictionary['AOK_Knowledge_Base_Categories'] = array(
-    'table' => 'aok_knowledge_base_categories',
-    'audited' => true,
-    'duplicate_merge' => true,
-    'fields' => array(
-        'aok_knowledgebase_categories' => array(
-            'name' => 'aok_knowledgebase_categories',
-            'type' => 'link',
-            'relationship' => 'aok_knowledgebase_categories',
-            'source' => 'non-db',
-            'module' => 'AOK_KnowledgeBase',
-            'bean_name' => false,
-            'vname' => 'LBL_AOK_KB_TITLE',
-        ),
-    ),
-    'relationships' => array(),
-    'optimistic_locking' => true,
-    'unified_search' => true,
-);
+$dictionary['AOK_Knowledge_Base_Categories'] = ['table' => 'aok_knowledge_base_categories', 'audited' => true, 'duplicate_merge' => true, 'fields' => ['aok_knowledgebase_categories' => ['name' => 'aok_knowledgebase_categories', 'type' => 'link', 'relationship' => 'aok_knowledgebase_categories', 'source' => 'non-db', 'module' => 'AOK_KnowledgeBase', 'bean_name' => false, 'vname' => 'LBL_AOK_KB_TITLE']], 'relationships' => [], 'optimistic_locking' => true, 'unified_search' => true];
 
 if (!class_exists('VardefManager')) {
     require_once('include/SugarObjects/VardefManager.php');
@@ -72,5 +54,5 @@ if (!class_exists('VardefManager')) {
 VardefManager::createVardef(
     'AOK_Knowledge_Base_Categories',
     'AOK_Knowledge_Base_Categories',
-    array('basic', 'assignable')
+    ['basic', 'assignable']
 );

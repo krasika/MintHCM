@@ -63,7 +63,7 @@ class AuthorizationServer implements EmitterAwareInterface
 {
     use EmitterAwareTrait;
 
-    const ENCRYPTION_KEY_ERROR = 'You must set the encryption key going forward to improve the security of this library - see this page for more information https://oauth2.thephpleague.com/v5-security-improvements/';
+    public const ENCRYPTION_KEY_ERROR = 'You must set the encryption key going forward to improve the security of this library - see this page for more information https://oauth2.thephpleague.com/v5-security-improvements/';
 
     /**
      * @var GrantTypeInterface[]

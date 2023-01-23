@@ -163,7 +163,7 @@ class SuiteBeanResource extends Resource
                 continue;
             } else {
                 if(property_exists($sugarBean, $fieldName)) {
-                    $this->attributes[$fieldName] = isset($sugarBean->$fieldName) ? $sugarBean->$fieldName : '';
+                    $this->attributes[$fieldName] = $sugarBean->$fieldName ?? '';
                 }
             }
 
@@ -338,13 +338,13 @@ class SuiteBeanResource extends Resource
                         // if a single ResourceIdentifier has been set
                         if(!isset($relationship['data'][0])) {
                             // convert to array
-                            $relationship['data'] = array($relationship['data']);
+                            $relationship['data'] = [$relationship['data']];
                         }
 
                         $toManyRelationships = $relationship['data'];
 
-                        $relatedResourceIds = array();
-                        $relatedResourceIdsToAdd = array();
+                        $relatedResourceIds = [];
+                        $relatedResourceIdsToAdd = [];
                         $added = false;
 
                         /** @var array $toManyRelationships */
@@ -354,7 +354,7 @@ class SuiteBeanResource extends Resource
 
                             $relatedResourceIdsToAdd[] = $toManyRelationship['id'];
 
-                            $middleTableFields = array();
+                            $middleTableFields = [];
                             if (isset($toManyRelationship['meta']['middle_table']['data']['attributes'])) {
                                 $middleTableFields = $toManyRelationship['meta']['middle_table']['data']['attributes'];
                             }
@@ -401,7 +401,7 @@ class SuiteBeanResource extends Resource
                             throw $exception;
                         }
 
-                        $middleTableFields = array();
+                        $middleTableFields = [];
                         if (isset($toManyRelationship['meta']['middle_table']['data']['attributes'])) {
                             $middleTableFields = $toManyRelationship['meta']['middle_table']['data']['attributes'];
                         }

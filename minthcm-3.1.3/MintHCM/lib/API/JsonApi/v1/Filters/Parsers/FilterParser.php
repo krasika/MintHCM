@@ -123,7 +123,7 @@ class FilterParser
     {
         if(empty($filterKey)) {
             // predefined filter eg roi
-            $response = array($filterValue);
+            $response = [$filterValue];
         } else {
             $filterKeyArray = $this->parseFieldKey($filterKey);
             $filterValueArray = $this->parseFieldFilter($filterValue);
@@ -149,9 +149,7 @@ class FilterParser
         if (strpos($fieldKey, '.') !== false) {
             $parsedKey = $this->splitFieldKeys($fieldKey);
         } else {
-            $parsedKey = array(
-                self::$fieldOperator->toFilterTag($fieldKey) => array()
-            );
+            $parsedKey = [self::$fieldOperator->toFilterTag($fieldKey) => []];
         }
 
         return $parsedKey;
@@ -169,7 +167,7 @@ class FilterParser
      */
     protected function splitFieldKeys($fieldKey, $delimiter = '.')
     {
-        $response = array();
+        $response = [];
         //
         if (is_string($fieldKey) === false) {
             throw new InvalidArgumentException(
@@ -189,7 +187,7 @@ class FilterParser
         if (is_array($flatDataStructure)) {
             //
             // convert the flat data structure
-            $treeDataStructure = array();
+            $treeDataStructure = [];
             $fieldValidator = new FieldValidator($this->containers);
             $nodeReference = &$flatDataStructure;
 
@@ -202,13 +200,13 @@ class FilterParser
 
                 // set the root node
                 if ($index === 0) {
-                    $treeDataStructure[$fieldAttribute] = array();
+                    $treeDataStructure[$fieldAttribute] = [];
                     $nodeReference = &$treeDataStructure[$fieldAttribute];
                     continue;
                 }
 
                 // set the child nodes
-                $nodeReference[$fieldAttribute] = array();
+                $nodeReference[$fieldAttribute] = [];
                 $nodeReference = &$nodeReference[$fieldAttribute];
             }
 
@@ -232,14 +230,12 @@ class FilterParser
         $fieldOperator = new FieldOperator($this->containers);
         $specialOperator = new Operator($this->containers);
         $filterValidator = new FilterValidator($this->containers);
-        $parsedValues =  array();
+        $parsedValues =  [];
         // Parse values handle single filter vs an array of filters
         if (strpos($filters, ',')) {
             $values = $this->splitValues($filters);
         } else {
-            $values =  array(
-                $filters
-            );
+            $values =  [$filters];
         }
 
         /**
@@ -258,8 +254,8 @@ class FilterParser
             if ($standardOperator->hasOperator($value)) {
                 $operand = '';
                 $operators = '';
-                $operatorsMatches= array();
-                $operatorsArray= array();
+                $operatorsMatches= [];
+                $operatorsArray= [];
                 if(preg_match_all('/\[+[A-Za-z0-9\_\-\.]+\]+/', $value, $operatorsMatches) !== false) {
                     // split operators in from their operands
                    foreach ($operatorsMatches[0] as $operator) {

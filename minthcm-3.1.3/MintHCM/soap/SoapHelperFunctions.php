@@ -59,7 +59,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
  */
 function get_field_list($value, $translate = true)
 {
-    $list = array();
+    $list = [];
 
     if (!empty($value->field_defs)) {
 
@@ -68,8 +68,8 @@ function get_field_list($value, $translate = true)
                 continue;
             }
             $required = 0;
-            $options_dom = array();
-            $options_ret = array();
+            $options_dom = [];
+            $options_ret = [];
             // Apparently the only purpose of this check is to make sure we only return fields
             //   when we've read a record.  Otherwise this function is identical to get_module_field_list
             if (!empty($var['required'])) {
@@ -78,7 +78,7 @@ function get_field_list($value, $translate = true)
             if (isset($var['options'])) {
                 $options_dom = translate($var['options'], $value->module_dir);
                 if (!is_array($options_dom)) {
-                    $options_dom = array();
+                    $options_dom = [];
                 }
                 foreach ($options_dom as $key => $oneOption) {
                     $options_ret[] = get_name_value($key, $oneOption);
@@ -89,13 +89,13 @@ function get_field_list($value, $translate = true)
                 $options_ret[] = get_name_value('type', $var['dbType']);
             }
 
-            $entry = array();
+            $entry = [];
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if ($translate) {
                 $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
             } else {
-                $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
+                $entry['label'] = $var['vname'] ?? $var['name'];
             }
             $entry['required'] = $required;
             $entry['options'] = $options_ret;
@@ -111,9 +111,9 @@ function get_field_list($value, $translate = true)
 
         $seedRelease = new Release();
         $options = $seedRelease->get_releases(true, "Active");
-        $options_ret = array();
+        $options_ret = [];
         foreach ($options as $name => $value) {
-            $options_ret[] = array('name' => $name, 'value' => $value);
+            $options_ret[] = ['name' => $name, 'value' => $value];
         }
         if (isset($list['fixed_in_release'])) {
             $list['fixed_in_release']['type'] = 'enum';
@@ -129,21 +129,21 @@ function get_field_list($value, $translate = true)
         }
     }
     if (isset($value->module_dir) && $value->module_dir == 'Emails') {
-        $fields = array('from_addr_name', 'reply_to_addr', 'to_addrs_names', 'cc_addrs_names', 'bcc_addrs_names');
+        $fields = ['from_addr_name', 'reply_to_addr', 'to_addrs_names', 'cc_addrs_names', 'bcc_addrs_names'];
         foreach ($fields as $field) {
             $var = $value->field_defs[$field];
 
             $required = 0;
-            $entry = array();
+            $entry = [];
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if ($translate) {
                 $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
             } else {
-                $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
+                $entry['label'] = $var['vname'] ?? $var['name'];
             }
             $entry['required'] = $required;
-            $entry['options'] = array();
+            $entry['options'] = [];
             if (isset($var['default'])) {
                 $entry['default_value'] = $var['default'];
             }
@@ -170,8 +170,8 @@ function get_field_list($value, $translate = true)
 
 function new_get_field_list($value, $translate = true)
 {
-    $module_fields = array();
-    $link_fields = array();
+    $module_fields = [];
+    $link_fields = [];
 
     if (!empty($value->field_defs)) {
 
@@ -183,8 +183,8 @@ function new_get_field_list($value, $translate = true)
                 continue;
             }
             $required = 0;
-            $options_dom = array();
-            $options_ret = array();
+            $options_dom = [];
+            $options_ret = [];
             // Apparently the only purpose of this check is to make sure we only return fields
             //   when we've read a record.  Otherwise this function is identical to get_module_field_list
             if (!empty($var['required'])) {
@@ -193,7 +193,7 @@ function new_get_field_list($value, $translate = true)
             if (isset($var['options'])) {
                 $options_dom = translate($var['options'], $value->module_dir);
                 if (!is_array($options_dom)) {
-                    $options_dom = array();
+                    $options_dom = [];
                 }
                 foreach ($options_dom as $key => $oneOption) {
                     $options_ret[] = get_name_value($key, $oneOption);
@@ -204,20 +204,20 @@ function new_get_field_list($value, $translate = true)
                 $options_ret[] = get_name_value('type', $var['dbType']);
             }
 
-            $entry = array();
+            $entry = [];
             $entry['name'] = $var['name'];
             $entry['type'] = $var['type'];
             if ($var['type'] == 'link') {
-                $entry['relationship'] = (isset($var['relationship']) ? $var['relationship'] : '');
-                $entry['module'] = (isset($var['module']) ? $var['module'] : '');
-                $entry['bean_name'] = (isset($var['bean_name']) ? $var['bean_name'] : '');
+                $entry['relationship'] = ($var['relationship'] ?? '');
+                $entry['module'] = ($var['module'] ?? '');
+                $entry['bean_name'] = ($var['bean_name'] ?? '');
                 $link_fields[$var['name']] = $entry;
             } else {
                 if ($translate) {
                     $entry['label'] = isset($var['vname']) ? translate($var['vname'],
                         $value->module_dir) : $var['name'];
                 } else {
-                    $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
+                    $entry['label'] = $var['vname'] ?? $var['name'];
                 }
                 $entry['required'] = $required;
                 $entry['options'] = $options_ret;
@@ -233,9 +233,9 @@ function new_get_field_list($value, $translate = true)
 
         $seedRelease = new Release();
         $options = $seedRelease->get_releases(true, "Active");
-        $options_ret = array();
+        $options_ret = [];
         foreach ($options as $name => $value) {
-            $options_ret[] = array('name' => $name, 'value' => $value);
+            $options_ret[] = ['name' => $name, 'value' => $value];
         }
         if (isset($module_fields['fixed_in_release'])) {
             $module_fields['fixed_in_release']['type'] = 'enum';
@@ -264,7 +264,7 @@ function new_get_field_list($value, $translate = true)
         $module_fields['created_by_name']['name'] = 'created_by_name';
     }
 
-    return array('module_fields' => $module_fields, 'link_fields' => $link_fields);
+    return ['module_fields' => $module_fields, 'link_fields' => $link_fields];
 } // fn
 
 function setFaultObject($errorObject)
@@ -323,7 +323,7 @@ function checkACLAccess($bean, $viewType, $errorObject, $error_key)
 
 function get_name_value($field, $value)
 {
-    return array('name' => $field, 'value' => $value);
+    return ['name' => $field, 'value' => $value];
 }
 
 function get_user_module_list($user)
@@ -397,7 +397,7 @@ function check_modules_access($user, $module_name, $action = 'write')
 function get_name_value_list($value, $returnDomValue = false)
 {
     global $app_list_strings;
-    $list = array();
+    $list = [];
     if (!empty($value->field_defs)) {
         if (isset($value->assigned_user_name)) {
             $list['assigned_user_name'] = get_name_value('assigned_user_name', $value->assigned_user_name);
@@ -427,7 +427,7 @@ function get_name_value_list($value, $returnDomValue = false)
                 } elseif (strcmp($type, 'enum') == 0 && !empty($var['options']) && $returnDomValue) {
                     $val = $app_list_strings[$var['options']][$val];
                 } elseif (strcmp($type, 'currency') == 0) {
-                    $params = array('currency_symbol' => false);
+                    $params = ['currency_symbol' => false];
                     $val = currency_format_number($val, $params);
                 }
 
@@ -443,7 +443,7 @@ function get_name_value_list($value, $returnDomValue = false)
 function filter_fields($value, $fields)
 {
     global $invalid_contact_fields;
-    $filterFields = array();
+    $filterFields = [];
     foreach ($fields as $field) {
         if (is_array($invalid_contact_fields)) {
             if (in_array($field, $invalid_contact_fields)) {
@@ -469,7 +469,7 @@ function get_name_value_list_for_fields($value, $fields)
     global $app_list_strings;
     global $invalid_contact_fields;
 
-    $list = array();
+    $list = [];
     if (!empty($value->field_defs)) {
         if (isset($value->assigned_user_name) && in_array('assigned_user_name', $fields)) {
             $list['assigned_user_name'] = get_name_value('assigned_user_name', $value->assigned_user_name);
@@ -506,7 +506,7 @@ function get_name_value_list_for_fields($value, $fields)
 
 function array_get_name_value_list($array)
 {
-    $list = array();
+    $list = [];
     foreach ($array as $name => $value) {
 
         $list[$name] = get_name_value($name, $value);
@@ -518,11 +518,11 @@ function array_get_name_value_list($array)
 
 function array_get_name_value_lists($array)
 {
-    $list = array();
+    $list = [];
     foreach ($array as $name => $value) {
         $tmp_value = $value;
         if (is_array($value)) {
-            $tmp_value = array();
+            $tmp_value = [];
             foreach ($value as $k => $v) {
                 $tmp_value[] = get_name_value($k, $v);
             }
@@ -535,11 +535,11 @@ function array_get_name_value_lists($array)
 
 function name_value_lists_get_array($list)
 {
-    $array = array();
+    $array = [];
     foreach ($list as $key => $value) {
         if (isset($value['value']) && isset($value['name'])) {
             if (is_array($value['value'])) {
-                $array[$value['name']] = array();
+                $array[$value['name']] = [];
                 foreach ($value['value'] as $v) {
                     $array[$value['name']][$v['name']] = $v['value'];
                 }
@@ -555,11 +555,7 @@ function name_value_lists_get_array($list)
 function array_get_return_value($array, $module)
 {
 
-    return Array(
-        'id' => $array['id'],
-        'module_name' => $module,
-        'name_value_list' => array_get_name_value_list($array)
-    );
+    return ['id' => $array['id'], 'module_name' => $module, 'name_value_list' => array_get_name_value_list($array)];
 }
 
 function get_return_value_for_fields($value, $module, $fields)
@@ -571,11 +567,7 @@ function get_return_value_for_fields($value, $module, $fields)
     }
     $value = clean_sensitive_data($value->field_defs, $value);
 
-    return Array(
-        'id' => $value->id,
-        'module_name' => $module,
-        'name_value_list' => get_name_value_list_for_fields($value, $fields)
-    );
+    return ['id' => $value->id, 'module_name' => $module, 'name_value_list' => get_name_value_list_for_fields($value, $fields)];
 }
 
 function getRelationshipResults($bean, $link_field_name, $link_module_fields)
@@ -584,8 +576,8 @@ function getRelationshipResults($bean, $link_field_name, $link_module_fields)
     $bean->load_relationship($link_field_name);
     if (isset($bean->$link_field_name)) {
         // get the query object for this link field
-        $query_array = $bean->$link_field_name->getQuery(true, array(), 0, '', true);
-        $params = array();
+        $query_array = $bean->$link_field_name->getQuery(true, [], 0, '', true);
+        $params = [];
         $params['joined_tables'] = $query_array['join_tables'];
 
         // get the related module name and instantiate a bean for that.
@@ -610,12 +602,12 @@ function getRelationshipResults($bean, $link_field_name, $link_module_fields)
         $query = $subquery['select'] . $roleSelect . $subquery['from'] . $query_array['join'] . $subquery['where'];
 
         $result = $submodule->db->query($query, true);
-        $list = array();
+        $list = [];
         while ($row = $submodule->db->fetchByAssoc($result)) {
             $list[] = $row;
         }
 
-        return array('rows' => $list, 'fields_set_on_rows' => $filterFields);
+        return ['rows' => $list, 'fields_set_on_rows' => $filterFields];
     } else {
         return false;
     } // else
@@ -624,6 +616,7 @@ function getRelationshipResults($bean, $link_field_name, $link_module_fields)
 
 function get_return_value_for_link_fields($bean, $module, $link_name_to_value_fields_array)
 {
+    $value = null;
     global $module_name, $current_user;
     $module_name = $module;
     if ($module == 'Users' && $bean->id != $current_user->id) {
@@ -632,10 +625,10 @@ function get_return_value_for_link_fields($bean, $module, $link_name_to_value_fi
     $bean = clean_sensitive_data($value->field_defs, $bean);
 
     if (empty($link_name_to_value_fields_array) || !is_array($link_name_to_value_fields_array)) {
-        return array();
+        return [];
     }
 
-    $link_output = array();
+    $link_output = [];
     foreach ($link_name_to_value_fields_array as $link_name_value_fields) {
         if (!is_array($link_name_value_fields) || !isset($link_name_value_fields['name']) || !isset($link_name_value_fields['value'])) {
             continue;
@@ -645,17 +638,17 @@ function get_return_value_for_link_fields($bean, $module, $link_name_to_value_fi
         if (is_array($link_module_fields) && !empty($link_module_fields)) {
             $result = getRelationshipResults($bean, $link_field_name, $link_module_fields);
             if (!$result) {
-                $link_output[] = array('name' => $link_field_name, 'records' => array());
+                $link_output[] = ['name' => $link_field_name, 'records' => []];
                 continue;
             }
             $list = $result['rows'];
             $filterFields = $result['fields_set_on_rows'];
             if ($list) {
-                $rowArray = array();
+                $rowArray = [];
                 foreach ($list as $row) {
-                    $nameValueArray = array();
+                    $nameValueArray = [];
                     foreach ($filterFields as $field) {
-                        $nameValue = array();
+                        $nameValue = [];
                         if (isset($row[$field])) {
                             $nameValue['name'] = $field;
                             $nameValue['value'] = $row[$field];
@@ -664,7 +657,7 @@ function get_return_value_for_link_fields($bean, $module, $link_name_to_value_fi
                     } // foreach
                     $rowArray[] = $nameValueArray;
                 } // foreach
-                $link_output[] = array('name' => $link_field_name, 'records' => $rowArray);
+                $link_output[] = ['name' => $link_field_name, 'records' => $rowArray];
             } // if
         } // if
     } // foreach
@@ -713,11 +706,11 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
     global $beanList, $beanFiles, $app_list_strings;
     global $current_user;
 
-    $ret_values = array();
+    $ret_values = [];
 
     $class_name = $beanList[$module_name];
     require_once($beanFiles[$class_name]);
-    $ids = array();
+    $ids = [];
     $count = 1;
     $total = sizeof($name_value_lists);
     foreach ($name_value_lists as $name_value_list) {
@@ -789,7 +782,7 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
                             $query = $seed->table_name . ".outlook_id = '" . DBManagerFactory::getInstance()->quote($seed->outlook_id) . "'";
                             $response = $seed->get_list($order_by, $query, 0, -1, -1, 0);
                             $list = $response['list'];
-                            if (count($list) > 0) {
+                            if ((is_array($list) || $list instanceof \Countable ? count($list) : 0) > 0) {
                                 foreach ($list as $value) {
                                     $seed->id = $value->id;
                                     break;
@@ -813,7 +806,7 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
 
         // if somebody is calling set_entries_detail() and wants fields returned...
         if ($select_fields !== false) {
-            $ret_values[$count] = array();
+            $ret_values[$count] = [];
 
             foreach ($select_fields as $select_field) {
                 if (isset($seed->$select_field)) {
@@ -825,13 +818,9 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
 
     // handle returns for set_entries_detail() and set_entries()
     if ($select_fields !== false) {
-        return array(
-            'name_value_lists' => $ret_values,
-        );
+        return ['name_value_lists' => $ret_values];
     } else {
-        return array(
-            'ids' => $ids,
-        );
+        return ['ids' => $ids];
     }
 }
 
@@ -844,11 +833,7 @@ function get_return_value($value, $module, $returnDomValue = false)
     }
     $value = clean_sensitive_data($value->field_defs, $value);
 
-    return Array(
-        'id' => $value->id,
-        'module_name' => $module,
-        'name_value_list' => get_name_value_list($value, $returnDomValue)
-    );
+    return ['id' => $value->id, 'module_name' => $module, 'name_value_list' => get_name_value_list($value, $returnDomValue)];
 }
 
 
@@ -886,11 +871,7 @@ function new_get_return_module_fields($value, $module, $translate = true)
     $module_name = $module;
     $result = new_get_field_list($value, $translate);
 
-    return Array(
-        'module_name' => $module,
-        'module_fields' => $result['module_fields'],
-        'link_fields' => $result['link_fields'],
-    );
+    return ['module_name' => $module, 'module_fields' => $result['module_fields'], 'link_fields' => $result['link_fields']];
 }
 
 function get_return_module_fields($value, $module, $error, $translate = true)
@@ -898,20 +879,12 @@ function get_return_module_fields($value, $module, $error, $translate = true)
     global $module_name;
     $module_name = $module;
 
-    return Array(
-        'module_name' => $module,
-        'module_fields' => get_field_list($value, $translate),
-        'error' => get_name_value_list($value)
-    );
+    return ['module_name' => $module, 'module_fields' => get_field_list($value, $translate), 'error' => get_name_value_list($value)];
 }
 
 function get_return_error_value($error_num, $error_name, $error_description)
 {
-    return Array(
-        'number' => $error_num,
-        'name' => $error_name,
-        'description' => $error_description
-    );
+    return ['number' => $error_num, 'name' => $error_name, 'description' => $error_description];
 }
 
 function filter_field_list(&$field_list, $select_fields, $module_name)
@@ -1108,9 +1081,9 @@ WHERE c.first_name = '{$trimmed_first}' AND c.last_name = '{$trimmed_last}' AND 
  */
 function is_server_version_greater($left, $right)
 {
-    if (count($left) == 0 && count($right) == 0) {
+    if ((is_array($left) || $left instanceof \Countable ? count($left) : 0) == 0 && (is_array($right) || $right instanceof \Countable ? count($right) : 0) == 0) {
         return false;
-    } elseif (count($left) == 0 || count($right) == 0) {
+    } elseif ((is_array($left) || $left instanceof \Countable ? count($left) : 0) == 0 || (is_array($right) || $right instanceof \Countable ? count($right) : 0) == 0) {
         return true;
     } elseif ($left[0] == $right[0]) {
         array_shift($left);

@@ -56,7 +56,7 @@ class Zend_Gdata_Gapps_ServiceException extends Zend_Exception
      *
      * @var array
      */
-    protected $_errors = array();
+    protected $_errors = [];
 
     /**
      * Create a new ServiceException.
@@ -100,7 +100,7 @@ class Zend_Gdata_Gapps_ServiceException extends Zend_Exception
      * @throws Zend_Gdata_App_Exception
      */
     public function setErrors($array) {
-        $this->_errors = array();
+        $this->_errors = [];
         foreach ($array as $error) {
             $this->addError($error);
         }
@@ -152,6 +152,7 @@ class Zend_Gdata_Gapps_ServiceException extends Zend_Exception
      * @throws Zend_Gdata_App_Exception
      */
     public function importFromString($string) {
+        $php_errormsg = null;
         if ($string) {
             // Check to see if an AppsForYourDomainError exists
             //

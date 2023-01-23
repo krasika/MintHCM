@@ -75,7 +75,7 @@ abstract class RegexBasedAbstract implements DataGenerator
      */
     private function isStaticRoute($routeData)
     {
-        return count($routeData) === 1 && is_string($routeData[0]);
+        return (is_array($routeData) || $routeData instanceof \Countable ? count($routeData) : 0) === 1 && is_string($routeData[0]);
     }
 
     private function addStaticRoute($httpMethod, $routeData, $handler)
@@ -105,7 +105,7 @@ abstract class RegexBasedAbstract implements DataGenerator
 
     private function addVariableRoute($httpMethod, $routeData, $handler)
     {
-        list($regex, $variables) = $this->buildRegexForRoute($routeData);
+        [$regex, $variables] = $this->buildRegexForRoute($routeData);
 
         if (isset($this->methodToRegexToRoutesMap[$httpMethod][$regex])) {
             throw new BadRouteException(sprintf(
@@ -133,7 +133,7 @@ abstract class RegexBasedAbstract implements DataGenerator
                 continue;
             }
 
-            list($varName, $regexPart) = $part;
+            [$varName, $regexPart] = $part;
 
             if (isset($variables[$varName])) {
                 throw new BadRouteException(sprintf(

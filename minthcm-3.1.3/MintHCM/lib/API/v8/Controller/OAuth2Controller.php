@@ -78,7 +78,7 @@ class OAuth2Controller extends ApiController
             }
             
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($request, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($request, $e, $payload ?? []);
         }
         
         return $this->generateJsonApiResponse($request, $response, $payload);

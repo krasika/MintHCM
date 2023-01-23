@@ -12,10 +12,10 @@ if (!function_exists('FastRoute\simpleDispatcher')) {
     function simpleDispatcher(callable $routeDefinitionCallback, array $options = [])
     {
         $options += [
-            'routeParser' => 'FastRoute\\RouteParser\\Std',
-            'dataGenerator' => 'FastRoute\\DataGenerator\\GroupCountBased',
-            'dispatcher' => 'FastRoute\\Dispatcher\\GroupCountBased',
-            'routeCollector' => 'FastRoute\\RouteCollector',
+            'routeParser' => \FastRoute\RouteParser\Std::class,
+            'dataGenerator' => \FastRoute\DataGenerator\GroupCountBased::class,
+            'dispatcher' => \FastRoute\Dispatcher\GroupCountBased::class,
+            'routeCollector' => \FastRoute\RouteCollector::class,
         ];
 
         /** @var RouteCollector $routeCollector */
@@ -36,10 +36,10 @@ if (!function_exists('FastRoute\simpleDispatcher')) {
     function cachedDispatcher(callable $routeDefinitionCallback, array $options = [])
     {
         $options += [
-            'routeParser' => 'FastRoute\\RouteParser\\Std',
-            'dataGenerator' => 'FastRoute\\DataGenerator\\GroupCountBased',
-            'dispatcher' => 'FastRoute\\Dispatcher\\GroupCountBased',
-            'routeCollector' => 'FastRoute\\RouteCollector',
+            'routeParser' => \FastRoute\RouteParser\Std::class,
+            'dataGenerator' => \FastRoute\DataGenerator\GroupCountBased::class,
+            'dispatcher' => \FastRoute\Dispatcher\GroupCountBased::class,
+            'routeCollector' => \FastRoute\RouteCollector::class,
             'cacheDisabled' => false,
         ];
 

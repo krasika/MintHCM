@@ -82,11 +82,7 @@ class Keys
      */
     private function setUpKeys()
     {
-            $config = array(
-                'digest_alg' => 'sha512',
-                'private_key_bits' => '2048',
-                'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            );
+            $config = ['digest_alg' => 'sha512', 'private_key_bits' => '2048', 'private_key_type' => OPENSSL_KEYTYPE_RSA];
 
             // Create the private and public key
             $resource = openssl_pkey_new($config);

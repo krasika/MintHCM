@@ -100,7 +100,7 @@ class AOD_Index extends AOD_Index_sugar {
    private function getDocumentForRevision($revision) {
       $path = getDocumentRevisionPath($revision->id);
       if ( !file_exists($path) ) {
-         return array( "error" => "File not found" );
+         return ["error" => "File not found"];
       }
       //Convert the file to a lucene document
       $mime = $revision->file_mime_type;
@@ -136,20 +136,20 @@ class AOD_Index extends AOD_Index_sugar {
          case 'application/vnd.ms-powerpoint':
          case 'application/vnd.ms-excel':
          default:
-            return array( "error" => "Mime type $mime not supported" );
+            return ["error" => "Mime type $mime not supported"];
       }
       if ( !$document ) {
-         return array( "error" => "Failed to parse document" );
+         return ["error" => "Failed to parse document"];
       }
       $document->addField(Zend_Search_Lucene_Field::text("filename", $revision->filename));
-      return array( "error" => false, "document" => $document );
+      return ["error" => false, "document" => $document];
    }
 
    public function getDocumentForBean(SugarBean $bean) {
       if ( $bean->module_name == 'DocumentRevisions' ) {
          $document = $this->getDocumentForRevision($bean);
       } else {
-         $document = array( "error" => false, "document" => new Zend_Search_Lucene_Document() );
+         $document = ["error" => false, "document" => new Zend_Search_Lucene_Document()];
       }
       if ( $document["error"] ) {
          return $document;
@@ -206,8 +206,8 @@ class AOD_Index extends AOD_Index_sugar {
    }
 
    private function getBoost($module, $field) {
-      $fieldBoosts = array( 'name' => 0.5, 'first_name' => 0.5, 'last_name' => 0.5 );
-      $moduleBoosts = array( 'Accounts' => 0.5, 'Contacts' => 0.5, 'Leads' => 0.5, 'Opportunities' => 0.5 );
+      $fieldBoosts = ['name' => 0.5, 'first_name' => 0.5, 'last_name' => 0.5];
+      $moduleBoosts = ['Accounts' => 0.5, 'Contacts' => 0.5, 'Leads' => 0.5, 'Opportunities' => 0.5];
       $boost = 1;
       if ( !empty($fieldBoosts[$field]) ) {
          $boost += $fieldBoosts[$field];
@@ -224,8 +224,8 @@ class AOD_Index extends AOD_Index_sugar {
       $indexEvents = $indexEventBean->get_full_list('', "aod_indexevent.record_id = '" . $beanId . "' AND aod_indexevent.record_module = '" . $module . "'");
       if ( $indexEvents ) {
          $indexEvent = $indexEvents[0];
-         if ( count($indexEvents) > 1 ) {
-            for ( $x = 1; $x < count($indexEvents); $x++ ) {
+         if ( (is_array($indexEvents) || $indexEvents instanceof \Countable ? count($indexEvents) : 0) > 1 ) {
+            for ( $x = 1; $x < (is_array($indexEvents) || $indexEvents instanceof \Countable ? count($indexEvents) : 0); $x++ ) {
                $duplicateIE = $indexEvents[$x];
                $duplicateIE->mark_deleted($duplicateIE->id);
             }
@@ -255,14 +255,14 @@ class AOD_Index extends AOD_Index_sugar {
    public static function isModuleSearchable($module, $beanName) {
 //      View Tools #50827 START
 //      $whiteList = array( "DocumentRevisions", "Cases" );
-      $whiteList = array( "Cases" );
+      $whiteList = ["Cases"];
 //      View Tools #50827 END
       if ( in_array($module, $whiteList) ) {
          return true;
       }
 //      View Tools #50827 START
 //      $blackList = array( "AOD_IndexEvent", "AOD_Index", "AOW_Actions", "AOW_Conditions", "AOW_Processed", "SchedulersJobs" );
-      $blackList = array( "AOD_IndexEvent", "AOD_Index", "AOW_Actions", "AOW_Conditions", "AOW_Processed", "SchedulersJobs", "DocumentRevisions" );
+      $blackList = ["AOD_IndexEvent", "AOD_Index", "AOW_Actions", "AOW_Conditions", "AOW_Processed", "SchedulersJobs", "DocumentRevisions"];
 //      View Tools #50827 END
       if ( in_array($module, $blackList) ) {
          return false;
@@ -350,7 +350,7 @@ class AOD_Index extends AOD_Index_sugar {
    }
 
    public function getIndexableModules() {
-      $modules = array();
+      $modules = [];
       $beanList = $GLOBALS['beanList'];
       ksort($beanList);
       foreach ( $beanList as $beanModule => $beanName ) {

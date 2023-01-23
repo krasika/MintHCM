@@ -51,7 +51,5 @@ use Slim\Exception\ContainerValueNotFoundException;
  * @return \SuiteCRM\API\JsonApi\v1\Filters\Interfaces\ByPreMadeFilterInterpreter[]
  */
 $container['ByPreMadeFilterInterpreters'] = function ($container) {
-    return array(
-        new \SuiteCRM\API\JsonApi\v1\Filters\Interpreters\ByPreMadeFilters\Today($container)
-    );
+    return [new \SuiteCRM\API\JsonApi\v1\Filters\Interpreters\ByPreMadeFilters\Today($container)];
 };

@@ -66,10 +66,10 @@ require_once('ModuleInstall/ModuleScanner.php');
 define('DISABLED_PATH', 'Disabled');
 
 class ModuleInstaller{
-	var $modules = array();
-	var $silent = false;
-	var $base_dir  = '';
-	var $modulesInPackage = array();
+	public $modules = [];
+	public $silent = false;
+	public $base_dir  = '';
+	public $modulesInPackage = [];
 	public $disabled_path = DISABLED_PATH;
     public $id_name;
 	function __construct(){
@@ -105,7 +105,9 @@ class ModuleInstaller{
     * Finally it runs over a list of defined tasks; then install_beans, then install_custom_fields, then clear the Vardefs, run a RepairAndClear, then finally call rebuild_relationships.
     */
 	function install($base_dir, $is_upgrade = false, $previous_version = ''){
-		if(defined('TEMPLATE_URL'))SugarTemplateUtilities::disableCache();
+		$errors = [];
+  $installdefs = [];
+  if(defined('TEMPLATE_URL'))SugarTemplateUtilities::disableCache();
         if ((defined('MODULE_INSTALLER_PACKAGE_SCAN') && MODULE_INSTALLER_PACKAGE_SCAN)
             || !empty($GLOBALS['sugar_config']['moduleInstaller']['packageScan'])) {
 			$this->ms->scanPackage($base_dir);
@@ -128,20 +130,7 @@ class ModuleInstaller{
 		$this->base_dir = $base_dir;
 		$total_steps = 5; //minimum number of steps with no tasks
 		$current_step = 0;
-		$tasks = array(
-			'pre_execute',
-			'install_copy',
-		    'install_extensions',
-			'install_images',
-			'install_dcactions',
-			'install_dashlets',
-			'install_connectors',
-			'install_layoutfields',
-			'install_relationships',
-            'enable_manifest_logichooks',
-			'post_execute',
-			'reset_opcodes',
-		);
+		$tasks = ['pre_execute', 'install_copy', 'install_extensions', 'install_images', 'install_dcactions', 'install_dashlets', 'install_connectors', 'install_layoutfields', 'install_relationships', 'enable_manifest_logichooks', 'post_execute', 'reset_opcodes'];
 
 		$total_steps += count($tasks);
 		if(file_exists($this->base_dir . '/manifest.php')){
@@ -199,15 +188,7 @@ class ModuleInstaller{
 					update_progress_bar('install', $current_step, $total_steps);
 					echo '</div>';
 				}
-				$selectedActions = array(
-			'clearTpls',
-			'clearJsFiles',
-			'clearDashlets',
-			'clearVardefs',
-			'clearJsLangFiles',
-			'rebuildAuditTables',
-			'repairDatabase',
-		);
+				$selectedActions = ['clearTpls', 'clearJsFiles', 'clearDashlets', 'clearVardefs', 'clearJsLangFiles', 'rebuildAuditTables', 'repairDatabase'];
 				VardefManager::clearVardef();
 				global $beanList, $beanFiles, $moduleList;
 				if (file_exists('custom/application/Ext/Include/modules.ext.php'))
@@ -579,7 +560,7 @@ class ModuleInstaller{
 
         $user = new User();
         $users = get_user_array();
-        $unified_search_modules_display = array();
+        $unified_search_modules_display = [];
         require('custom/modules/unified_search_modules_display.php');
 
         foreach($this->installdefs['beans'] as $beanDefs)
@@ -610,7 +591,7 @@ class ModuleInstaller{
         if (write_array_to_file("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php') == false)
         {
             global $app_strings;
-            $msg = string_format($app_strings['ERR_FILE_WRITE'], array('custom/modules/unified_search_modules_display.php'));
+            $msg = string_format($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
             $GLOBALS['log']->error($msg);
             throw new Exception($msg);
             return false;
@@ -635,7 +616,7 @@ class ModuleInstaller{
             return true;
         }
 
-        $unified_search_modules_display = array();
+        $unified_search_modules_display = [];
         require('custom/modules/unified_search_modules_display.php');
 
         foreach($this->installdefs['beans'] as $beanDefs)
@@ -655,7 +636,7 @@ class ModuleInstaller{
         if (write_array_to_file("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php') == false)
         {
             global $app_strings;
-            $msg = string_format($app_strings['ERR_FILE_WRITE'], array('custom/modules/unified_search_modules_display.php'));
+            $msg = string_format($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
             $GLOBALS['log']->error($msg);
             throw new Exception($msg);
             return false;
@@ -680,7 +661,7 @@ class ModuleInstaller{
             return true;
         }
 
-        $unified_search_modules_display = array();
+        $unified_search_modules_display = [];
         require('custom/modules/unified_search_modules_display.php');
 
         foreach($this->installdefs['beans'] as $beanDefs)
@@ -700,7 +681,7 @@ class ModuleInstaller{
         if (write_array_to_file("unified_search_modules_display", $unified_search_modules_display, 'custom/modules/unified_search_modules_display.php') == false)
         {
             global $app_strings;
-            $msg = string_format($app_strings['ERR_FILE_WRITE'], array('custom/modules/unified_search_modules_display.php'));
+            $msg = string_format($app_strings['ERR_FILE_WRITE'], ['custom/modules/unified_search_modules_display.php']);
             $GLOBALS['log']->error($msg);
             throw new Exception($msg);
             return false;
@@ -717,7 +698,7 @@ class ModuleInstaller{
                 $this->$install();
 	        } else {
 	            if(!empty($ext["section"])) {
-	                $module = isset($ext['module'])?$ext['module']:'';
+	                $module = $ext['module'] ?? '';
 	                $this->installExt($ext["section"], $ext["extdir"], $module);
 	            }
 	        }
@@ -734,7 +715,7 @@ class ModuleInstaller{
                 $this->$func();
 	        } else {
 	            if(!empty($ext["section"])) {
-	                $module = isset($ext['module'])?$ext['module']:'';
+	                $module = $ext['module'] ?? '';
 	                $this->uninstallExt($ext["section"], $ext["extdir"], $module);
 	            }
 	        }
@@ -764,7 +745,7 @@ class ModuleInstaller{
                 $this->$func();
 	        } else {
 	            if(!empty($ext["section"])) {
-	                $module = isset($ext['module'])?$ext['module']:'';
+	                $module = $ext['module'] ?? '';
 	                $this->disableExt($ext["section"], $ext["extdir"], $module);
 	            }
 	        }
@@ -781,7 +762,7 @@ class ModuleInstaller{
                 $this->$func();
 	        } else {
 	            if(!empty($ext["section"])) {
-	                $module = isset($ext['module'])?$ext['module']:'';
+	                $module = $ext['module'] ?? '';
 	                $this->enableExt($ext["section"], $ext["extdir"], $module);
 	            }
 	        }
@@ -866,6 +847,7 @@ class ModuleInstaller{
 	}
 
 	function install_connectors(){
+        $cp = [];
         if(isset($this->installdefs['connectors'])){
         	foreach($this->installdefs['connectors'] as $cp){
 				$this->log(translate('LBL_MI_IN_CONNECTORS') . $cp['name']);
@@ -894,7 +876,8 @@ class ModuleInstaller{
 
 	}
 	function uninstall_connectors(){
-    	if(isset($this->installdefs['connectors'])){
+    	$cp = [];
+     if(isset($this->installdefs['connectors'])){
     		foreach($this->installdefs['connectors'] as $cp){
 				$this->log(translate('LBL_MI_UN_CONNECTORS') . $cp['name']);
 				$dir = str_replace('_','/',$cp['name']);
@@ -938,7 +921,8 @@ class ModuleInstaller{
     // Non-standard - needs special rebuild call
 	function install_languages()
 	{
-        $languages = array();
+        $modules = [];
+        $languages = [];
         if(isset($this->installdefs['language']))
         {
             $this->log(translate('LBL_MI_IN_LANG') );
@@ -978,7 +962,8 @@ class ModuleInstaller{
 
     // Non-standard, needs special rebuild
 	function uninstall_languages(){
-        $languages = array();
+        $modules = [];
+        $languages = [];
 				if(isset($this->installdefs['language'])){
 					$this->log(translate('LBL_MI_UN_LANG') );
 					foreach($this->installdefs['language'] as $packs){
@@ -1005,7 +990,7 @@ class ModuleInstaller{
 	public function disable_languages()
 	{
 		if(isset($this->installdefs['language'])) {
-		    $languages = $modules = array();
+		    $languages = $modules = [];
 			foreach($this->installdefs['language'] as $item) {
 				$from = str_replace('<basepath>', $this->base_dir, $item['from']);
 				$GLOBALS['log']->debug("Disabling Language {$item['language']}... from $from for " .$item['to_module']);
@@ -1039,7 +1024,9 @@ class ModuleInstaller{
     // Non-standard, needs special rebuild
 	public function enable_languages()
 	{
-		if(isset($this->installdefs['language'])) {
+		$languages = [];
+  $modules = [];
+  if(isset($this->installdefs['language'])) {
 			foreach($this->installdefs['language'] as $item) {
 				$from = str_replace('<basepath>', $this->base_dir, $item['from']);
 				$GLOBALS['log']->debug("Enabling Language {$item['language']}... from $from for " .$item['to_module']);
@@ -1102,7 +1089,7 @@ class ModuleInstaller{
 
 
         foreach($this->installdefs['logic_hooks'] as $hook ) {
-            check_logic_hook_file($hook['module'], $hook['hook'], array($hook['order'], $hook['description'],  $hook['file'], $hook['class'], $hook['function']));
+            check_logic_hook_file($hook['module'], $hook['hook'], [$hook['order'], $hook['description'], $hook['file'], $hook['class'], $hook['function']]);
         }
     }
 
@@ -1112,7 +1099,7 @@ class ModuleInstaller{
         }
 
         foreach($this->installdefs['logic_hooks'] as $hook ) {
-            remove_logic_hook($hook['module'], $hook['hook'], array($hook['order'], $hook['description'],  $hook['file'], $hook['class'], $hook['function']));
+            remove_logic_hook($hook['module'], $hook['hook'], [$hook['order'], $hook['description'], $hook['file'], $hook['class'], $hook['function']]);
         }
     }
 
@@ -1148,8 +1135,8 @@ class ModuleInstaller{
      */
     protected function uninstallLabel($uninstalLabes, $definition, $filename)
     {
-        $app_list_strings = array();
-        $mod_strings = array();
+        $app_list_strings = [];
+        $mod_strings = [];
         $stringsName = $definition['module'] == 'application' ? 'app_list_strings' : 'mod_strings';
 
         include($filename);
@@ -1201,10 +1188,7 @@ class ModuleInstaller{
             }
 
             foreach (array_keys($GLOBALS['sugar_config']['languages']) AS $language) {
-                $pathDef = array(
-                    'language' => $language,
-                    'to_module' => $definition['module']
-                );
+                $pathDef = ['language' => $language, 'to_module' => $definition['module']];
                 $path = $this->getInstallLanguagesPath($pathDef);
                 if (file_exists($path)) {
                     unlink($path);
@@ -1222,7 +1206,7 @@ class ModuleInstaller{
      */
     protected function getLabelsToUninstall($labelDefinitions)
     {
-        $labels = array();
+        $labels = [];
         foreach($labelDefinitions AS $definition){
             $labels[] = $definition['system_label'];
         }
@@ -1283,7 +1267,7 @@ class ModuleInstaller{
                 //Merge contents of the sugar field extension if we copied one over
                 if (file_exists("custom/Extension/modules/{$field['module']}/Ext/Vardefs/sugarfield_{$field['name']}.php"))
                 {
-                    $dictionary = array();
+                    $dictionary = [];
                     include ("custom/Extension/modules/{$field['module']}/Ext/Vardefs/sugarfield_{$field['name']}.php");
                     $obj = BeanFactory::getObjectName($field['module']);
                     if (!empty($dictionary[$obj]['fields'][$field['name']])) {
@@ -1477,12 +1461,9 @@ class ModuleInstaller{
 			//Delete Layout defs
 			// check to see if we have any vardef or layoutdef entries to remove - must have a relationship['module'] parameter if we do
 			if (!isset($rel_data[ 'module' ]))
-				$mods = array(
-					$rel_data['relationships'][$rel_name]['lhs_module'],
-					$rel_data['relationships'][$rel_name]['rhs_module'],
-				);
+				$mods = [$rel_data['relationships'][$rel_name]['lhs_module'], $rel_data['relationships'][$rel_name]['rhs_module']];
 			else
-				$mods = array($rel_data[ 'module' ]);
+				$mods = [$rel_data[ 'module' ]];
 
 			$filename = "$rel_name.php";
 
@@ -1493,7 +1474,7 @@ class ModuleInstaller{
 					$basepath = "custom/Extension/application/Ext/";
 				}
 
-				foreach (array($filename , "custom" . $filename, $rel_name ."_". $mod. ".php") as $fn) {
+				foreach ([$filename, "custom" . $filename, $rel_name ."_". $mod. ".php"] as $fn) {
 					//remove any vardefs
 					$path = $basepath . "Vardefs/$fn" ;
 					if (file_exists( $path ))
@@ -1512,11 +1493,7 @@ class ModuleInstaller{
 				}
                 $relationships_path = 'custom/Extension/modules/relationships/';
 
-                $relationships_dirs = array(
-                    'layoutdefs',
-                    'vardefs',
-                    'wirelesslayoutdefs'
-                );
+                $relationships_dirs = ['layoutdefs', 'vardefs', 'wirelesslayoutdefs'];
                 foreach ($relationships_dirs as $relationship_dir) {
                     $realtionship_file_path = $relationships_path . $relationship_dir . "/{$rel_name}_{$mod}.php";
                     if (file_exists($realtionship_file_path)) {
@@ -1528,7 +1505,7 @@ class ModuleInstaller{
                 }
             }
 
-			foreach (array($filename , "custom" . $filename, $rel_name ."_". $mod. ".php") as $fn) {
+			foreach ([$filename, "custom" . $filename, $rel_name ."_". $mod. ".php"] as $fn) {
 				// remove the table dictionary extension
 				if ( file_exists("custom/Extension/application/Ext/TableDictionary/$fn"))
 				    unlink("custom/Extension/application/Ext/TableDictionary/$fn");
@@ -1540,7 +1517,7 @@ class ModuleInstaller{
 	}
 
 	function uninstall_relationships($include_studio_relationships = false){
-		$relationships = array();
+		$relationships = [];
 
 		//Find and remove studio created relationships.
 		global $beanList, $beanFiles, $dictionary;
@@ -1549,7 +1526,7 @@ class ModuleInstaller{
 			include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');
 		}
 		//Find all the relatioships/relate fields involving this module.
-		$rels_to_remove = array();
+		$rels_to_remove = [];
 		foreach($beanList as $mod => $bean) {
 			//Some modules like cases have a bean name that doesn't match the object name
 			$bean = BeanFactory::getObjectName($mod);
@@ -1634,24 +1611,13 @@ class ModuleInstaller{
 
 
 	function uninstall($base_dir){
-		if(defined('TEMPLATE_URL'))SugarTemplateUtilities::disableCache();
+		$installdefs = [];
+  if(defined('TEMPLATE_URL'))SugarTemplateUtilities::disableCache();
 		global $app_strings;
 		$total_steps = 5; //min steps with no tasks
 		$current_step = 0;
 		$this->base_dir = $base_dir;
-		$tasks = array(
-			'pre_uninstall',
-			'uninstall_relationships',
-			'uninstall_copy',
-			'uninstall_dcactions',
-			'uninstall_dashlets',
-			'uninstall_connectors',
-			'uninstall_layoutfields',
-		    'uninstall_extensions',
-            'uninstall_global_search',
-			'disable_manifest_logichooks',
-			'post_uninstall',
-		);
+		$tasks = ['pre_uninstall', 'uninstall_relationships', 'uninstall_copy', 'uninstall_dcactions', 'uninstall_dashlets', 'uninstall_connectors', 'uninstall_layoutfields', 'uninstall_extensions', 'uninstall_global_search', 'disable_manifest_logichooks', 'post_uninstall'];
 		$total_steps += count($tasks); //now the real number of steps
 		if(file_exists($this->base_dir . '/manifest.php')){
 				if(!$this->silent){
@@ -1664,7 +1630,7 @@ class ModuleInstaller{
 				include($this->base_dir . '/manifest.php');
 				$this->installdefs = $installdefs;
 				$this->id_name = $this->installdefs['id'];
-				$installed_modules = array();
+				$installed_modules = [];
 				if(isset($this->installdefs['beans'])){
 					foreach($this->installdefs['beans'] as $bean){
 
@@ -1732,7 +1698,7 @@ class ModuleInstaller{
 		}
 	}
 
-	function rebuild_languages($languages = array(), $modules="")
+	function rebuild_languages($languages = [], $modules="")
 	{
             foreach($languages as $language=>$value){
 				$this->log(translate('LBL_MI_REBUILDING') . " Language...$language");
@@ -1826,7 +1792,7 @@ class ModuleInstaller{
 				if(is_dir($module_install)){
 					$dir = dir($module_install);
 					$shouldSave = true;
-					$override = array();
+					$override = [];
 					while($entry = $dir->read()){
 						if((empty($filter) || substr_count($entry, $filter) > 0) && is_file($module_install.'/'.$entry)
 						  && $entry != '.' && $entry != '..' && strtolower(substr($entry, -4)) == ".php")
@@ -1836,13 +1802,13 @@ class ModuleInstaller{
 						    } else {
 							    $file = file_get_contents($module_install . '/' . $entry);
 							    $GLOBALS['log']->debug(get_class($this)."->merge_files(): found {$module_install}{$entry}") ;
-							    $extension .= "\n". str_replace(array('<?php', '?>', '<?PHP', '<?'), array('','', '' ,'') , $file);
+							    $extension .= "\n". str_replace(['<?php', '?>', '<?PHP', '<?'], ['', '', '', ''] , $file);
 						    }
 						}
 					}
 					foreach ($override as $entry) {
                         $file = file_get_contents($module_install . '/' . $entry);
-                        $extension .= "\n". str_replace(array('<?php', '?>', '<?PHP', '<?'), array('','', '' ,'') , $file);
+                        $extension .= "\n". str_replace(['<?php', '?>', '<?PHP', '<?'], ['', '', '', ''] , $file);
 					}
 				}
 				$extension .= "\n?>";
@@ -1877,7 +1843,7 @@ class ModuleInstaller{
 								  && $entry != '.' && $entry != '..' && strtolower(substr($entry, -4)) == ".php")
 								{
 									$file = file_get_contents($module_install . '/' . $entry);
-									$extension .= "\n". str_replace(array('<?php', '?>', '<?PHP', '<?'), array('','', '' ,'') , $file);
+									$extension .= "\n". str_replace(['<?php', '?>', '<?PHP', '<?'], ['', '', '', ''] , $file);
 								}
 						}
 					}
@@ -1899,8 +1865,8 @@ class ModuleInstaller{
 
     function install_modules()
     {
-	    $this->installed_modules = array();
-		$this->tab_modules = array();
+	    $this->installed_modules = [];
+		$this->tab_modules = [];
         if(isset($this->installdefs['beans'])){
 			$str = "<?php \n //WARNING: The contents of this file are auto-generated\n";
 			foreach($this->installdefs['beans'] as $bean){
@@ -1951,7 +1917,7 @@ class ModuleInstaller{
 					if(is_subclass_of($mod, 'SugarBean')  && $mod->disable_vardefs == false ){
 						$GLOBALS['log']->debug( "Creating Tables Bean : $bean");
 						$mod->create_tables();
-						SugarBean::createRelationshipMeta($mod->getObjectName(), $mod->db,$mod->table_name,array(),$mod->module_dir);
+						SugarBean::createRelationshipMeta($mod->getObjectName(), $mod->db,$mod->table_name,[],$mod->module_dir);
 					}
 				}else{
 					$GLOBALS['log']->debug( "File Does Not Exist:" . $beanFiles[$class] );
@@ -1988,11 +1954,7 @@ class ModuleInstaller{
 	 */
 	function uninstall_customizations($beans){
         foreach($beans as $bean){
-			$dirs = array(
-				'custom/modules/' . $bean,
-				'custom/Extension/modules/' . $bean,
-                'custom/working/modules/' . $bean
-			);
+			$dirs = ['custom/modules/' . $bean, 'custom/Extension/modules/' . $bean, 'custom/working/modules/' . $bean];
         	foreach($dirs as $dir)
         	{
 				if(is_dir($dir)){
@@ -2073,7 +2035,7 @@ function copy_recursive_with_backup( $source, $dest, $backup_path, $uninstall=fa
 }
 
 private function dir_get_files($path, $base_path){
-	$files = array();
+	$files = [];
 	if(!is_dir($path))return $files;
 	$d = dir($path);
 	while ($e = $d->read()){
@@ -2114,7 +2076,7 @@ private function dir_file_count($path){
 	 * @param errors	an array of error messages which will be displayed on the
 	 * 					main module loader page once it is loaded.
 	 */
-	function abort($errors = array()){
+	function abort($errors = []){
 		//set the errors onto the session so we can display them one the moduler loader page loads
 		$_SESSION['MODULEINSTALLER_ERRORS'] = $errors;
 		echo '<META HTTP-EQUIV="Refresh" content="0;url=index.php?module=Administration&action=UpgradeWizard&view=module">';
@@ -2149,17 +2111,17 @@ private function dir_file_count($path){
         // these modules either lack editviews/detailviews or use custom mechanisms for the editview/detailview.
         // In either case, we don't want to attempt to add a relate field to them
         // would be better if GridLayoutMetaDataParser could handle this gracefully, so we don't have to maintain this list here
-        $invalidModules = array ( 'emails' , 'kbdocuments' ) ;
+        $invalidModules = ['emails', 'kbdocuments'] ;
 
         foreach ( $layoutAdditions as $deployedModuleName => $fieldName )
         {
             if ( ! in_array( strtolower ( $deployedModuleName ) , $invalidModules ) )
             {
-                foreach ( array ( MB_EDITVIEW , MB_DETAILVIEW ) as $view )
+                foreach ( [MB_EDITVIEW, MB_DETAILVIEW] as $view )
                 {
                     $GLOBALS [ 'log' ]->debug ( get_class ( $this ) . ": adding $fieldName to $view layout for module $deployedModuleName" ) ;
                     $parser = new GridLayoutMetaDataParser ( $view, $deployedModuleName ) ;
-                    $parser->addField ( array ( 'name' => $fieldName ) ) ;
+                    $parser->addField ( ['name' => $fieldName] ) ;
                     $parser->handleSave ( false ) ;
                 }
             }
@@ -2173,13 +2135,13 @@ private function dir_file_count($path){
         // these modules either lack editviews/detailviews or use custom mechanisms for the editview/detailview.
         // In either case, we don't want to attempt to add a relate field to them
         // would be better if GridLayoutMetaDataParser could handle this gracefully, so we don't have to maintain this list here
-        $invalidModules = array ( 'emails' , 'kbdocuments' ) ;
+        $invalidModules = ['emails', 'kbdocuments'] ;
 
         foreach ( $layoutAdditions as $deployedModuleName => $fieldName )
         {
             if ( ! in_array( strtolower ( $deployedModuleName ) , $invalidModules ) )
             {
-                foreach ( array ( MB_EDITVIEW , MB_DETAILVIEW ) as $view )
+                foreach ( [MB_EDITVIEW, MB_DETAILVIEW] as $view )
                 {
                     $GLOBALS [ 'log' ]->debug ( get_class ( $this ) . ": adding $fieldName to $view layout for module $deployedModuleName" ) ;
                     $parser = new GridLayoutMetaDataParser ( $view, $deployedModuleName ) ;
@@ -2195,19 +2157,13 @@ private function dir_file_count($path){
 	//********** DISABLE/ENABLE FUNCTIONS
 	///////////////////
 	function enable($base_dir, $is_upgrade = false, $previous_version = ''){
-		global $app_strings;
+		$errors = [];
+  $installdefs = [];
+  global $app_strings;
 		$this->base_dir = $base_dir;
 		$total_steps = 3; //minimum number of steps with no tasks
 		$current_step = 0;
-		$tasks = array(
-								'enable_copy',
-								'enable_dashlets',
-								'enable_relationships',
-		                        'enable_extensions',
-                                'enable_global_search',
-		                        'enable_manifest_logichooks',
-								'reset_opcodes',
-		);
+		$tasks = ['enable_copy', 'enable_dashlets', 'enable_relationships', 'enable_extensions', 'enable_global_search', 'enable_manifest_logichooks', 'reset_opcodes'];
 		$total_steps += count($tasks);
 		if(file_exists($this->base_dir . '/manifest.php')){
 				if(!$this->silent){
@@ -2232,7 +2188,7 @@ private function dir_file_count($path){
 				}//fi
 				$this->id_name = $installdefs['id'];
 				$this->installdefs = $installdefs;
-				$installed_modules = array();
+				$installed_modules = [];
 				if(isset($installdefs['beans'])){
 					foreach($this->installdefs['beans'] as $bean){
 						$installed_modules[] = $bean['module'];
@@ -2269,15 +2225,7 @@ private function dir_file_count($path){
 		$total_steps = 3; //min steps with no tasks
 		$current_step = 0;
 		$this->base_dir = $base_dir;
-		$tasks = array(
-							'disable_copy',
-							'disable_dashlets',
-							'disable_relationships',
-		                    'disable_extensions',
-                            'disable_global_search',
-							'disable_manifest_logichooks',
-							'reset_opcodes',
-							);
+		$tasks = ['disable_copy', 'disable_dashlets', 'disable_relationships', 'disable_extensions', 'disable_global_search', 'disable_manifest_logichooks', 'reset_opcodes'];
 		$total_steps += count($tasks); //now the real number of steps
 		if(file_exists($this->base_dir . '/manifest.php')){
 				if(!$this->silent){
@@ -2289,7 +2237,7 @@ private function dir_file_count($path){
 				require_once($this->base_dir . '/manifest.php');
 				$this->installdefs = $installdefs;
 				$this->id_name = $this->installdefs['id'];
-				$installed_modules = array();
+				$installed_modules = [];
 				if(isset($this->installdefs['beans'])){
 					foreach($this->installdefs['beans'] as $bean){
 						$installed_modules[] = $bean['module'];

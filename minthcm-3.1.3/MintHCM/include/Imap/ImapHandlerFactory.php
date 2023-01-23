@@ -61,8 +61,8 @@ require_once __DIR__ . '/ImapHandlerException.php';
  */
 class ImapHandlerFactory
 {
-    const SETTINGS_KEY_FILE = '/ImapTestSettings.txt';
-    const DEFAULT_SETTINGS_KEY = 'testSettingsOk';
+    public const SETTINGS_KEY_FILE = '/ImapTestSettings.txt';
+    public const DEFAULT_SETTINGS_KEY = 'testSettingsOk';
     
     /**
      *
@@ -193,7 +193,7 @@ class ImapHandlerFactory
             global $sugar_config;
 
             $test = (isset($sugar_config['imap_test']) && $sugar_config['imap_test']) || $testSettings;
-            $charset = (isset($sugar_config['default_email_charset'])) ? $sugar_config['default_email_charset'] : null;
+            $charset = $sugar_config['default_email_charset'] ?? null;
 
             if (inDeveloperMode()) {
                 $logErrors = true;

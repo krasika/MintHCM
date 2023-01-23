@@ -21,12 +21,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class KRESTManager {
 
-   var $app = null;
-   var $sessionId = null;
-   var $tmpSessionId = null;
-   var $requestParams = array();
-   var $noAuthentication = false;
-   var $extensions = array();
+   public $app = null;
+   public $sessionId = null;
+   public $tmpSessionId = null;
+   public $requestParams = [];
+   public $noAuthentication = false;
+   public $extensions = [];
 
    public function __construct($theApp) {
       // link the app and the request paramas
@@ -38,9 +38,7 @@ class KRESTManager {
    }
 
    public function registerExtension($extension, $version) {
-      $this->extensions[$extension] = array(
-         'version' => $version
-      );
+      $this->extensions[$extension] = ['version' => $version];
    }
 
    public function excludeFromAuthentication($path) {
@@ -57,7 +55,7 @@ class KRESTManager {
       // handle the session start
       $sessionSuccess = false;
       if ( !empty($this->requestParams['user_name']) && !empty($this->requestParams['password']) ) {
-         $loginData = $this->login(array( 'user_name' => $this->requestParams['user_name'], 'password' => $this->requestParams['password'], 'encryption' => $this->requestParams['encryption'] ));
+         $loginData = $this->login(['user_name' => $this->requestParams['user_name'], 'password' => $this->requestParams['password'], 'encryption' => $this->requestParams['encryption']]);
          if ( $loginData !== false ) {
             $this->sessionId = $loginData;
             $this->tmpSessionId = $loginData;
@@ -184,7 +182,7 @@ class KRESTManager {
             $passwordEncrypted = false;
          }
       }
-      $isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], array( 'passwordEncrypted' => $passwordEncrypted ));
+      $isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], ['passwordEncrypted' => $passwordEncrypted]);
       $usr_id = $user->retrieve_user_id($user_auth['user_name']);
       if ( $usr_id )
          $user->retrieve($usr_id);
@@ -208,7 +206,7 @@ class KRESTManager {
         } */ else if ( $authController->authController->userAuthenticateClass == "LDAPAuthenticateUser" && (empty($user_auth['encryption']) || $user_auth['encryption'] == 'PLAIN') ) {
 
          $authController->loggedIn = false; // reset login attempt to try again with md5 password
-         if ( $authController->login($user_auth['user_name'], md5($user_auth['password']), array( 'passwordEncrypted' => true )) && isset($_SESSION['authenticated_user_id']) ) {
+         if ( $authController->login($user_auth['user_name'], md5($user_auth['password']), ['passwordEncrypted' => true]) && isset($_SESSION['authenticated_user_id']) ) {
             $success = true;
          } else {
 
@@ -245,13 +243,7 @@ class KRESTManager {
       // clear the tem session ... seemingly we came via login so the session shoudl be kept
       $this->tmpSessionId = null;
 
-      return array(
-         'id' => session_id(),
-         'userid' => $current_user->id,
-         'user_name' => $current_user->user_name,
-         'first_name' => $current_user->first_name,
-         'last_name' => $current_user->last_name
-      );
+      return ['id' => session_id(), 'userid' => $current_user->id, 'user_name' => $current_user->user_name, 'first_name' => $current_user->first_name, 'last_name' => $current_user->last_name];
    }
 
 }

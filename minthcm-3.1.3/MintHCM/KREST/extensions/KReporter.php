@@ -103,7 +103,7 @@ $app->group('/KReporter', function () use ($KRESTManager, $KReportRestHandler) {
 
          $pluginData = $pluginManager->getPlugins($params['report']);
 
-         $addDataArray = array();
+         $addDataArray = [];
          if ( $params['addData'] ) {
             $addData = json_decode($params['addData'], true);
             foreach ( $addData as $addDataEntry ) {
@@ -129,7 +129,7 @@ $app->group('/KReporter', function () use ($KRESTManager, $KReportRestHandler) {
             $params = $request->getParams();
 
             if ( !$params )
-               $params = array();
+               $params = [];
 
             //Only return if not null! In case of empty we get a null line in exports (csv, xlsx) and excel can't open file properly
             //return $response->withJson($pluginManager->processPluginAction($plugin, 'action_' . $action, array_merge($getParams,$postBody)));
@@ -180,7 +180,7 @@ $app->group('/KReporter', function () use ($KRESTManager, $KReportRestHandler) {
          $this->group('/assigneduserid/{assigneduserid}', function () use ($KRESTManager, $KReportRestHandler) {
             $this->get('', function ($request, $response, $args) use ($KRESTManager, $KReportRestHandler) {
                $requestParams = $request->getQueryParams();
-               $requestParams = array( 'reportid' => $args['reportId'], 'assigneduserid' => $args['assigneduserid'], 'context' => $requestParams['context'] );
+               $requestParams = ['reportid' => $args['reportId'], 'assigneduserid' => $args['assigneduserid'], 'context' => $requestParams['context']];
                return $response->withJson($KReportRestHandler->getSavedFilters($requestParams));
             });
          });
@@ -192,19 +192,15 @@ $app->group('/KReporter', function () use ($KRESTManager, $KReportRestHandler) {
       });
 
       $this->get('/layout', function ($request, $response, $args) use ($KRESTManager) {
-         $layout = array();
+         $vizManager = null;
+         $layout = [];
          $thisReport = BeanFactory::getBean('KReports', $args['reportId']);
          $vizData = json_decode(html_entity_decode($thisReport->visualization_params, ENT_QUOTES, 'UTF-8'), true);
          return $response->withJson($vizData);
          $vizManager = new KReportVisualizationManager();
 
-         for ( $i = 0; $i < count($vizManager->layouts[$vizData['layout']]['items']); $i++ ) {
-            $layout[] = array(
-               "top" => $vizManager->layouts[$vizData['layout']]['items'][$i]['top'],
-               "left" => $vizManager->layouts[$vizData['layout']]['items'][$i]['left'],
-               "height" => $vizManager->layouts[$vizData['layout']]['items'][$i]['height'],
-               "width" => $vizManager->layouts[$vizData['layout']]['items'][$i]['width']
-            );
+         for ( $i = 0; $i < (is_array($vizManager->layouts[$vizData['layout']]['items']) || $vizManager->layouts[$vizData['layout']]['items'] instanceof \Countable ? count($vizManager->layouts[$vizData['layout']]['items']) : 0); $i++ ) {
+            $layout[] = ["top" => $vizManager->layouts[$vizData['layout']]['items'][$i]['top'], "left" => $vizManager->layouts[$vizData['layout']]['items'][$i]['left'], "height" => $vizManager->layouts[$vizData['layout']]['items'][$i]['height'], "width" => $vizManager->layouts[$vizData['layout']]['items'][$i]['width']];
          }
          // return $response->withJson($layout);
       });

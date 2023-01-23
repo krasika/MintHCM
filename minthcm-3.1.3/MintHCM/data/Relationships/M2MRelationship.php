@@ -54,7 +54,7 @@ require_once("data/Relationships/SugarRelationship.php");
  */
 class M2MRelationship extends SugarRelationship
 {
-    var $type = "many-to-many";
+    public $type = "many-to-many";
 
     public function __construct($def)
     {
@@ -137,7 +137,7 @@ class M2MRelationship extends SugarRelationship
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
-    public function add($lhs, $rhs, $additionalFields = array())
+    public function add($lhs, $rhs, $additionalFields = [])
     {
         $lhsLinkName = $this->lhsLink;
         $rhsLinkName = $this->rhsLink;
@@ -202,15 +202,9 @@ class M2MRelationship extends SugarRelationship
         return true;
     }
 
-    protected function getRowToInsert($lhs, $rhs, $additionalFields = array())
+    protected function getRowToInsert($lhs, $rhs, $additionalFields = [])
     {
-        $row = array(
-            "id" => create_guid(),
-            $this->def['join_key_lhs'] => $lhs->id,
-            $this->def['join_key_rhs'] => $rhs->id,
-            'date_modified' => TimeDate::getInstance()->nowDb(),
-            'deleted' => 0,
-        );
+        $row = ["id" => create_guid(), $this->def['join_key_lhs'] => $lhs->id, $this->def['join_key_rhs'] => $rhs->id, 'date_modified' => TimeDate::getInstance()->nowDb(), 'deleted' => 0];
 
 
         if (!empty($this->def['relationship_role_column']) && !empty($this->def['relationship_role_column_value']) && !$this->ignore_role_filter )
@@ -243,7 +237,7 @@ class M2MRelationship extends SugarRelationship
      * @param array $additionalFields
      * @return void
      */
-    protected function addSelfReferencing($lhs, $rhs, $additionalFields = array())
+    protected function addSelfReferencing($lhs, $rhs, $additionalFields = [])
     {
         if ($rhs->id != $lhs->id)
         {
@@ -275,10 +269,7 @@ class M2MRelationship extends SugarRelationship
     	//due to the way the module works. Plus it would remove the relative ease of adding custom module support
     	
     	if(get_class($lhs) == 'SecurityGroup' || get_class($rhs) == 'SecurityGroup') {
-			$dataToRemove = array(
-				$this->def['join_key_lhs'] => $lhs->id,
-				$this->def['join_key_rhs'] => $rhs->id
-			);
+			$dataToRemove = [$this->def['join_key_lhs'] => $lhs->id, $this->def['join_key_rhs'] => $rhs->id];
 
 
               if (empty($_SESSION['disable_workflow']) || $_SESSION['disable_workflow'] != "Yes")
@@ -340,10 +331,7 @@ class M2MRelationship extends SugarRelationship
             }
         }
 
-        $dataToRemove = array(
-            $this->def['join_key_lhs'] => $lhs->id,
-            $this->def['join_key_rhs'] => $rhs->id
-        );
+        $dataToRemove = [$this->def['join_key_lhs'] => $lhs->id, $this->def['join_key_rhs'] => $rhs->id];
 
         $this->removeRow($dataToRemove);
 
@@ -378,14 +366,11 @@ class M2MRelationship extends SugarRelationship
      * @param array $additionalFields
      * @return void
      */
-    protected function removeSelfReferencing($lhs, $rhs, $additionalFields = array())
+    protected function removeSelfReferencing($lhs, $rhs, $additionalFields = [])
     {
         if ($rhs->id != $lhs->id)
         {
-            $dataToRemove = array(
-                $this->def['join_key_lhs'] => $rhs->id,
-                $this->def['join_key_rhs'] => $lhs->id
-            );
+            $dataToRemove = [$this->def['join_key_lhs'] => $rhs->id, $this->def['join_key_rhs'] => $lhs->id];
             $this->removeRow($dataToRemove);
         }
     }
@@ -394,12 +379,12 @@ class M2MRelationship extends SugarRelationship
      * @param  $link Link2 loads the relationship for this link.
      * @return void
      */
-    public function load($link, $params = array())
+    public function load($link, $params = [])
     {
         $db = DBManagerFactory::getInstance();
         $query = $this->getQuery($link, $params);
         $result = $db->query($query);
-        $rows = Array();
+        $rows = [];
         $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
         while ($row = $db->fetchByAssoc($result, FALSE))
         {
@@ -408,15 +393,16 @@ class M2MRelationship extends SugarRelationship
             $id = empty($row['id']) ? $row[$idField] : $row['id'];
             $rows[$id] = $row;
         }
-        return array("rows" => $rows);
+        return ["rows" => $rows];
     }
 
     protected function linkIsLHS($link) {
         return $link->getSide() == REL_LHS;
     }
 
-    public function getQuery($link, $params = array())
+    public function getQuery($link, $params = [])
     {
+        $whereTable = null;
         if ($this->linkIsLHS($link)) {
             $knownKey = $this->def['join_key_lhs'];
             $targetKey = $this->def['join_key_rhs'];
@@ -478,7 +464,7 @@ class M2MRelationship extends SugarRelationship
         $SelectIncludedMiddleTableFields = '';
         if (isset($params['include_middle_table_fields']) && $params['include_middle_table_fields'] === true) {
              $middle_table_field_defs = $this->def['fields'];
-             $middle_table = array();
+             $middle_table = [];
              foreach($middle_table_field_defs as $field_def) {
                 if($field_def['name'] === 'id') {
                      continue;
@@ -493,21 +479,16 @@ class M2MRelationship extends SugarRelationship
             if(!empty($order_by)) $query .= ' ORDER BY '.$order_by;
             //Limit is not compatible with return_as_array
             if (!empty($params['limit']) && $params['limit'] > 0) {
-                $offset = isset($params['offset']) ? $params['offset'] : 0;
+                $offset = $params['offset'] ?? 0;
                 $query = DBManagerFactory::getInstance()->limitQuery($query, $offset, $params['limit'], false, "", false);
             }
             return $query;
         } else {
-            return array(
-                'select' => "SELECT $targetKey id",
-                'from' => "FROM $from",
-                'where' => "WHERE $where AND $rel_table.deleted=$deleted",
-                'order_by' => $order_by
-            );
+            return ['select' => "SELECT $targetKey id", 'from' => "FROM $from", 'where' => "WHERE $where AND $rel_table.deleted=$deleted", 'order_by' => $order_by];
         }
     }
 
-    public function getJoin($link, $params = array(), $return_array = false)
+    public function getJoin($link, $params = [], $return_array = false)
     {
         $linkIsLHS = $link->getSide() == REL_LHS;
         if ($linkIsLHS) {
@@ -524,7 +505,7 @@ class M2MRelationship extends SugarRelationship
         $targetTable = $linkIsLHS ? $this->def['rhs_table'] : $this->def['lhs_table'];
         $targetTableWithAlias = $targetTable;
         $targetKey = $linkIsLHS ? $this->def['rhs_key'] : $this->def['lhs_key'];
-        $join_type= isset($params['join_type']) ? $params['join_type'] : ' INNER JOIN ';
+        $join_type= $params['join_type'] ?? ' INNER JOIN ';
 
         $join = '';
 
@@ -553,14 +534,7 @@ class M2MRelationship extends SugarRelationship
                . "$join_type $targetTableWithAlias ON $join2 AND $targetTable.deleted=0\n";
 
         if($return_array){
-            return array(
-                'join' => $join,
-                'type' => $this->type,
-                'rel_key' => $joinKey,
-                'join_tables' => array($joinTable, $targetTable),
-                'where' => $where,
-                'select' => "$targetTable.id",
-            );
+            return ['join' => $join, 'type' => $this->type, 'rel_key' => $joinKey, 'join_tables' => [$joinTable, $targetTable], 'where' => $where, 'select' => "$targetTable.id"];
         }
         return $join . $where;
     }
@@ -573,7 +547,7 @@ class M2MRelationship extends SugarRelationship
      * @param bool $return_array
      * @return String|Array
      */
-    public function getSubpanelQuery($link, $params = array(), $return_array = false)
+    public function getSubpanelQuery($link, $params = [], $return_array = false)
     {
         $targetIsLHS = $link->getSide() == REL_RHS;
         $startingTable = $targetIsLHS ? $this->def['lhs_table'] : $this->def['rhs_table'];;
@@ -583,7 +557,7 @@ class M2MRelationship extends SugarRelationship
         $joinTableWithAlias = $joinTable;
         $joinKey = $targetIsLHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
         $targetKey = $targetIsLHS ? $this->def['rhs_key'] : $this->def['lhs_key'];
-        $join_type= isset($params['join_type']) ? $params['join_type'] : ' INNER JOIN ';
+        $join_type= $params['join_type'] ?? ' INNER JOIN ';
 
         $query = '';
 
@@ -608,14 +582,7 @@ class M2MRelationship extends SugarRelationship
             $return_array = true;
         }
         if($return_array){
-            return array(
-                'join' => $query,
-                'type' => $this->type,
-                'rel_key' => $joinKey,
-                'join_tables' => array($joinTable),
-                'where' => "",
-                'select' => " ",
-            );
+            return ['join' => $query, 'type' => $this->type, 'rel_key' => $joinKey, 'join_tables' => [$joinTable], 'where' => "", 'select' => " "];
         }
         return $query;
 
@@ -659,7 +626,7 @@ class M2MRelationship extends SugarRelationship
      */
     protected function getAlternateKeyFields()
     {
-        $fields = array($this->join_key_lhs, $this->join_key_rhs);
+        $fields = [$this->join_key_lhs, $this->join_key_rhs];
 
         //Roles can allow for multiple links between two records with different roles
         if (!empty($this->def['relationship_role_column']) && !$this->ignore_role_filter)
@@ -684,19 +651,12 @@ class M2MRelationship extends SugarRelationship
     {
         if (!empty($this->def['fields']))
             return $this->def['fields'];
-        $fields = array(
-            "id" => array('name' => 'id'),
-            'date_modified' => array('name' => 'date_modified'),
-            'modified_user_id' => array('name' => 'modified_user_id'),
-            'created_by' => array('name' => 'created_by'),
-            $this->def['join_key_lhs'] => array('name' => $this->def['join_key_lhs']),
-            $this->def['join_key_rhs'] => array('name' => $this->def['join_key_rhs'])
-        );
+        $fields = ["id" => ['name' => 'id'], 'date_modified' => ['name' => 'date_modified'], 'modified_user_id' => ['name' => 'modified_user_id'], 'created_by' => ['name' => 'created_by'], $this->def['join_key_lhs'] => ['name' => $this->def['join_key_lhs']], $this->def['join_key_rhs'] => ['name' => $this->def['join_key_rhs']]];
         if (!empty($this->def['relationship_role_column']))
         {
-            $fields[$this->def['relationship_role_column']] = array("name" => $this->def['relationship_role_column']);
+            $fields[$this->def['relationship_role_column']] = ["name" => $this->def['relationship_role_column']];
         }
-        $fields['deleted'] = array('name' => 'deleted');
+        $fields['deleted'] = ['name' => 'deleted'];
 
         return $fields;
     }

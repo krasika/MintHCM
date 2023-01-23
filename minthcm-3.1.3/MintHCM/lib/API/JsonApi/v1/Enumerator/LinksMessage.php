@@ -51,5 +51,5 @@ namespace SuiteCRM\API\JsonApi\v1\Enumerator;
  */
 class LinksMessage
 {
-    const INVALID_URL_PARAMETER = 'Invalid URL parameter: expected a valid url';
+    public const INVALID_URL_PARAMETER = 'Invalid URL parameter: expected a valid url';
 }

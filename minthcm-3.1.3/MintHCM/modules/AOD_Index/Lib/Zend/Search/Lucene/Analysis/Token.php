@@ -73,7 +73,7 @@ class Zend_Search_Lucene_Analysis_Token
      *
      * @var integer
      */
-    private $_positionIncrement;
+    private $_positionIncrement = 1;
 
 
     /**
@@ -89,8 +89,6 @@ class Zend_Search_Lucene_Analysis_Token
         $this->_termText    = $text;
         $this->_startOffset = $start;
         $this->_endOffset   = $end;
-
-        $this->_positionIncrement = 1;
     }
 
 

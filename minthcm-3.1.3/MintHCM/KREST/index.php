@@ -20,7 +20,7 @@
 // set error reporting to E_ERROR
 ini_set('error_reporting', 'E_ERROR');
 ini_set("display_errors", "off");
-chdir(dirname(__FILE__) . '/../');
+chdir(__DIR__ . '/../');
 
 
 if ( !defined('sugarEntry') ) {
@@ -30,7 +30,7 @@ if ( !defined('sugarEntry') ) {
 require_once 'include/entryPoint.php';
 require_once 'KREST/KRESTManager.php';
 
-if ( !class_exists('\Slim\App') ) {
+if ( !class_exists('\\' . \Slim\App::class) ) {
    require_once 'KREST/autoload.php';
 }
 

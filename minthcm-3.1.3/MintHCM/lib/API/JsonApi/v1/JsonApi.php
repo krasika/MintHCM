@@ -56,7 +56,7 @@ use SuiteCRM\Utility\SuiteLogger as Logger;
  */
 class JsonApi implements LoggerAwareInterface, JsonApiResponseInterface
 {
-    const VERSION = '1.0';
+    public const VERSION = '1.0';
     /**
      * @var LoggerInterface Logger
      */
@@ -86,8 +86,6 @@ class JsonApi implements LoggerAwareInterface, JsonApiResponseInterface
      */
     public function toJsonApiResponse()
     {
-        return array(
-            'version' => self::VERSION
-        );
+        return ['version' => self::VERSION];
     }
 }

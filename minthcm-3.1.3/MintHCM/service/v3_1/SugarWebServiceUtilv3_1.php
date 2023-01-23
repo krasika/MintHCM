@@ -56,10 +56,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 
 		$tableName = $value->getTableName();
 
-		return Array('module_name'=>$module, 'table_name' => $tableName,
-					'module_fields'=> $result['module_fields'],
-					'link_fields'=> $result['link_fields'],
-					);
+		return ['module_name'=>$module, 'table_name' => $tableName, 'module_fields'=> $result['module_fields'], 'link_fields'=> $result['link_fields']];
 	} // fn
 
 
@@ -94,7 +91,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
     public function getModulesFromList($list, $availModules)
     {
         global $app_list_strings;
-        $enabled_modules = array();
+        $enabled_modules = [];
         $availModulesKey = array_flip($availModules);
         foreach ($list as $key=>$value)
         {
@@ -102,7 +99,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
             {
                 $label = !empty( $app_list_strings['moduleList'][$key] ) ? $app_list_strings['moduleList'][$key] : '';
         	    $acl = self::checkModuleRoleAccess($key);
-        	    $enabled_modules[] = array('module_key' => $key,'module_label' => $label, 'acls' => $acl);
+        	    $enabled_modules[] = ['module_key' => $key, 'module_label' => $label, 'acls' => $acl];
             }
         }
         return $enabled_modules;
@@ -131,15 +128,17 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
      */
     function generateUnifiedSearchFields($moduleName)
     {
+        $metafiles = [];
+        $searchFields = [];
         global $beanList, $beanFiles, $dictionary;
 
         if(!isset($beanList[$moduleName]))
-            return array();
+            return [];
 
         $beanName = $beanList[$moduleName];
 
         if (!isset($beanFiles[$beanName]))
-            return array();
+            return [];
 
         $beanName = BeanFactory::getObjectName($moduleName);
 
@@ -158,7 +157,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
         elseif(file_exists("modules/{$moduleName}/metadata/SearchFields.php"))
             require "modules/{$moduleName}/metadata/SearchFields.php" ;
 
-        $fields = array();
+        $fields = [];
         foreach ( $dictionary [ $beanName ][ 'fields' ] as $field => $def )
         {
             if (strpos($field,'email') !== false)
@@ -199,12 +198,12 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
      */
     function checkModuleRoleAccess($module)
     {
-        $results = array();
-        $actions = array('edit','delete','list','view','import','export');
+        $results = [];
+        $actions = ['edit', 'delete', 'list', 'view', 'import', 'export'];
         foreach ($actions as $action)
         {
             $access = ACLController::checkAccess($module, $action, true);
-            $results[] = array('action' => $action, 'access' => $access);
+            $results[] = ['action' => $action, 'access' => $access];
         }
 
         return $results;
@@ -213,8 +212,8 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
     function get_field_list($value,$fields,  $translate=true) {
 
 	    $GLOBALS['log']->info('Begin: SoapHelperWebServices->get_field_list');
-		$module_fields = array();
-		$link_fields = array();
+		$module_fields = [];
+		$link_fields = [];
 		if(!empty($value->field_defs)){
 
 			foreach($value->field_defs as $var){
@@ -224,8 +223,8 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 					continue;
 				}
 				$required = 0;
-				$options_dom = array();
-				$options_ret = array();
+				$options_dom = [];
+				$options_ret = [];
 				// Apparently the only purpose of this check is to make sure we only return fields
 				//   when we've read a record.  Otherwise this function is identical to get_module_field_list
 				if( isset($var['required']) && ($var['required'] || $var['required'] == 'true' ) ){
@@ -237,7 +236,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 
 				if(isset($var['options'])){
 					$options_dom = translate($var['options'], $value->module_dir);
-					if(!is_array($options_dom)) $options_dom = array();
+					if(!is_array($options_dom)) $options_dom = [];
 					foreach($options_dom as $key=>$oneOption)
 						$options_ret[$key] = $this->get_name_value($key,$oneOption);
 				}
@@ -246,22 +245,22 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 	                $options_ret['type'] = $this->get_name_value('type', $var['dbType']);
 	            }
 
-	            $entry = array();
+	            $entry = [];
 	            $entry['name'] = $var['name'];
 	            $entry['type'] = $var['type'];
-	            $entry['group'] = isset($var['group']) ? $var['group'] : '';
-	            $entry['id_name'] = isset($var['id_name']) ? $var['id_name'] : '';
+	            $entry['group'] = $var['group'] ?? '';
+	            $entry['id_name'] = $var['id_name'] ?? '';
 
 	            if ($var['type'] == 'link') {
-		            $entry['relationship'] = (isset($var['relationship']) ? $var['relationship'] : '');
-		            $entry['module'] = (isset($var['module']) ? $var['module'] : '');
-		            $entry['bean_name'] = (isset($var['bean_name']) ? $var['bean_name'] : '');
+		            $entry['relationship'] = ($var['relationship'] ?? '');
+		            $entry['module'] = ($var['module'] ?? '');
+		            $entry['bean_name'] = ($var['bean_name'] ?? '');
 					$link_fields[$var['name']] = $entry;
 	            } else {
 		            if($translate) {
 		            	$entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
 		            } else {
-		            	$entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
+		            	$entry['label'] = $var['vname'] ?? $var['name'];
 		            }
 		            $entry['required'] = $required;
 		            $entry['options'] = $options_ret;
@@ -283,7 +282,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 		    if( isset($module_fields['duration_minutes']) && isset($GLOBALS['app_list_strings']['duration_intervals']))
 		    {
 		        $options_dom = $GLOBALS['app_list_strings']['duration_intervals'];
-		        $options_ret = array();
+		        $options_ret = [];
 		        foreach($options_dom as $key=>$oneOption)
 						$options_ret[$key] = $this->get_name_value($key,$oneOption);
 
@@ -295,9 +294,9 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 			require_once('modules/Releases/Release.php');
 			$seedRelease = new Release();
 			$options = $seedRelease->get_releases(TRUE, "Active");
-			$options_ret = array();
+			$options_ret = [];
 			foreach($options as $name=>$value){
-				$options_ret[] =  array('name'=> $name , 'value'=>$value);
+				$options_ret[] =  ['name'=> $name, 'value'=>$value];
 			}
 			if(isset($module_fields['fixed_in_release'])){
 				$module_fields['fixed_in_release']['type'] = 'enum';
@@ -335,7 +334,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 		}
 
 		$GLOBALS['log']->info('End: SoapHelperWebServices->get_field_list');
-		return array('module_fields' => $module_fields, 'link_fields' => $link_fields);
+		return ['module_fields' => $module_fields, 'link_fields' => $link_fields];
 	}
 
 	/**
@@ -360,9 +359,11 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 	}
 
 	function get_module_view_defs($module_name, $type, $view){
+        $listViewDefs = [];
+        $viewdefs = [];
         require_once('include/MVC/View/SugarView.php');
         $metadataFile = null;
-        $results = array();
+        $results = [];
         $view = strtolower($view);
         switch (strtolower($type)){
             case 'default':
@@ -371,7 +372,7 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
                     $results = $this->get_subpanel_defs($module_name, $type);
                 else
                 {
-                    $v = new SugarView(null,array());
+                    $v = new SugarView(null,[]);
                     $v->module = $module_name;
                     $v->type = $view;
                     $fullView = ucfirst($view) . 'View';
@@ -413,11 +414,11 @@ class SugarWebServiceUtilv3_1 extends SugarWebServiceUtilv3
 				}
 			}
 		}
-		$params = array();
+		$params = [];
 		if($favorites)
 		  $params['favorites'] = true;
 
-		$query = $seed->create_new_list_query($order_by, $where,array(),$params, $show_deleted,'',false,null,$singleSelect);
+		$query = $seed->create_new_list_query($order_by, $where,[],$params, $show_deleted,'',false,null,$singleSelect);
 		return $seed->process_list_query($query, $row_offset, $limit, $max, $where);
 	}
 

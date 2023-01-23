@@ -81,7 +81,7 @@ class ByIdFilter implements ByIdFilterInterpreter
 
         /** @var \DBManager $databaseManager */
         $databaseManager = $this->containers->get('DatabaseManager');
-        $idFilter = array();
+        $idFilter = [];
         /** @var array $identifiers */
         $identifiers = $filterStructure['[id]'];
         foreach ($identifiers as $id) {

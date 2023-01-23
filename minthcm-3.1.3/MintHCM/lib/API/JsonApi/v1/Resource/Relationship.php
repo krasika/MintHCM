@@ -116,7 +116,7 @@ class Relationship extends ResourceIdentifier
      * @return array
      */
     public function toJsonApiResponse() {
-        $payload = array();
+        $payload = [];
         if($this->getRelationshipType() === RelationshipType::TO_ONE) {
             $payload = $this->link->toJsonApiResponse();
         } else if($this->getRelationshipType() === RelationshipType::TO_MANY) {

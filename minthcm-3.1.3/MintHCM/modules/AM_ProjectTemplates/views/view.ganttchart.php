@@ -55,7 +55,7 @@ class AM_ProjectTemplatesViewGanttChart extends ViewDetail {
         $resources1 = $project_template->get_linked_beans('am_projecttemplates_users_1','User');
         $resources2 = $project_template->get_linked_beans('am_projecttemplates_contacts_1','Contact');
         //Combine resources into array of objects
-        $resource_array = array();
+        $resource_array = [];
         foreach($resources1 as $user){
             $resource = new stdClass;
             $resource->id = $user->id;
@@ -100,7 +100,7 @@ class AM_ProjectTemplatesViewGanttChart extends ViewDetail {
 							<label id="Subtask_label" for="Subtask"><?php echo $mod_strings['LBL_SUBTASK'];?></label>
 							<input type="radio" name="Milestone" value="Milestone" id="Milestone" />
 							<label id="Milestone_label" for="Milestone"><?php echo $mod_strings['LBL_MILESTONE_FLAG'];?></label>&nbsp;<br /><br />
-							<label id="parent_task_id" for="parent_task" style="display: none;"><?php echo isset($mod_strings['LBL_PARENT_TASK_ID']) ? $mod_strings['LBL_PARENT_TASK_ID'] : ''; ?></label>
+							<label id="parent_task_id" for="parent_task" style="display: none;"><?php echo $mod_strings['LBL_PARENT_TASK_ID'] ?? ''; ?></label>
 							<input id="parent_task" class="text ui-widget-content ui-corner-all" style="display: none;" type="text" name="parent_task" value="" />
 							<label for="task_name"><?php echo $mod_strings['LBL_TASK_NAME']; ?></label>
 							<input type="text" name="task_name" id="task_name" class="text ui-widget-content ui-corner-all" />

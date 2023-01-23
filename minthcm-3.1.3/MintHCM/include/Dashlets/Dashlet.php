@@ -472,7 +472,7 @@ class Dashlet
         if (isset($dashletDefs[$this->id]['options'])) {
             return $dashletDefs[$this->id]['options'];
         } else {
-            return array();
+            return [];
         }
 
     }

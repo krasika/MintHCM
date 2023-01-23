@@ -39,11 +39,10 @@ class Zend_Http_Response
      *
      * @var array
      */
-    protected static $messages = array(
+    protected static $messages = [
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
-
         // Success 2xx
         200 => 'OK',
         201 => 'Created',
@@ -52,17 +51,16 @@ class Zend_Http_Response
         204 => 'No Content',
         205 => 'Reset Content',
         206 => 'Partial Content',
-
         // Redirection 3xx
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
-        302 => 'Found',  // 1.1
+        302 => 'Found',
+        // 1.1
         303 => 'See Other',
         304 => 'Not Modified',
         305 => 'Use Proxy',
         // 306 is deprecated but reserved
         307 => 'Temporary Redirect',
-
         // Client Error 4xx
         400 => 'Bad Request',
         401 => 'Unauthorized',
@@ -82,7 +80,6 @@ class Zend_Http_Response
         415 => 'Unsupported Media Type',
         416 => 'Requested Range Not Satisfiable',
         417 => 'Expectation Failed',
-
         // Server Error 5xx
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
@@ -90,8 +87,8 @@ class Zend_Http_Response
         503 => 'Service Unavailable',
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported',
-        509 => 'Bandwidth Limit Exceeded'
-    );
+        509 => 'Bandwidth Limit Exceeded',
+    ];
 
     /**
      * The HTTP version (1.0, 1.1)
@@ -120,7 +117,7 @@ class Zend_Http_Response
      *
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * The HTTP response body
@@ -494,7 +491,7 @@ class Zend_Http_Response
      */
     public static function extractHeaders($response_str)
     {
-        $headers = array();
+        $headers = [];
 
         // First, split body and headers
         $parts = preg_split('|(?:\r?\n){2}|m', $response_str, 2);
@@ -517,7 +514,7 @@ class Zend_Http_Response
 
                 if (isset($headers[$h_name])) {
                     if (! is_array($headers[$h_name])) {
-                        $headers[$h_name] = array($headers[$h_name]);
+                        $headers[$h_name] = [$headers[$h_name]];
                     }
 
                     $headers[$h_name][] = $h_value;

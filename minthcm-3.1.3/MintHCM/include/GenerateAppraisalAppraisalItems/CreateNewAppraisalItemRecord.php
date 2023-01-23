@@ -80,7 +80,7 @@ class CreateNewAppraisalItemRecord {
    }
 
    protected function getRelatedCompetencies($transformed_record_bean) {
-      $competencies_beans = array();
+      $competencies_beans = [];
 
       if ( $this->transformed_module_name == static::$EMPLOYEES_MODULE_NAME ) {
          $competencies_beans = $this->getRelatedCompetenciesFromEmployee($transformed_record_bean);
@@ -92,7 +92,7 @@ class CreateNewAppraisalItemRecord {
    }
 
    protected function getRelatedCompetenciesFromEmployee($employee_bean) {
-      $competencies_beans = array();
+      $competencies_beans = [];
       $linked_competencies_ratings_from_employee = $employee_bean->get_linked_beans('competencyratings', 'CompetencyRatings');
 
       if ( !empty($linked_competencies_ratings_from_employee) ) {
@@ -106,7 +106,7 @@ class CreateNewAppraisalItemRecord {
    }
 
    protected function getRelatedCompetenciesFromCandidatures($candidature_bean) {
-      $competencies_beans = array();
+      $competencies_beans = [];
       $linked_recruitement_from_candidature = '';
 
       if ( empty($linked_recruitement_from_candidature = $candidature_bean->get_linked_beans('recruitments_end', 'Recruitements')) ) {
@@ -125,7 +125,7 @@ class CreateNewAppraisalItemRecord {
    }
 
    protected function getRelatedResponsibilietes($transformed_record_bean, $appraisal_bean) {
-      $reponsibilietes_beans = array();
+      $reponsibilietes_beans = [];
 
       if ( $this->transformed_module_name == static::$EMPLOYEES_MODULE_NAME ) {
          $reponsibilietes_beans = $this->getRelatedResponsibilietesFromEmployee($appraisal_bean);
@@ -137,8 +137,8 @@ class CreateNewAppraisalItemRecord {
    }
 
    protected function getRelatedResponsibilietesFromEmployee($appraisal_bean) {
-      $roles_beans = array();
-      $reponsibilietes_beans = array();
+      $roles_beans = [];
+      $reponsibilietes_beans = [];
 
       $linked_roles_beans = array_merge($roles_beans, $appraisal_bean->get_linked_beans('roles', 'EmployeeRoles'));
 

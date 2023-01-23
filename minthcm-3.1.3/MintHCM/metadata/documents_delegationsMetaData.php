@@ -43,73 +43,11 @@
  * Appropriate Legal Notices must display the words "Powered by SugarCRM" and 
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
-$dictionary["documents_delegations"] = array(
-    'true_relationship_type' => 'many-to-many',
-    'relationships' =>
-    array(
-        'documents_delegations' =>
-        array(
-            'lhs_module' => 'Documents',
-            'lhs_table' => 'documents',
-            'lhs_key' => 'id',
-            'rhs_module' => 'Delegations',
-            'rhs_table' => 'delegations',
-            'rhs_key' => 'id',
-            'relationship_type' => 'many-to-many',
-            'join_table' => 'documents_delegations',
-            'join_key_lhs' => 'document_id',
-            'join_key_rhs' => 'delegation_id',
-        ),
-    ),
-    'table' => 'documents_delegations',
-    'fields' =>
-    array(
-        array(
-            'name' => 'id',
-            'type' => 'varchar',
-            'len' => 36,
-        ),
-        array(
-            'name' => 'date_modified',
-            'type' => 'datetime',
-        ),
-        array(
-            'name' => 'deleted',
-            'type' => 'bool',
-            'len' => '1',
-            'default' => '0',
-            'required' => true,
-        ),
-        array(
-            'name' => 'document_id',
-            'type' => 'varchar',
-            'len' => 36,
-        ),
-        array(
-            'name' => 'delegation_id',
-            'type' => 'varchar',
-            'len' => 36,
-        ),
-    ),
-    'indices' =>
-    array(
-        array(
-            'name' => 'documents_delegationsspk',
-            'type' => 'primary',
-            'fields' =>
-            array(
-                'id',
-            ),
-        ),
-        array(
-            'name' => 'documents_delegations_delegation_id',
-            'type' => 'alternate_key',
-            'fields' =>
-            array(
-                'delegation_id',
-                'document_id',
-            ),
-        ),
-    ),
-);
+$dictionary["documents_delegations"] = ['true_relationship_type' => 'many-to-many', 'relationships' =>
+['documents_delegations' =>
+['lhs_module' => 'Documents', 'lhs_table' => 'documents', 'lhs_key' => 'id', 'rhs_module' => 'Delegations', 'rhs_table' => 'delegations', 'rhs_key' => 'id', 'relationship_type' => 'many-to-many', 'join_table' => 'documents_delegations', 'join_key_lhs' => 'document_id', 'join_key_rhs' => 'delegation_id']], 'table' => 'documents_delegations', 'fields' =>
+[['name' => 'id', 'type' => 'varchar', 'len' => 36], ['name' => 'date_modified', 'type' => 'datetime'], ['name' => 'deleted', 'type' => 'bool', 'len' => '1', 'default' => '0', 'required' => true], ['name' => 'document_id', 'type' => 'varchar', 'len' => 36], ['name' => 'delegation_id', 'type' => 'varchar', 'len' => 36]], 'indices' =>
+[['name' => 'documents_delegationsspk', 'type' => 'primary', 'fields' =>
+['id']], ['name' => 'documents_delegations_delegation_id', 'type' => 'alternate_key', 'fields' =>
+['delegation_id', 'document_id']]]];
 

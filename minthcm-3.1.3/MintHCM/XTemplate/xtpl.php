@@ -124,27 +124,27 @@ class XTemplate {
 
 /***[ variables ]***********************************************************/
 
-var $filecontents="";								/* raw contents of template file */
-var $blocks=array();								/* unparsed blocks */
-var $parsed_blocks=array();					/* parsed blocks */
-var $block_parse_order=array();			/* block parsing order for recursive parsing (sometimes reverse:) */
-var $sub_blocks=array();						/* store sub-block names for fast resetting */
-var $VARS=array();									/* variables array */
-var $alternate_include_directory = "";
+public $filecontents="";								/* raw contents of template file */
+public $blocks=[];								/* unparsed blocks */
+public $parsed_blocks=[];					/* parsed blocks */
+public $block_parse_order=[];			/* block parsing order for recursive parsing (sometimes reverse:) */
+public $sub_blocks=[];						/* store sub-block names for fast resetting */
+public $VARS=[];									/* variables array */
+public $alternate_include_directory = "";
 
-var $file_delim="/\{FILE\s*\"([^\"]+)\"\s*\}/m";  /* regexp for file includes */
-var $block_start_delim="<!-- ";			/* block start delimiter */
-var $block_end_delim="-->";					/* block end delimiter */
-var $block_start_word="BEGIN:";			/* block start word */
-var $block_end_word="END:";					/* block end word */
+public $file_delim="/\{FILE\s*\"([^\"]+)\"\s*\}/m";  /* regexp for file includes */
+public $block_start_delim="<!-- ";			/* block start delimiter */
+public $block_end_delim="-->";					/* block end delimiter */
+public $block_start_word="BEGIN:";			/* block start word */
+public $block_end_word="END:";					/* block end word */
 
 /* this makes the delimiters look like: <!-- BEGIN: block_name --> if you use my syntax. */
 
-var $NULL_STRING=array(""=>"");				/* null string for unassigned vars */
-var $NULL_BLOCK=array(""=>"");	/* null string for unassigned blocks */
-var $mainblock="";
-var $ERROR="";
-var $AUTORESET=1;										/* auto-reset sub blocks */
+public $NULL_STRING=[""=>""];				/* null string for unassigned vars */
+public $NULL_BLOCK=[""=>""];	/* null string for unassigned blocks */
+public $mainblock="";
+public $ERROR="";
+public $AUTORESET=1;										/* auto-reset sub blocks */
 
 /***[ constructor ]*********************************************************/
 
@@ -195,7 +195,7 @@ function assign ($name,$val="") {
 
 function append ($varname, $name,$val="") {
 	if(!isset($this->VARS[$varname])){
-		$this->VARS[$varname] = array();
+		$this->VARS[$varname] = [];
 	}
    if(is_array($this->VARS[$varname])){
        $this->VARS[$varname][$name] = $val;
@@ -320,7 +320,7 @@ function rparse($bname) {
 		reset($this->sub_blocks[$bname]);
 		foreach($this->sub_blocks[$bname] as $k => $v) {
             if (!empty($v)) {
-                $this->rparse($v, $indent . "\t");
+                $this->rparse($v);
             }
 		}
 
@@ -346,7 +346,7 @@ function insert_loop($bname,$var,$value="") {
 function text($bname) {
 
     if(!empty($this->parsed_blocks)){
-	   return $this->parsed_blocks[isset($bname) ? $bname :$this->mainblock];
+	   return $this->parsed_blocks[$bname ?? $this->mainblock];
     }else{
         return '';
     }
@@ -438,7 +438,8 @@ function clear_autoreset() {
 */
 
 function scan_globals() {
-	reset($GLOBALS);
+	$GLOB = [];
+ reset($GLOBALS);
 	foreach ($GLOBALS as $k => $v) {
         $GLOB[$k] = $v;
 	}
@@ -469,8 +470,8 @@ function scan_globals() {
 function maketree($con,$block) {
 	$con2=explode($this->block_start_delim,$con);
 	$level=0;
-	$block_names=array();
-	$blocks=array();
+	$block_names=[];
+	$blocks=[];
 	reset($con2);
 	foreach ($con2 as $k => $v) {
 		$patt="($this->block_start_word|$this->block_end_word)\s*(\w+)\s*$this->block_end_delim(.*)";

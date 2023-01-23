@@ -61,20 +61,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
             $prefix = $prefix . '/';
         }
       //add prefix to key if it was passed in
-        $compress_exempt_files = array(
-            rtrim($prefix.sugar_cached(''), '/')  => true,
-            $prefix.'include/javascript/tiny_mce'   => true,
-            $prefix.'include/javascript/yui'        => true,
-            $prefix.'modules/Emails'                => true,
-            $prefix.'jssource'                      => true,
-            $prefix.'upload'                        => true,
-            $prefix.'modules/ModuleBuilder'         => true,
-            $prefix.'include/javascript/jquery'     => true,
-            $prefix.'include/javascript/jquery/bootstrap'     => true,
-            $prefix.'tests/PHPUnit/PHP/CodeCoverage/Report/HTML/Template' => true,
-            $prefix.'tests/jssource/minify/expect'  => true,
-            $prefix.'tests/jssource/minify/test'    => true,
-        );
+        $compress_exempt_files = [rtrim($prefix.sugar_cached(''), '/')  => true, $prefix.'include/javascript/tiny_mce'   => true, $prefix.'include/javascript/yui'        => true, $prefix.'modules/Emails'                => true, $prefix.'jssource'                      => true, $prefix.'upload'                        => true, $prefix.'modules/ModuleBuilder'         => true, $prefix.'include/javascript/jquery'     => true, $prefix.'include/javascript/jquery/bootstrap'     => true, $prefix.'tests/PHPUnit/PHP/CodeCoverage/Report/HTML/Template' => true, $prefix.'tests/jssource/minify/expect'  => true, $prefix.'tests/jssource/minify/test'    => true];
 
         return $compress_exempt_files;
 
@@ -93,7 +80,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
         // Minifying the group files takes a long time sometimes.
         @ini_set('max_execution_time', 300);
-        $js_groupings = array();
+        $js_groupings = [];
         if(isset($_REQUEST['root_directory'])){
             require('jssource/JSGroupings.php');
         }else{
@@ -101,7 +88,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
         }
         //get array with file sources to concatenate
         $file_groups = $js_groupings;//from JSGroupings.php;
-        $files_opened = array();
+        $files_opened = [];
         $currPerm = '';
 
         $excludedFiles = get_exclude_files($from_path);
@@ -328,7 +315,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
 
                 //place license string into array for use with jsmin file.
                 //this will preserve the license in the file
-                $lic_arr = array($lic_str);
+                $lic_arr = [$lic_str];
 
                 //minify javascript
                 //$jMin = new JSMin($from_path,$to_path,$lic_arr);
@@ -356,7 +343,7 @@ if (!defined('sugarEntry') || !sugarEntry) {
                 if( isCommandLineInterface() ){ // MintHCM
                     echo"<B> COULD NOT COMPRESS $from_path, it is not a file \n";
                 } // MintHCM
-                 
+
             }
 
         }else{

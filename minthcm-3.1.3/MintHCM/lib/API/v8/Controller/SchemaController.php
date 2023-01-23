@@ -87,7 +87,7 @@ class SchemaController extends ApiController
             return $response->withHeader(self::CONTENT_TYPE_HEADER, self::CONTENT_TYPE_JSON)->write($schemaFile);
             
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($request, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($request, $e, $payload ?? []);
         }
         
         return $this->generateJsonApiResponse($request, $response, $payload);
@@ -123,7 +123,7 @@ class SchemaController extends ApiController
             return $response->withHeader(self::CONTENT_TYPE_HEADER, self::CONTENT_TYPE_JSON)->write($schemaFile);
             
         } catch (\Exception $e) {
-            $payload = $this->handleExceptionIntoPayloadError($request, $e, isset($payload) ? $payload : []);
+            $payload = $this->handleExceptionIntoPayloadError($request, $e, $payload ?? []);
         }
         
         return $this->generateJsonApiResponse($request, $response, $payload);

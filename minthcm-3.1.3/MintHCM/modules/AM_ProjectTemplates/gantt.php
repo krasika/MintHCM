@@ -63,13 +63,13 @@ class Gantt {
                 //Generate a table containing the days in each month
                 echo '<table class="table_inner"><tr>';
 
-				
+
                 foreach($days as $day => $d){
                     echo '<td class="inner_td"><div class="cell_width">'.'&nbsp;'.'</div></td>';//day number shown $day
                 }
                 echo '</tr><tr>';
 
-				
+
                 foreach($days as $d){
                     $day_num ++;
 					echo '<td class="inner_td"><div class="cell_width">'.$day_num.'</div></td>';//First letter of the days name shown //$this->substr_unicode($d,0,1)
@@ -217,7 +217,7 @@ class Gantt {
         $end->add(new DateInterval('P1D')); //Add 1 day to include the end date as a day
         $interval = new DateInterval('P1D'); // 1 month interval
         $period = new DatePeriod($begin, $interval, $end);
-        $aResult = array();
+        $aResult = [];
 
         foreach ( $period as $dt )
         {

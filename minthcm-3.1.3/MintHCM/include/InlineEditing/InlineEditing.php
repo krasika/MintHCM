@@ -49,6 +49,9 @@ if (!defined('sugarEntry') || !sugarEntry) {
 function getEditFieldHTML($module, $fieldname, $aow_field, $view = 'EditView', $id = '', $alt_type = '', $currency_id = '')
 {
 
+    $vardefFields = [];
+    $parentfieldlist = [];
+    $displayParams = null;
     global $current_language, $app_strings, $app_list_strings, $current_user, $beanFiles, $beanList;
 
     $bean = BeanFactory::getBean($module,$id);
@@ -76,7 +79,7 @@ function getEditFieldHTML($module, $fieldname, $aow_field, $view = 'EditView', $
             $vardef = $focus->getFieldDefinition($fieldname);
         }
 
-        $displayParams = array();
+        $displayParams = [];
         //$displayParams['formName'] = 'EditView';
 
         // if this is the id relation field, then don't have a pop-up selector.
@@ -180,7 +183,7 @@ function getEditFieldHTML($module, $fieldname, $aow_field, $view = 'EditView', $
     $ss->assign('USER_DATEFORMAT', $timedate->get_user_date_format());
     $ss->assign('TIME_FORMAT', $time_format);
     $time_separator = ":";
-    $match = array();
+    $match = [];
     if (preg_match('/\d+([^\d])\d+([^\d]*)/s', $time_format, $match)) {
         $time_separator = $match[1];
     }
@@ -194,7 +197,7 @@ function getEditFieldHTML($module, $fieldname, $aow_field, $view = 'EditView', $
 
     $ss->assign('CALENDAR_FDOW', $current_user->get_first_day_of_week());
 
-    $fieldlist = array();
+    $fieldlist = [];
     if (!isset($focus) || !($focus instanceof SugarBean))
         require_once($beanFiles[$beanList[$module]]);
     $focus = new $beanList[$module];
@@ -214,7 +217,7 @@ function getEditFieldHTML($module, $fieldname, $aow_field, $view = 'EditView', $
     }
 
     // fill in function return values
-    if (!in_array($fieldname, array('email1', 'email2'))) {
+    if (!in_array($fieldname, ['email1', 'email2'])) {
         if (!empty($fieldlist[$fieldname]['function']['returns']) && $fieldlist[$fieldname]['function']['returns'] == 'html') {
             $function = $fieldlist[$fieldname]['function']['name'];
             // include various functions required in the various vardefs
@@ -356,7 +359,7 @@ function saveField($field, $id, $module, $value)
             }
         }
 
-        $adminOnlyModules = array('Users', 'Employees');
+        $adminOnlyModules = ['Users', 'Employees'];
 
         $enabled = true;
         if(in_array($module, $adminOnlyModules) && !is_admin($current_user)) {
@@ -381,6 +384,8 @@ function saveField($field, $id, $module, $value)
 function getDisplayValue($bean, $field, $method = "save")
 {
 
+    $fieldlist = [];
+    $listViewDefs = null;
     if (file_exists("custom/modules/Accounts/metadata/listviewdefs.php")) {
         $metadata = require("custom/modules/Accounts/metadata/listviewdefs.php");
     } else {
@@ -401,6 +406,7 @@ function getDisplayValue($bean, $field, $method = "save")
 function formatDisplayValue($bean, $value, $vardef, $method = "save")
 {
 
+    $name = null;
     global $app_list_strings, $timedate;
 
     //Fake the params so we can pass the values through the sugarwidgets to get the correct display html.

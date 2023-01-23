@@ -75,7 +75,7 @@ if (!is_admin($focus)) {
         }
     }
 
-    $names = array();
+    $names = [];
     $names = ACLAction::setupCategoriesMatrix($categories);
     if (!empty($names)) {
         $tdwidth = 100 / sizeof($names);
@@ -85,7 +85,7 @@ if (!is_admin($focus)) {
     $sugar_smarty->assign('TDWIDTH', $tdwidth);
     $sugar_smarty->assign('ACTION_NAMES', $names);
 
-    $title = getClassicModuleTitle('', array($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_ROLES_SUBPANEL_TITLE']),
+    $title = getClassicModuleTitle('', [$mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_ROLES_SUBPANEL_TITLE']],
         '');
 
     $sugar_smarty->assign('TITLE', $title);

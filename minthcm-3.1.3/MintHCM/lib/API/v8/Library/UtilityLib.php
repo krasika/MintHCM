@@ -88,6 +88,6 @@ class UtilityLib
      */
     public function getServerInfo()
     {
-        return array();
+        return [];
     }
 }

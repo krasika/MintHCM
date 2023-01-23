@@ -1,4 +1,5 @@
 <?php
+
 namespace Consolidation\OutputFormatters;
 
 use Consolidation\OutputFormatters\Exception\IncompatibleDataException;
@@ -21,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Consolidation\OutputFormatters\StructuredData\OriginalDataInterface;
 use Consolidation\OutputFormatters\StructuredData\ListDataFromKeys;
 use Consolidation\OutputFormatters\StructuredData\ConversionInterface;
+use Consolidation\OutputFormatters\Formatters\HumanReadableFormat;
 
 /**
  * Manage a collection of formatters; return one on request.
@@ -57,7 +59,7 @@ class FormatterManager
              $defaultFormatters['var_dump'] = '\Consolidation\OutputFormatters\Formatters\VarDumpFormatter';
         }
         foreach ($defaultFormatters as $id => $formatterClassname) {
-            $formatter = new $formatterClassname;
+            $formatter = new $formatterClassname();
             $this->addFormatter($id, $formatter);
         }
         $this->addFormatter('', $this->formatters['string']);
@@ -135,7 +137,7 @@ class FormatterManager
         }
 
         if (isset($automaticOptions[FormatterOptions::FIELDS])) {
-            $automaticOptions[FormatterOptions::FIELD] = new InputOption(FormatterOptions::FIELD, '', InputOption::VALUE_REQUIRED, "Select just one field, and force format to 'string'.", '');
+            $automaticOptions[FormatterOptions::FIELD] = new InputOption(FormatterOptions::FIELD, '', InputOption::VALUE_REQUIRED, "Select just one field, and force format to *string*.", '');
         }
 
         return $automaticOptions;
@@ -430,6 +432,11 @@ class FormatterManager
      */
     public function overrideOptions(FormatterInterface $formatter, $structuredOutput, FormatterOptions $options)
     {
+        // Set the "Human Readable" option if the formatter has the HumanReadable marker interface
+        if ($formatter instanceof HumanReadableFormat) {
+            $options->setHumanReadable();
+        }
+        // The formatter may also make dynamic adjustment to the options.
         if ($formatter instanceof OverrideOptionsInterface) {
             return $formatter->overrideOptions($structuredOutput, $options);
         }

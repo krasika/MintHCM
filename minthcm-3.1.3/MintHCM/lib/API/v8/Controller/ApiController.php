@@ -68,15 +68,15 @@ use SuiteCRM\Utility\SuiteLogger as Logger;
 
 class ApiController implements LoggerAwareInterface
 {
-    const CONTENT_TYPE = 'application/vnd.api+json';
-    const CONTENT_TYPE_JSON = 'application/vnd.api+json';
-    const CONTENT_TYPE_HEADER = 'Content-Type';
-    const LINKS = 'links';
+    public const CONTENT_TYPE = 'application/vnd.api+json';
+    public const CONTENT_TYPE_JSON = 'application/vnd.api+json';
+    public const CONTENT_TYPE_HEADER = 'Content-Type';
+    public const LINKS = 'links';
 
-    const VERSION_MAJOR = 8;
-    const VERSION_MINOR = 0;
-    const VERSION_PATCH = 0;
-    const VERSION_STABILITY = 'ALPHA';
+    public const VERSION_MAJOR = 8;
+    public const VERSION_MINOR = 0;
+    public const VERSION_PATCH = 0;
+    public const VERSION_STABILITY = 'ALPHA';
 
     /**
      * @var LoggerInterface $logger
@@ -116,19 +116,15 @@ class ApiController implements LoggerAwareInterface
      */
     protected function generateJsonApiResponse(Request $request, Response $response, $payload)
     {
+        $apiErrorObjectArrays = [];
         try {
             $negotiated = $this->negotiatedJsonApiContent($request, $response);
-            if (in_array($negotiated->getStatusCode(), array(415, 406), true)) {
+            if (in_array($negotiated->getStatusCode(), [415, 406], true)) {
                 // return error instead of response
                 return $negotiated;
             }
 
-            $payload['meta']['suiteapi'] = array(
-              'major' => self::VERSION_MAJOR,
-              'minor' => self::VERSION_MINOR,
-              'patch' => self::VERSION_PATCH,
-              'stability' => self::VERSION_STABILITY,
-            );
+            $payload['meta']['suiteapi'] = ['major' => self::VERSION_MAJOR, 'minor' => self::VERSION_MINOR, 'patch' => self::VERSION_PATCH, 'stability' => self::VERSION_STABILITY];
 
             $jsonAPI = $this->containers->get('JsonApi');
             $payload['jsonapi'] = $jsonAPI->toJsonApiResponse();
@@ -209,10 +205,7 @@ class ApiController implements LoggerAwareInterface
     public function generateJsonApiErrorResponse(Request $request, Response $response, \Exception $exception)
     {
         try {
-            $jsonError = array(
-                'code' => $exception->getCode(),
-                'title' => $exception->getMessage(),
-            );
+            $jsonError = ['code' => $exception->getCode(), 'title' => $exception->getMessage()];
 
             if (null === $this->logger) {
                 $this->setLogger(new Logger());
@@ -239,18 +232,9 @@ class ApiController implements LoggerAwareInterface
 
             $jsonError['status'] = $response->getStatusCode();
 
-            $payload = array(
-                'errors' => array(
-                    $jsonError
-                )
-            );
+            $payload = ['errors' => [$jsonError]];
 
-            $payload['meta']['suiteapi'] = array(
-                'major' => self::VERSION_MAJOR,
-                'minor' => self::VERSION_MINOR,
-                'patch' => self::VERSION_PATCH,
-                'stability' => self::VERSION_STABILITY,
-            );
+            $payload['meta']['suiteapi'] = ['major' => self::VERSION_MAJOR, 'minor' => self::VERSION_MINOR, 'patch' => self::VERSION_PATCH, 'stability' => self::VERSION_STABILITY];
 
             /** @var JsonApi $jsonAPI */
             $jsonAPI = $this->containers->get('JsonApi');

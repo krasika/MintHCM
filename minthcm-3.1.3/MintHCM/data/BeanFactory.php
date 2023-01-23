@@ -55,11 +55,11 @@ require_once 'data/SugarBean.php';
  */
 class BeanFactory
 {
-    protected static $loadedBeans = array();
+    protected static $loadedBeans = [];
     protected static $maxLoaded = 10;
     protected static $total = 0;
-    protected static $loadOrder = array();
-    protected static $touched = array();
+    protected static $loadOrder = [];
+    protected static $touched = [];
     public static $hits = 0;
 
     /**
@@ -79,21 +79,21 @@ class BeanFactory
      *
      * @return SugarBean|bool
      */
-    public static function getBean($module, $id = null, $params = array(), $deleted = true)
+    public static function getBean($module, $id = null, $params = [], $deleted = true)
     {
 
         // Check if params is an array, if not use old arguments
         if (isset($params) && !is_array($params)) {
-            $params = array('encode' => $params);
+            $params = ['encode' => $params];
         }
 
         // Pull values from $params array
-        $encode = isset($params['encode']) ? $params['encode'] : true;
-        $deleted = isset($params['deleted']) ? $params['deleted'] : $deleted;
+        $encode = $params['encode'] ?? true;
+        $deleted = $params['deleted'] ?? $deleted;
 
         if (!isset(self::$loadedBeans[$module])) {
-            self::$loadedBeans[$module] = array();
-            self::$touched[$module] = array();
+            self::$loadedBeans[$module] = [];
+            self::$touched[$module] = [];
         }
 
         $beanClass = self::getBeanName($module);
@@ -179,13 +179,14 @@ class BeanFactory
      */
     public static function registerBean($module, $bean, $id = false)
     {
+        $info = [];
         global $beanList;
         if (empty($beanList[$module])) {
             return false;
         }
 
         if (!isset(self::$loadedBeans[$module])) {
-            self::$loadedBeans[$module] = array();
+            self::$loadedBeans[$module] = [];
         }
 
         //Do not double register a bean
@@ -230,7 +231,7 @@ class BeanFactory
         if ($id) {
             self::$loadedBeans[$module][$id] = $bean;
             ++self::$total;
-            self::$loadOrder[$index] = array('module' => $module, 'id' => $id);
+            self::$loadOrder[$index] = ['module' => $module, 'id' => $id];
             self::$touched[$module][$id] = 0;
         } else {
             return false;

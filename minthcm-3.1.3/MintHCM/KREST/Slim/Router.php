@@ -360,6 +360,7 @@ class Router implements RouterInterface
      */
     public function relativePathFor($name, array $data = [], array $queryParams = [])
     {
+        $segmentName = null;
         $route = $this->getNamedRoute($name);
         $pattern = $route->getPattern();
 

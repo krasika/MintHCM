@@ -12,7 +12,7 @@ use FastRoute\RouteParser;
  */
 class Std implements RouteParser
 {
-    const VARIABLE_REGEX = <<<'REGEX'
+    public const VARIABLE_REGEX = <<<'REGEX'
 \{
     \s* ([a-zA-Z_][a-zA-Z0-9_-]*) \s*
     (?:
@@ -20,7 +20,7 @@ class Std implements RouteParser
     )?
 \}
 REGEX;
-    const DEFAULT_DISPATCH_REGEX = '[^/]+';
+    public const DEFAULT_DISPATCH_REGEX = '[^/]+';
 
     public function parse($route)
     {
@@ -29,7 +29,7 @@ REGEX;
 
         // Split on [ while skipping placeholders
         $segments = preg_split('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \[~x', $routeWithoutClosingOptionals);
-        if ($numOptionals !== count($segments) - 1) {
+        if ($numOptionals !== (is_array($segments) || $segments instanceof \Countable ? count($segments) : 0) - 1) {
             // If there are any ] in the middle of the route, throw a more specific error message
             if (preg_match('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \]~x', $routeWithoutClosingOptionals)) {
                 throw new BadRouteException('Optional segments can only occur at the end of a route');

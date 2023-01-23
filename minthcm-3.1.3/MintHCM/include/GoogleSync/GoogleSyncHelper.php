@@ -94,7 +94,7 @@ class GoogleSyncHelper
      */
     public function getTimeStrings(Meeting $meeting, Google_Service_Calendar_Event $event)
     {
-        $timeArray = array();
+        $timeArray = [];
 
         // Get the last modified time from google event
         $timeArray['gModified'] = strtotime($event->getUpdated());
@@ -183,8 +183,8 @@ class GoogleSyncHelper
      */
     public function createSuitecrmReminders(array $overrides, Meeting $meeting)
     {
-        $reminders = Array();
-        $invitees = Array();
+        $reminders = [];
+        $invitees = [];
 
         foreach ($overrides as $override) {
             if ($override->getMethod() == 'popup') {
@@ -212,7 +212,7 @@ class GoogleSyncHelper
                 $invitees[] = $reminderInvitee;
             }
         }
-        $ret = Array($reminders, $invitees);
+        $ret = [$reminders, $invitees];
         return $ret;
     }
 }

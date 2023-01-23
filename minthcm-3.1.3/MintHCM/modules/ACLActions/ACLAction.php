@@ -52,11 +52,11 @@ require_once('modules/ACLActions/actiondefs.php');
 }
 /* END - SECURITY GROUPS */
 class ACLAction  extends SugarBean{
-    var $module_dir = 'ACLActions';
-    var $object_name = 'ACLAction';
-    var $table_name = 'acl_actions';
-    var $new_schema = true;
-    var $disable_custom_fields = true;
+    public $module_dir = 'ACLActions';
+    public $object_name = 'ACLAction';
+    public $table_name = 'acl_actions';
+    public $new_schema = true;
+    public $disable_custom_fields = true;
 
     public function __construct(){
         parent::__construct();
@@ -121,6 +121,7 @@ class ACLAction  extends SugarBean{
     * @param STRING $type - the type (e.g. 'module', 'field')
     */
     public static function removeActions($category, $type='module'){
+        $name = null;
         global $ACLActions;
         $db = DBManagerFactory::getInstance();
         if(isset($ACLActions[$type])){
@@ -201,7 +202,7 @@ class ACLAction  extends SugarBean{
     */
     protected static function getAccessOptions( $action, $type='module'){
         global $ACLActions;
-        $options = array();
+        $options = [];
 
         if(empty($ACLActions[$type]['actions'][$action]['aclaccess']))return $options;
         foreach($ACLActions[$type]['actions'][$action]['aclaccess'] as $action){
@@ -229,7 +230,7 @@ class ACLAction  extends SugarBean{
 
         $db = DBManagerFactory::getInstance();
         $result = $db->query($query);
-        $default_actions = array();
+        $default_actions = [];
         while($row = $db->fetchByAssoc($result) ){
             $acl = new ACLAction();
             $acl->populateFromRow($row);
@@ -260,7 +261,7 @@ class ACLAction  extends SugarBean{
                         if(empty($type)){
                             return $_SESSION['ACL'][$user_id][$category];
                         }
-                        return isset($_SESSION['ACL'][$user_id][$category][$type]) ? $_SESSION['ACL'][$user_id][$category][$type] : null;
+                        return $_SESSION['ACL'][$user_id][$category][$type] ?? null;
                     }else if(!empty($type) && isset($_SESSION['ACL'][$user_id][$category][$type][$action])){
                         return $_SESSION['ACL'][$user_id][$category][$type][$action];
                     }
@@ -322,7 +323,7 @@ class ACLAction  extends SugarBean{
 				ORDER BY user_role desc, category,name,access_override desc"; //want non-null to show first
 		 /* END - SECURITY GROUPS */
         $result = $db->query($query);
-        $selected_actions = array();
+        $selected_actions = [];
 		/* BEGIN - SECURITY GROUPS */
 		global $sugar_config;
 		$has_user_role = false; //used for user_role_precedence
@@ -356,7 +357,7 @@ class ACLAction  extends SugarBean{
                 $isOverride = true;
             }
             if(!isset($selected_actions[$acl->category])){
-                $selected_actions[$acl->category] = array();
+                $selected_actions[$acl->category] = [];
 
             }
             if(!isset($selected_actions[$acl->category][$acl->acltype][$acl->name])
@@ -389,16 +390,16 @@ class ACLAction  extends SugarBean{
         //only set the session variable if it was a full list;
         if(empty($category) && empty($action)){
             if(!isset($_SESSION['ACL'])){
-                $_SESSION['ACL'] = array();
+                $_SESSION['ACL'] = [];
             }
             $_SESSION['ACL'][$user_id] = $selected_actions;
         }else{
             if (empty($action) && !empty($category)) {
                 if (!empty($type)) {
-                    $selectedActionCategoryType = isset($selected_actions[$category][$type]) ? $selected_actions[$category][$type] : null;
+                    $selectedActionCategoryType = $selected_actions[$category][$type] ?? null;
                     $_SESSION['ACL'][$user_id][$category][$type] = $selectedActionCategoryType;
                 }
-                $selectedActionCategory = isset($selected_actions[$category]) ? $selected_actions[$category] : null;
+                $selectedActionCategory = $selected_actions[$category] ?? null;
                 $_SESSION['ACL'][$user_id][$category] = $selectedActionCategory;
             } else {
                 if (!empty($action) && !empty($category) && !empty($type)) {
@@ -418,9 +419,7 @@ class ACLAction  extends SugarBean{
         // Fallback to array key if translation is empty
         $a = empty($app_list_strings['moduleList'][$a]) ? $a : $app_list_strings['moduleList'][$a];
         $b = empty($app_list_strings['moduleList'][$b]) ? $b : $app_list_strings['moduleList'][$b];
-        if ($a == $b)
-            return 0;
-        return ($a < $b) ? -1 : 1;
+        return $a <=> $b;
     }
 
     /**
@@ -589,8 +588,8 @@ class ACLAction  extends SugarBean{
     */
     public static function setupCategoriesMatrix(&$categories){
         global $ACLActions, $current_user;
-        $names = array();
-        $disabled = array();
+        $names = [];
+        $disabled = [];
         foreach($categories as $cat_name=>$category){
             foreach($category as $type_name=>$type){
                 foreach($type as $act_name=>$action){
@@ -657,8 +656,8 @@ class ACLAction  extends SugarBean{
     * @return array of fields with id, name, access and category
     */
     function toArray($dbOnly = false, $stringOnly = false, $upperKeys = false){
-        $array_fields = array('id', 'aclaccess');
-        $arr = array();
+        $array_fields = ['id', 'aclaccess'];
+        $arr = [];
         foreach ($array_fields as $field) {
             $thisField = null;
             if (isset($this->$field)) {

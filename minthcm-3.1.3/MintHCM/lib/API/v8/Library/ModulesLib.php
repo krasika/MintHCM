@@ -92,10 +92,10 @@ class ModulesLib
      * @throws \SuiteCRM\API\v8\Exception\ApiException
      * @throws \SuiteCRM\Exception\Exception
      */
-    public function generatePaginatedModuleRecords(Request $req, Response $res, array $args = array())
+    public function generatePaginatedModuleRecords(Request $req, Response $res, array $args = [])
     {
         /** @var array $response */
-        $response = array();
+        $response = [];
 
         /** @var \SugarBean $module */
         $module = \BeanFactory::newBean($args['module']);
@@ -110,7 +110,7 @@ class ModulesLib
 
         $moduleList = $this->getModuleList($req, $module, $args);
 
-        $fields = array('fields' => array());
+        $fields = ['fields' => []];
         $selectFields = $req->getParam('fields');
 
         /** @var array $config */
@@ -275,8 +275,9 @@ class ModulesLib
      * @throws \SuiteCRM\API\JsonApi\v1\Filters\Interpreters\InvalidArgumentException
      * @throws \SuiteCRM\Exception\Exception
      */
-    protected function getModuleList(Request $req, \SugarBean $module, array $args = array())
+    protected function getModuleList(Request $req, \SugarBean $module, array $args = [])
     {
+        $filter = [];
         /** @var array $page */
         $page = $req->getParam('page');
 
@@ -347,7 +348,7 @@ class ModulesLib
     {
         $config = $this->containers->get('ConfigurationManager');
         $query = new Query();
-        $pagination = array();
+        $pagination = [];
 
         if ($offset !== null) {
             $pagination['page']['offset'] = $offset;
@@ -359,16 +360,16 @@ class ModulesLib
 
 
         if ($filter !== null) {
-            $query->withContent(array('filter' => $filter));
+            $query->withContent(['filter' => $filter]);
         }
 
         if ($sort !== null) {
-            $query->withContent(array('sort' => implode(',', $sort)));
+            $query->withContent(['sort' => implode(',', $sort)]);
         }
 
 
         if ($fields !== null) {
-            $queryFields = array();
+            $queryFields = [];
             foreach ($fields as $module => $moduleFields) {
                 $queryFields['fields'][$module] = $fields[$module];
             }

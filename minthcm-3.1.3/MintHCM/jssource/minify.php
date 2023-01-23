@@ -22,7 +22,7 @@ if(isset($_REQUEST['root_directory'])){
     if(isset($_REQUEST['js_rebuild_concat'])){
         if($_REQUEST['js_rebuild_concat'] == 'rebuild'){
              //rebuild if files have changed
-             $js_groupings = array();
+             $js_groupings = [];
             if(isset($_REQUEST['root_directory'])){
                 require('jssource/JSGroupings.php');
                 require_once('jssource/minify_utils.php');
@@ -112,20 +112,20 @@ if(isset($_REQUEST['root_directory'])){
            }elseif($argv[2] == '-m'){
                 //replace the scripts, and then minify the scripts again
                 reverseScripts("$from/jssource/src_files",$from);
-                BackUpAndCompressScriptFiles($from,"",false,true);
+                BackUpAndCompressScriptFiles($from,"",false);
 
            }elseif($argv[2] == '-c'){
                 //replace the scripts, concatenate the files, and then minify the scripts again
                 reverseScripts("$from/jssource/src_files",$from);
-                BackUpAndCompressScriptFiles($from,"",false,true);
-                ConcatenateFiles($from,true);
+                BackUpAndCompressScriptFiles($from,"",false);
+                ConcatenateFiles($from);
            }elseif($argv[2] == '-mo'){
                 //do not replace the scriptsjust minify the existing scripts again
-                BackUpAndCompressScriptFiles($from,"",false,true);
+                BackUpAndCompressScriptFiles($from,"",false);
 
            }elseif($argv[2] == '-co'){
                 //concatenate the files only
-                ConcatenateFiles($from,true);
+                ConcatenateFiles($from);
 
            }elseif($argv[2] == '-?'){
                 die("
@@ -162,8 +162,8 @@ if(isset($_REQUEST['root_directory'])){
             echo("directory root to process was not specified");
         }
 
-        BackUpAndCompressScriptFiles($from, '', true, true);
-        ConcatenateFiles($from,true);
+        BackUpAndCompressScriptFiles($from, '', true);
+        ConcatenateFiles($from);
 
     }
 }

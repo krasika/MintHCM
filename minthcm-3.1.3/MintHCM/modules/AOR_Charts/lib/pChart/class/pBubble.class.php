@@ -19,11 +19,11 @@
  /* pBubble class definition */
  class pBubble
   {
-   var $pChartObject;
-   var $pDataObject;
+   public $pChartObject;
+   public $pDataObject;
 
    /* Class creator */
-   function pBubble($pChartObject,$pDataObject)
+   function __construct($pChartObject,$pDataObject)
     {
      $this->pChartObject = $pChartObject;
      $this->pDataObject  = $pDataObject;
@@ -32,8 +32,8 @@
    /* Prepare the scale */
    function bubbleScale($DataSeries,$WeightSeries)
     {
-     if ( !is_array($DataSeries) )	{ $DataSeries = array($DataSeries); }
-     if ( !is_array($WeightSeries) )	{ $WeightSeries = array($WeightSeries); }
+     if ( !is_array($DataSeries) )	{ $DataSeries = [$DataSeries]; }
+     if ( !is_array($WeightSeries) )	{ $WeightSeries = [$WeightSeries]; }
 
      /* Parse each data series to find the new min & max boundaries to scale */
      $NewPositiveSerie = ""; $NewNegativeSerie = ""; $MaxValues = 0; $LastPositive = 0; $LastNegative = 0;
@@ -43,7 +43,7 @@
 
        $this->pDataObject->setSerieDrawable($SerieWeightName,FALSE);
 
-       if ( count($this->pDataObject->Data["Series"][$SerieName]["Data"]) > $MaxValues ) { $MaxValues = count($this->pDataObject->Data["Series"][$SerieName]["Data"]); }
+       if ( (is_array($this->pDataObject->Data["Series"][$SerieName]["Data"]) || $this->pDataObject->Data["Series"][$SerieName]["Data"] instanceof \Countable ? count($this->pDataObject->Data["Series"][$SerieName]["Data"]) : 0) > $MaxValues ) { $MaxValues = is_array($this->pDataObject->Data["Series"][$SerieName]["Data"]) || $this->pDataObject->Data["Series"][$SerieName]["Data"] instanceof \Countable ? count($this->pDataObject->Data["Series"][$SerieName]["Data"]) : 0; }
 
        foreach($this->pDataObject->Data["Series"][$SerieName]["Data"] as $Key => $Value)
         {
@@ -111,19 +111,19 @@
    /* Prepare the scale */
    function drawBubbleChart($DataSeries,$WeightSeries,$Format="")
     {
-     $ForceAlpha	= isset($Format["ForceAlpha"]) ? $Format["ForceAlpha"] : VOID;
-     $DrawBorder	= isset($Format["DrawBorder"]) ? $Format["DrawBorder"] : TRUE;
-     $BorderWidth	= isset($Format["BorderWidth"]) ? $Format["BorderWidth"] : 1;
-     $Shape		= isset($Format["Shape"]) ? $Format["Shape"] : BUBBLE_SHAPE_ROUND;
-     $Surrounding	= isset($Format["Surrounding"]) ? $Format["Surrounding"] : NULL;
-     $BorderR		= isset($Format["BorderR"]) ? $Format["BorderR"] : 0;
-     $BorderG		= isset($Format["BorderG"]) ? $Format["BorderG"] : 0;
-     $BorderB		= isset($Format["BorderB"]) ? $Format["BorderB"] : 0;
-     $BorderAlpha	= isset($Format["BorderAlpha"]) ? $Format["BorderAlpha"] : 30;
-     $RecordImageMap	= isset($Format["RecordImageMap"]) ? $Format["RecordImageMap"] : FALSE;
+     $ForceAlpha	= $Format["ForceAlpha"] ?? VOID;
+     $DrawBorder	= $Format["DrawBorder"] ?? TRUE;
+     $BorderWidth	= $Format["BorderWidth"] ?? 1;
+     $Shape		= $Format["Shape"] ?? BUBBLE_SHAPE_ROUND;
+     $Surrounding	= $Format["Surrounding"] ?? NULL;
+     $BorderR		= $Format["BorderR"] ?? 0;
+     $BorderG		= $Format["BorderG"] ?? 0;
+     $BorderB		= $Format["BorderB"] ?? 0;
+     $BorderAlpha	= $Format["BorderAlpha"] ?? 30;
+     $RecordImageMap	= $Format["RecordImageMap"] ?? FALSE;
 
-     if ( !is_array($DataSeries) )	{ $DataSeries = array($DataSeries); }
-     if ( !is_array($WeightSeries) )	{ $WeightSeries = array($WeightSeries); }
+     if ( !is_array($DataSeries) )	{ $DataSeries = [$DataSeries]; }
+     if ( !is_array($WeightSeries) )	{ $WeightSeries = [$WeightSeries]; }
 
      $Data    = $this->pDataObject->getData();
      $Palette = $this->pDataObject->getPalette();
@@ -133,7 +133,7 @@
 
      $this->resetSeriesColors();
 
-     list($XMargin,$XDivs) = $this->pChartObject->scaleGetXSettings();
+     [$XMargin, $XDivs] = $this->pChartObject->scaleGetXSettings();
 
      foreach($DataSeries as $Key => $SerieName)
       {
@@ -149,7 +149,7 @@
        $X = $this->pChartObject->GraphAreaX1 + $XMargin;
        $Y = $this->pChartObject->GraphAreaY1 + $XMargin;
 
-       $Color = array("R"=>$Palette[$Key]["R"],"G"=>$Palette[$Key]["G"],"B"=>$Palette[$Key]["B"],"Alpha"=>$Palette[$Key]["Alpha"]);
+       $Color = ["R"=>$Palette[$Key]["R"], "G"=>$Palette[$Key]["G"], "B"=>$Palette[$Key]["B"], "Alpha"=>$Palette[$Key]["Alpha"]];
 
        if ( $ForceAlpha != VOID ) { $Color["Alpha"]=$ForceAlpha; }
 
@@ -162,7 +162,7 @@
            else
             { $BorderR = $BorderR; $BorderG = $BorderG; $BorderB = $BorderB; }
            if ( $ForceAlpha != VOID ) { $BorderAlpha = $ForceAlpha/2; }
-           $BorderColor = array("R"=>$BorderR,"G"=>$BorderG,"B"=>$BorderB,"Alpha"=>$BorderAlpha);
+           $BorderColor = ["R"=>$BorderR, "G"=>$BorderG, "B"=>$BorderB, "Alpha"=>$BorderAlpha];
           }
          else
           {
@@ -180,8 +180,8 @@
         {
          $Weight = $Point + $Data["Series"][$WeightSeries[$Key]]["Data"][$iKey];
 
-         $PosArray    = $this->pChartObject->scaleComputeY($Point,array("AxisID"=>$AxisID));
-         $WeightArray = $this->pChartObject->scaleComputeY($Weight,array("AxisID"=>$AxisID));
+         $PosArray    = $this->pChartObject->scaleComputeY($Point,["AxisID"=>$AxisID]);
+         $WeightArray = $this->pChartObject->scaleComputeY($Weight,["AxisID"=>$AxisID]);
 
          if ( $Data["Orientation"] == SCALE_POS_LEFTRIGHT )
           {
@@ -253,10 +253,10 @@
 
    function writeBubbleLabel($SerieName,$SerieWeightName,$Points,$Format="")
     {
-     $OverrideTitle	= isset($Format["OverrideTitle"]) ? $Format["OverrideTitle"] : NULL;
-     $DrawPoint		= isset($Format["DrawPoint"]) ? $Format["DrawPoint"] : LABEL_POINT_BOX;
+     $OverrideTitle	= $Format["OverrideTitle"] ?? NULL;
+     $DrawPoint		= $Format["DrawPoint"] ?? LABEL_POINT_BOX;
 
-     if ( !is_array($Points) ) { $Point = $Points; $Points = ""; $Points[] = $Point; }
+     if ( !is_array($Points) ) { $Point = $Points; $Points = []; $Points[] = $Point; }
 
      $Data    = $this->pDataObject->getData();
      $Palette = $this->pDataObject->getPalette();
@@ -264,7 +264,7 @@
      if ( !isset($Data["Series"][$SerieName]) || !isset($Data["Series"][$SerieWeightName]) )
       return(0);
 
-     list($XMargin,$XDivs) = $this->pChartObject->scaleGetXSettings();
+     [$XMargin, $XDivs] = $this->pChartObject->scaleGetXSettings();
 
      $AxisID	 = $Data["Series"][$SerieName]["Axis"];
      $AxisMode	 = $Data["Axis"][$AxisID]["Display"];
@@ -275,12 +275,12 @@
      $X = $this->pChartObject->GraphAreaX1 + $XMargin;
      $Y = $this->pChartObject->GraphAreaY1 + $XMargin;
 
-     $Color = array("R"=>$Data["Series"][$SerieName]["Color"]["R"],"G"=>$Data["Series"][$SerieName]["Color"]["G"],"B"=>$Data["Series"][$SerieName]["Color"]["B"],"Alpha"=>$Data["Series"][$SerieName]["Color"]["Alpha"]);
+     $Color = ["R"=>$Data["Series"][$SerieName]["Color"]["R"], "G"=>$Data["Series"][$SerieName]["Color"]["G"], "B"=>$Data["Series"][$SerieName]["Color"]["B"], "Alpha"=>$Data["Series"][$SerieName]["Color"]["Alpha"]];
 
      foreach($Points as $Key => $Point)
       {
        $Value    = $Data["Series"][$SerieName]["Data"][$Point];
-       $PosArray = $this->pChartObject->scaleComputeY($Value,array("AxisID"=>$AxisID));
+       $PosArray = $this->pChartObject->scaleComputeY($Value,["AxisID"=>$AxisID]);
 
        if ( isset($Data["Abscissa"]) && isset($Data["Series"][$Data["Abscissa"]]["Data"][$Point]) )
         $Abscissa = $Data["Series"][$Data["Abscissa"]]["Data"][$Point]." : ";
@@ -296,8 +296,8 @@
        else
         $Description = "No description";
 
-       $Series = "";
-       $Series[] = array("Format"=>$Color,"Caption"=>$Caption);
+       $Series = [];
+       $Series[] = ["Format"=>$Color, "Caption"=>$Caption];
 
        if ( $Data["Orientation"] == SCALE_POS_LEFTRIGHT )
         {
@@ -315,9 +315,9 @@
         }
 
        if ( $DrawPoint == LABEL_POINT_CIRCLE )
-        $this->pChartObject->drawFilledCircle($X,$Y,3,array("R"=>255,"G"=>255,"B"=>255,"BorderR"=>0,"BorderG"=>0,"BorderB"=>0));
+        $this->pChartObject->drawFilledCircle($X,$Y,3,["R"=>255, "G"=>255, "B"=>255, "BorderR"=>0, "BorderG"=>0, "BorderB"=>0]);
        elseif ( $DrawPoint == LABEL_POINT_BOX )
-        $this->pChartObject->drawFilledRectangle($X-2,$Y-2,$X+2,$Y+2,array("R"=>255,"G"=>255,"B"=>255,"BorderR"=>0,"BorderG"=>0,"BorderB"=>0));
+        $this->pChartObject->drawFilledRectangle($X-2,$Y-2,$X+2,$Y+2,["R"=>255, "G"=>255, "B"=>255, "BorderR"=>0, "BorderG"=>0, "BorderB"=>0]);
 
        $this->pChartObject->drawLabelBox($X,$Y-3,$Description,$Series,$Format);
       }

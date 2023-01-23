@@ -78,12 +78,7 @@ class ScheduleGenerateOnboardingOffboarding
         $job = new SchedulersJob();
         $job->name = "Schedule Generate Onboarding/Offboarding";
         $job->target = "class::GenerateOnboardingOffboardingJob";
-        $data = base64_encode(json_encode(array(
-            'module_name' => $this->module_name,
-            'template_id' => $this->template_id,
-            'employee_id' => $this->employee_id,
-            'date_start' => $this->date_start,
-        )));
+        $data = base64_encode(json_encode(['module_name' => $this->module_name, 'template_id' => $this->template_id, 'employee_id' => $this->employee_id, 'date_start' => $this->date_start]));
         $job->data = $data;
         $job->assigned_user_id = $current_user->id;
         $jq->submitJob($job);

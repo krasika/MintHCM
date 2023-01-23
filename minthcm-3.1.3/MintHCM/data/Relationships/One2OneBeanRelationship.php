@@ -65,7 +65,7 @@ class One2OneBeanRelationship extends One2MBeanRelationship
      * @param  $additionalFields key=>value pairs of fields to save on the relationship
      * @return boolean true if successful
      */
-    public function add($lhs, $rhs, $additionalFields = array())
+    public function add($lhs, $rhs, $additionalFields = [])
     {
         $lhsLinkName = $this->lhsLink;
         //In a one to one, any existing links from both sides must be removed first.
@@ -80,13 +80,13 @@ class One2OneBeanRelationship extends One2MBeanRelationship
     {
         //RHS and LHS only ever have one bean
         if (isset($lhs->$lhsLinkName))
-            $lhs->$lhsLinkName->beans = array($rhs->id => $rhs);
+            $lhs->$lhsLinkName->beans = [$rhs->id => $rhs];
 
         if (isset($rhs->$rhsLinkName))
-            $rhs->$rhsLinkName->beans = array($lhs->id => $lhs);
+            $rhs->$rhsLinkName->beans = [$lhs->id => $lhs];
     }
 
-    public function getJoin($link, $params = array(), $return_array = false)
+    public function getJoin($link, $params = [], $return_array = false)
     {
         $linkIsLHS = $link->getSide() == REL_LHS;
         $startingTable = $link->getFocus()->table_name;
@@ -94,7 +94,7 @@ class One2OneBeanRelationship extends One2MBeanRelationship
         $targetTable = $linkIsLHS ? $this->def['rhs_table'] : $this->def['lhs_table'];
         $targetTableWithAlias = $targetTable;
         $targetKey = $linkIsLHS ? $this->def['rhs_key'] : $this->def['lhs_key'];
-        $join_type= isset($params['join_type']) ? $params['join_type'] : ' INNER JOIN ';
+        $join_type= $params['join_type'] ?? ' INNER JOIN ';
 
         $join = '';
 
@@ -114,14 +114,7 @@ class One2OneBeanRelationship extends One2MBeanRelationship
                . $this->getRoleWhere();
 
         if($return_array){
-            return array(
-                'join' => $join,
-                'type' => $this->type,
-                'rel_key' => $targetKey,
-                'join_tables' => array($targetTable),
-                'where' => "",
-                'select' => "$targetTable.id",
-            );
+            return ['join' => $join, 'type' => $this->type, 'rel_key' => $targetKey, 'join_tables' => [$targetTable], 'where' => "", 'select' => "$targetTable.id"];
         }
         return $join;
     }

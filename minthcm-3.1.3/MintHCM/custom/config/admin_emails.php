@@ -44,7 +44,5 @@
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$admin_emails = array(
-   // 'coo' => 'mail@example.com',
-);
+$admin_emails = [];
 

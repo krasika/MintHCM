@@ -16,16 +16,16 @@
  /* pData class definition */
  class pCache
   {
-   var $CacheFolder;
-   var $CacheIndex;
-   var $CacheDB;
+   public $CacheFolder;
+   public $CacheIndex;
+   public $CacheDB;
 
    /* Class creator */
-   function pCache($Settings="")
+   function __construct($Settings="")
     {
-     $CacheFolder	= isset($Settings["CacheFolder"]) ? $Settings["CacheFolder"] : "cache";
-     $CacheIndex	= isset($Settings["CacheIndex"]) ? $Settings["CacheIndex"] : "index.db";
-     $CacheDB		= isset($Settings["CacheDB"]) ? $Settings["CacheDB"] : "cache.db";
+     $CacheFolder	= $Settings["CacheFolder"] ?? "cache";
+     $CacheIndex	= $Settings["CacheIndex"] ?? "index.db";
+     $CacheDB		= $Settings["CacheDB"] ?? "cache.db";
 
      $this->CacheFolder	= $CacheFolder;
      $this->CacheIndex	= $CacheIndex;
@@ -50,7 +50,7 @@
    function writeToCache($ID,$pChartObject)
     {
      /* Compute the paths */
-     $TemporaryFile = $this->CacheFolder."/tmp_".rand(0,1000).".png";
+     $TemporaryFile = $this->CacheFolder."/tmp_".random_int(0,1000).".png";
      $Database      = $this->CacheFolder."/".$this->CacheDB;
      $Index         = $this->CacheFolder."/".$this->CacheIndex;
 
@@ -82,17 +82,17 @@
 
    /* Remove object older than the specified TS */
    function removeOlderThan($Expiry)
-    { $this->dbRemoval(array("Expiry"=>$Expiry)); }
+    { $this->dbRemoval(["Expiry"=>$Expiry]); }
 
    /* Remove an object from the cache */
    function remove($ID)
-    { $this->dbRemoval(array("Name"=>$ID)); }
+    { $this->dbRemoval(["Name"=>$ID]); }
 
    /* Remove with specified criterias */
    function dbRemoval($Settings)
     {
-     $ID     = isset($Settings["Name"]) ? $Settings["Name"] : NULL;
-     $Expiry = isset($Settings["Expiry"]) ? $Settings["Expiry"] : -(24*60*60);
+     $ID     = $Settings["Name"] ?? NULL;
+     $Expiry = $Settings["Expiry"] ?? -(24*60*60);
      $TS     = time()-$Expiry;
 
      /* Compute the paths */
@@ -200,7 +200,7 @@
             }
 
            if ($Verbose)
-            { return(array("DBPos"=>$DBPos,"PicSize"=>$PicSize,"GeneratedTS"=>$GeneratedTS,"Hits"=>$Hits)); }
+            { return(["DBPos"=>$DBPos, "PicSize"=>$PicSize, "GeneratedTS"=>$GeneratedTS, "Hits"=>$Hits]); }
            else
             { return(TRUE); }
           }

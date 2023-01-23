@@ -88,7 +88,7 @@ class Popup_Picker
 		$where = '';
 		if(isset($_REQUEST['query']))
 		{
-			$where_clauses = array();
+			$where_clauses = [];
 			append_where_clause($where_clauses, "name", "acl_roles.name");
 			$where = generate_where_statement($where_clauses);
 		}

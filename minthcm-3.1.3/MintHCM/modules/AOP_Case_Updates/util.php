@@ -56,7 +56,7 @@ function getAOPAssignField($assignField, $value)
 
     $field = '';
 
-    $field .= "<select type='text' name='$assignField" . '[0]' . "' id='$assignField" . '[0]' . "' onchange='assign_field_change(\"$assignField\")' title='' tabindex='116'>" . get_select_options_with_id($app_list_strings['aow_assign_options'], isset($value[0]) ? $value[0] : null) . '</select>&nbsp;&nbsp;';
+    $field .= "<select type='text' name='$assignField" . '[0]' . "' id='$assignField" . '[0]' . "' onchange='assign_field_change(\"$assignField\")' title='' tabindex='116'>" . get_select_options_with_id($app_list_strings['aow_assign_options'], $value[0] ?? null) . '</select>&nbsp;&nbsp;';
     if (!file_exists('modules/SecurityGroups/SecurityGroup.php')) {
         $field .= "<input type='hidden' name='$assignField" . '[1]' . "' id='$assignField" . '[1]' . "' value=''  />";
     } else {
@@ -64,13 +64,13 @@ function getAOPAssignField($assignField, $value)
         if (isset($value[0]) && $value[0] === 'security_group') {
             $display = '';
         }
-        $field .= "<select type='text' style='display:$display' name='$assignField" . '[1]' . "' id='$assignField" . '[1]' . "' title='' tabindex='116'>" . get_select_options_with_id($securityGroups, isset($value[1]) ? $value[1] : null) . '</select>&nbsp;&nbsp;';
+        $field .= "<select type='text' style='display:$display' name='$assignField" . '[1]' . "' id='$assignField" . '[1]' . "' title='' tabindex='116'>" . get_select_options_with_id($securityGroups, $value[1] ?? null) . '</select>&nbsp;&nbsp;';
     }
     $display = 'none';
     if (isset($value[0]) && ($value[0] === 'role' || $value[0] === 'security_group')) {
         $display = '';
     }
-    $field .= "<select type='text' style='display:$display' name='$assignField" . '[2]' . "' id='$assignField" . '[2]' . "' title='' tabindex='116'>" . get_select_options_with_id($roles, isset($value[2]) ? $value[2] : null) . '</select>&nbsp;&nbsp;';
+    $field .= "<select type='text' style='display:$display' name='$assignField" . '[2]' . "' id='$assignField" . '[2]' . "' title='' tabindex='116'>" . get_select_options_with_id($roles, $value[2] ?? null) . '</select>&nbsp;&nbsp;';
 
     return $field;
 }
@@ -95,7 +95,7 @@ function isAOPEnabled()
 function getPortalEmailSettings()
 {
     global $sugar_config;
-    $settings = array('from_name' => '', 'from_address' => '');
+    $settings = ['from_name' => '', 'from_address' => ''];
 
     if (array_key_exists('aop', $sugar_config)) {
         if (array_key_exists('support_from_address', $sugar_config['aop'])) {
@@ -131,7 +131,7 @@ function getPortalEmailSettings()
  */
 function aop_parse_template($string, $bean_arr)
 {
-    $typeMap = array('dynamicenum' => 'enum');
+    $typeMap = ['dynamicenum' => 'enum'];
 
     foreach ($bean_arr as $bean_name => $bean_id) {
 

@@ -86,7 +86,7 @@ class DetailView2 extends EditView
 
         $this->th = new TemplateHandler();
         $this->th->ss = $this->ss;
-        $viewdefs = array();
+        $viewdefs = [];
 
         //Check if inline editing is enabled for detail view.
         if(!isset($sugar_config['enable_line_editing_detail']) || $sugar_config['enable_line_editing_detail']){
@@ -135,7 +135,7 @@ class DetailView2 extends EditView
      * @return void
      * @see EditView::populateBean()
      */
-    public function populateBean($request = array())
+    public function populateBean($request = [])
     {
         parent::populateBean($request);
     }

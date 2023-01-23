@@ -6,7 +6,7 @@ class GroupPosBased extends RegexBasedAbstract
 {
     public function __construct($data)
     {
-        list($this->staticRouteMap, $this->variableRouteData) = $data;
+        [$this->staticRouteMap, $this->variableRouteData] = $data;
     }
 
     protected function dispatchVariableRoute($routeData, $uri)
@@ -19,7 +19,7 @@ class GroupPosBased extends RegexBasedAbstract
             // find first non-empty match
             for ($i = 1; '' === $matches[$i]; ++$i);
 
-            list($handler, $varNames) = $data['routeMap'][$i];
+            [$handler, $varNames] = $data['routeMap'][$i];
 
             $vars = [];
             foreach ($varNames as $varName) {

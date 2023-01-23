@@ -92,11 +92,11 @@ function retrieve_relationships($module_name,  $related_module, $relationship_qu
 	global  $beanList, $beanFiles, $dictionary, $current_user;
 
 	$error = new SoapError();
-	$result_list = array();
+	$result_list = [];
 	if(empty($beanList[$module_name]) || empty($beanList[$related_module])){
 
 		$error->set_error('no_module');
-		return array('result'=>$result_list, 'error'=>$error->get_soap_array());
+		return ['result'=>$result_list, 'error'=>$error->get_soap_array()];
 	}
 
 	$result = retrieve_relationship_query($module_name,  $related_module, $relationship_query, $show_deleted, $offset, $max_results);
@@ -104,7 +104,7 @@ function retrieve_relationships($module_name,  $related_module, $relationship_qu
 	if(empty($result['module_1'])){
 
 		$error->set_error('no_relationship_support');
-		return array('result'=>$result_list, 'error'=>$error->get_soap_array());
+		return ['result'=>$result_list, 'error'=>$error->get_soap_array()];
 	}
 	$query = $result['query'];
 	$module_1 = $result['module_1'];
@@ -129,7 +129,7 @@ function retrieve_relationships($module_name,  $related_module, $relationship_qu
 		$result_list[] = $row;
 	}
 
-	return array('table_name'=>$table, 'result'=>$result_list, 'total_count'=>$total_count, 'error'=>$error->get_soap_array());
+	return ['table_name'=>$table, 'result'=>$result_list, 'total_count'=>$total_count, 'error'=>$error->get_soap_array()];
 }
 
 /*
@@ -153,15 +153,15 @@ function retrieve_relationships($module_name,  $related_module, $relationship_qu
  *         error Mixed Array containing the SOAP errors if found, empty otherwise
  *
  */
-function retrieve_modified_relationships($module_name, $related_module, $relationship_query, $show_deleted, $offset, $max_results, $select_fields = array(), $relationship_name = ''){
+function retrieve_modified_relationships($module_name, $related_module, $relationship_query, $show_deleted, $offset, $max_results, $select_fields = [], $relationship_name = ''){
 
     global  $beanList, $beanFiles, $dictionary, $current_user;
 	$error = new SoapError();
-	$result_list = array();
+	$result_list = [];
 	if(empty($beanList[$module_name]) || empty($beanList[$related_module])){
 
 		$error->set_error('no_module');
-		return array('result'=>$result_list, 'error'=>$error->get_soap_array());
+		return ['result'=>$result_list, 'error'=>$error->get_soap_array()];
 	}
 
 	$row = retrieve_relationships_properties($module_name, $related_module, $relationship_name);
@@ -169,7 +169,7 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
 	if(empty($row)){
 
 		$error->set_error('no_relationship_support');
-		return array('result'=>$result_list, 'error'=>$error->get_soap_array());
+		return ['result'=>$result_list, 'error'=>$error->get_soap_array()];
 	}
 
 	$table = $row['join_table'];
@@ -241,7 +241,7 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
                         $fieldname = "m1.".$mod->db->getValidDBName($field);
                     } else {
                         // There is a dot in here somewhere.
-                        list($table_part,$field_part) = explode('.',$field);
+                        [$table_part, $field_part] = explode('.',$field);
                         $fieldname = $mod->db->getValidDBName($table_part).".".$mod->db->getValidDBName($field_part);
     			    }
     			    $field_select .= $fieldname;
@@ -250,7 +250,7 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
     			    }
 			    }
 			}
-			if($index < (count($select_fields) - 1))
+			if($index < ((is_array($select_fields) || $select_fields instanceof \Countable ? count($select_fields) : 0) - 1))
 			{
 				$field_select .= ",";
 				$index++;
@@ -271,7 +271,7 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
 	}
 
 	if(!empty($relationship_query)){
-		$query .= ' WHERE ' . string_format($relationship_query, array($table_alias));
+		$query .= ' WHERE ' . string_format($relationship_query, [$table_alias]);
 	}
 
 	if($max_results != '-99'){
@@ -284,7 +284,7 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
 	}
 
     $total_count = !empty($result_list) ? count($result_list) : 0;
-	return array('table_name'=>$table, 'result'=>$result_list, 'total_count'=>$total_count, 'error'=>$error->get_soap_array());
+	return ['table_name'=>$table, 'result'=>$result_list, 'total_count'=>$total_count, 'error'=>$error->get_soap_array()];
 }
 
 function server_save_relationships($list, $from_date, $to_date){
@@ -295,7 +295,7 @@ function server_save_relationships($list, $from_date, $to_date){
 	global $sugar_config;
 	$db = DBManagerFactory::getInstance();
 
-	$ids = array();
+	$ids = [];
 	$add = 0;
 	$modify = 0;
 	$deleted = 0;
@@ -306,7 +306,7 @@ function server_save_relationships($list, $from_date, $to_date){
 		$insert_values = '';
 		$update = '';
 		$select_values	= '';
-		$args = array();
+		$args = [];
 
 		$id = $record['id'];
 
@@ -390,7 +390,7 @@ function server_save_relationships($list, $from_date, $to_date){
 	}
 
 	}
-	return array('add'=>$add, 'modify'=>$modify, 'ids'=>$ids);
+	return ['add'=>$add, 'modify'=>$modify, 'ids'=>$ids];
 }
 
 /*
@@ -412,18 +412,18 @@ function get_from_statement($query){
 function retrieve_relationship_query($module_name,  $related_module, $relationship_query, $show_deleted, $offset, $max_results){
 	global  $beanList, $beanFiles, $dictionary, $current_user;
 	$error = new SoapError();
-	$result_list = array();
+	$result_list = [];
 	if(empty($beanList[$module_name]) || empty($beanList[$related_module])){
 
 		$error->set_error('no_module');
-		return array('query' =>"", 'module_1'=>"", 'join_table' =>"", 'error'=>$error->get_soap_array());
+		return ['query' =>"", 'module_1'=>"", 'join_table' =>"", 'error'=>$error->get_soap_array()];
 	}
 
 	$row = retrieve_relationships_properties($module_name, $related_module);
 	if(empty($row)){
 
 		$error->set_error('no_relationship_support');
-		return array('query' =>"", 'module_1'=>"", 'join_table' =>"", 'error'=>$error->get_soap_array());
+		return ['query' =>"", 'module_1'=>"", 'join_table' =>"", 'error'=>$error->get_soap_array()];
 	}
 
 	$module_1 = $row['lhs_module'];
@@ -433,7 +433,7 @@ function retrieve_relationship_query($module_name,  $related_module, $relationsh
 
 	$table = $row['join_table'];
 	if(empty($table)){
-		return array('query' =>"", 'module_1'=>"", 'join_table' =>"", 'error'=>$error->get_soap_array());
+		return ['query' =>"", 'module_1'=>"", 'join_table' =>"", 'error'=>$error->get_soap_array()];
 	}
 	$class_name = $beanList[$module_1];
 	require_once($beanFiles[$class_name]);
@@ -451,7 +451,7 @@ function retrieve_relationship_query($module_name,  $related_module, $relationsh
 		$query .= ' WHERE ' . $relationship_query;
 	}
 
-	return array('query' =>$query, 'module_1'=>$module_1, 'join_table' => $table, 'error'=>$error->get_soap_array());
+	return ['query' =>$query, 'module_1'=>$module_1, 'join_table' => $table, 'error'=>$error->get_soap_array()];
 }
 
 // Returns name of 'link' field between two given modules
@@ -507,7 +507,7 @@ function get_linked_records($get_module, $from_module, $get_id) {
 	//bug: 38065
 	if ($get_module == 'EmailAddresses') {
 		$emails = $from_mod->emailAddress->addresses;
-		$email_arr = array();
+		$email_arr = [];
 		foreach ($emails as $email) {
 			$email_arr[] = $email['email_address_id'];
 		}

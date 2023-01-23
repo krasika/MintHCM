@@ -20,17 +20,11 @@ $KRESTManager->excludeFromAuthentication('/sysinfo');
 $KRESTManager->registerExtension('core', '2.0');
 
 $app->get('/', function ($request, $response) use ($KRESTManager) {
-   return $response->withJson(array(
-              'version' => '2.0',
-              'extensions' => $KRESTManager->extensions
-   ));
+   return $response->withJson(['version' => '2.0', 'extensions' => $KRESTManager->extensions]);
 });
 
 $app->get('/sysinfo', function ($request, $response) use ($KRESTManager) {
-   return $response->withJson(array(
-              'version' => '2.0',
-              'extensions' => $KRESTManager->extensions
-   ));
+   return $response->withJson(['version' => '2.0', 'extensions' => $KRESTManager->extensions]);
 });
 
 $app->get('/validatesession', function ($request, $response) {

@@ -41,8 +41,8 @@
  * Appropriate Legal Notices must display the words "Powered by SugarCRM" and 
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
-$root = dirname(dirname(__DIR__));
-$sugar_config = array();
+$root = dirname(__DIR__, 2);
+$sugar_config = [];
 // get config
 if (!defined('sugarEntry') || !sugarEntry) {
     define('sugarEntry', true);

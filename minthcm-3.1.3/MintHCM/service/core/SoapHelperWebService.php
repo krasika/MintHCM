@@ -57,8 +57,8 @@ class SoapHelperWebServices
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->get_field_list(' . print_r($value,
                 true) . ', ' . print_r($fields, true) . ", $translate");
-        $module_fields = array();
-        $link_fields = array();
+        $module_fields = [];
+        $link_fields = [];
         if (!empty($value->field_defs)) {
 
             foreach ($value->field_defs as $var) {
@@ -72,8 +72,8 @@ class SoapHelperWebServices
                     continue;
                 }
                 $required = 0;
-                $options_dom = array();
-                $options_ret = array();
+                $options_dom = [];
+                $options_ret = [];
                 // Apparently the only purpose of this check is to make sure we only return fields
                 //   when we've read a record.  Otherwise this function is identical to get_module_field_list
 
@@ -83,7 +83,7 @@ class SoapHelperWebServices
                 if (isset($var['options'])) {
                     $options_dom = translate($var['options'], $value->module_dir);
                     if (!is_array($options_dom)) {
-                        $options_dom = array();
+                        $options_dom = [];
                     }
                     foreach ($options_dom as $key => $oneOption) {
                         $options_ret[$key] = $this->get_name_value($key, $oneOption);
@@ -94,20 +94,20 @@ class SoapHelperWebServices
                     $options_ret['type'] = $this->get_name_value('type', $var['dbType']);
                 }
 
-                $entry = array();
+                $entry = [];
                 $entry['name'] = $var['name'];
                 $entry['type'] = $var['type'];
                 if ($var['type'] == 'link') {
-                    $entry['relationship'] = (isset($var['relationship']) ? $var['relationship'] : '');
-                    $entry['module'] = (isset($var['module']) ? $var['module'] : '');
-                    $entry['bean_name'] = (isset($var['bean_name']) ? $var['bean_name'] : '');
+                    $entry['relationship'] = ($var['relationship'] ?? '');
+                    $entry['module'] = ($var['module'] ?? '');
+                    $entry['bean_name'] = ($var['bean_name'] ?? '');
                     $link_fields[$var['name']] = $entry;
                 } else {
                     if ($translate) {
                         $entry['label'] = isset($var['vname']) ? translate($var['vname'],
                             $value->module_dir) : $var['name'];
                     } else {
-                        $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
+                        $entry['label'] = $var['vname'] ?? $var['name'];
                     }
                     $entry['required'] = $required;
                     $entry['options'] = $options_ret;
@@ -123,9 +123,9 @@ class SoapHelperWebServices
             require_once('modules/Releases/Release.php');
             $seedRelease = new Release();
             $options = $seedRelease->get_releases(true, "Active");
-            $options_ret = array();
+            $options_ret = [];
             foreach ($options as $name => $value) {
-                $options_ret[] = array('name' => $name, 'value' => $value);
+                $options_ret[] = ['name' => $name, 'value' => $value];
             }
             if (isset($module_fields['fixed_in_release'])) {
                 $module_fields['fixed_in_release']['type'] = 'enum';
@@ -154,7 +154,7 @@ class SoapHelperWebServices
             $module_fields['created_by_name']['name'] = 'created_by_name';
         }
 
-        $return = array('module_fields' => $module_fields, 'link_fields' => $link_fields);
+        $return = ['module_fields' => $module_fields, 'link_fields' => $link_fields];
         $GLOBALS['log']->info('End: SoapHelperWebServices->get_field_list ->> ' . print_r($return, true));
 
         return $return;
@@ -377,7 +377,7 @@ class SoapHelperWebServices
 
     function get_name_value($field, $value)
     {
-        return array('name' => $field, 'value' => $value);
+        return ['name' => $field, 'value' => $value];
     }
 
     function get_user_module_list($user)
@@ -448,7 +448,7 @@ class SoapHelperWebServices
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->get_name_value_list');
         global $app_list_strings;
-        $list = array();
+        $list = [];
         if (!empty($value->field_defs)) {
             if (isset($value->assigned_user_name)) {
                 $list['assigned_user_name'] = $this->get_name_value('assigned_user_name', $value->assigned_user_name);
@@ -488,7 +488,7 @@ class SoapHelperWebServices
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->filter_fields');
         global $invalid_contact_fields;
-        $filterFields = array();
+        $filterFields = [];
         foreach ($fields as $field) {
             if (is_array($invalid_contact_fields)) {
                 if (in_array($field, $invalid_contact_fields)) {
@@ -519,7 +519,7 @@ class SoapHelperWebServices
         global $app_list_strings;
         global $invalid_contact_fields;
 
-        $list = array();
+        $list = [];
         if (!empty($value->field_defs)) {
             if (empty($fields)) {
                 $fields = array_keys($value->field_defs);
@@ -566,7 +566,7 @@ class SoapHelperWebServices
     function array_get_name_value_list($array)
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->array_get_name_value_list');
-        $list = array();
+        $list = [];
         foreach ($array as $name => $value) {
             $list[$name] = $this->get_name_value($name, $value);
         }
@@ -579,11 +579,11 @@ class SoapHelperWebServices
     function array_get_name_value_lists($array)
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->array_get_name_value_lists');
-        $list = array();
+        $list = [];
         foreach ($array as $name => $value) {
             $tmp_value = $value;
             if (is_array($value)) {
-                $tmp_value = array();
+                $tmp_value = [];
                 foreach ($value as $k => $v) {
                     $tmp_value[$k] = $this->get_name_value($k, $v);
                 }
@@ -598,11 +598,11 @@ class SoapHelperWebServices
     function name_value_lists_get_array($list)
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->name_value_lists_get_array');
-        $array = array();
+        $array = [];
         foreach ($list as $key => $value) {
             if (isset($value['value']) && isset($value['name'])) {
                 if (is_array($value['value'])) {
-                    $array[$value['name']] = array();
+                    $array[$value['name']] = [];
                     foreach ($value['value'] as $v) {
                         $array[$value['name']][$v['name']] = $v['value'];
                     }
@@ -621,11 +621,7 @@ class SoapHelperWebServices
 
         $GLOBALS['log']->info('Begin/End: SoapHelperWebServices->array_get_return_value');
 
-        return Array(
-            'id' => $array['id'],
-            'module_name' => $module,
-            'name_value_list' => $this->array_get_name_value_list($array)
-        );
+        return ['id' => $array['id'], 'module_name' => $module, 'name_value_list' => $this->array_get_name_value_list($array)];
     }
 
     function get_return_value_for_fields($value, $module, $fields)
@@ -639,11 +635,7 @@ class SoapHelperWebServices
         $value = clean_sensitive_data($value->field_defs, $value);
         $GLOBALS['log']->info('End: SoapHelperWebServices->get_return_value_for_fields');
 
-        return Array(
-            'id' => $value->id,
-            'module_name' => $module,
-            'name_value_list' => $this->get_name_value_list_for_fields($value, $fields)
-        );
+        return ['id' => $value->id, 'module_name' => $module, 'name_value_list' => $this->get_name_value_list_for_fields($value, $fields)];
     }
 
     /**
@@ -663,7 +655,7 @@ class SoapHelperWebServices
 
         $bean->load_relationship($link_field_name);
         if (isset($bean->$link_field_name)) {
-            $params = array();
+            $params = [];
             if (!empty($optional_where)) {
                 $params['where'] = $optional_where;
             }
@@ -676,9 +668,9 @@ class SoapHelperWebServices
             } else {
                 $filterFields = $this->filter_fields(null, $link_module_fields);
             }
-            $list = array();
+            $list = [];
             foreach ($related_beans as $id => $bean) {
-                $row = array();
+                $row = [];
                 //Create a list of field/value rows based on $link_module_fields
 
                 foreach ($filterFields as $field) {
@@ -700,7 +692,7 @@ class SoapHelperWebServices
             }
             $GLOBALS['log']->info('End: SoapHelperWebServices->getRelationshipResults');
 
-            return array('rows' => $list, 'fields_set_on_rows' => $filterFields);
+            return ['rows' => $list, 'fields_set_on_rows' => $filterFields];
         } else {
             $GLOBALS['log']->info('End: SoapHelperWebServices->getRelationshipResults - ' . $link_field_name . ' relationship does not exists');
 
@@ -722,14 +714,14 @@ class SoapHelperWebServices
         if (empty($link_name_to_value_fields_array) || !is_array($link_name_to_value_fields_array)) {
             $GLOBALS['log']->debug('End: SoapHelperWebServices->get_return_value_for_link_fields - Invalid link information passed ');
 
-            return array();
+            return [];
         }
 
         if ($this->isLogLevelDebug()) {
             $GLOBALS['log']->debug('SoapHelperWebServices->get_return_value_for_link_fields - link info = ' . var_export($link_name_to_value_fields_array,
                     true));
         } // if
-        $link_output = array();
+        $link_output = [];
         foreach ($link_name_to_value_fields_array as $link_name_value_fields) {
             if (!is_array($link_name_value_fields) || !isset($link_name_value_fields['name']) || !isset($link_name_value_fields['value'])) {
                 continue;
@@ -739,24 +731,24 @@ class SoapHelperWebServices
             if (is_array($link_module_fields) && !empty($link_module_fields)) {
                 $result = $this->getRelationshipResults($bean, $link_field_name, $link_module_fields);
                 if (!$result) {
-                    $link_output[] = array('name' => $link_field_name, 'records' => array());
+                    $link_output[] = ['name' => $link_field_name, 'records' => []];
                     continue;
                 }
                 $list = $result['rows'];
                 $filterFields = $result['fields_set_on_rows'];
                 if ($list) {
-                    $rowArray = array();
+                    $rowArray = [];
                     foreach ($list as $row) {
-                        $nameValueArray = array();
+                        $nameValueArray = [];
                         foreach ($filterFields as $field) {
-                            $nameValue = array();
+                            $nameValue = [];
                             if (isset($row[$field])) {
                                 $nameValueArray[$field] = $this->get_name_value($field, $row[$field]);
                             } // if
                         } // foreach
                         $rowArray[] = $nameValueArray;
                     } // foreach
-                    $link_output[] = array('name' => $link_field_name, 'records' => $rowArray);
+                    $link_output[] = ['name' => $link_field_name, 'records' => $rowArray];
                 } // if
             } // if
         } // foreach
@@ -808,7 +800,7 @@ class SoapHelperWebServices
 
         if ($mod->load_relationship($link_field_name)) {
             if (!$delete) {
-                $name_value_pair = array();
+                $name_value_pair = [];
                 if (!empty($name_value_list)) {
                     $relFields = $mod->$link_field_name->getRelatedFields();
                     if (!empty($relFields)) {
@@ -841,11 +833,11 @@ class SoapHelperWebServices
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->new_handle_set_entries');
         global $beanList, $beanFiles, $current_user, $app_list_strings;
 
-        $ret_values = array();
+        $ret_values = [];
 
         $class_name = $beanList[$module_name];
         require_once($beanFiles[$class_name]);
-        $ids = array();
+        $ids = [];
         $count = 1;
         $total = sizeof($name_value_lists);
         foreach ($name_value_lists as $name_value_list) {
@@ -922,7 +914,7 @@ class SoapHelperWebServices
                             $query = $seed->table_name . ".outlook_id = '" . DBManagerFactory::getInstance()->quote($seed->outlook_id) . "'";
                             $response = $seed->get_list($order_by, $query, 0, -1, -1, 0);
                             $list = $response['list'];
-                            if (count($list) > 0) {
+                            if ((is_array($list) || $list instanceof \Countable ? count($list) : 0) > 0) {
                                 foreach ($list as $value) {
                                     $seed->id = $value->id;
                                     break;
@@ -955,7 +947,7 @@ class SoapHelperWebServices
 
             // if somebody is calling set_entries_detail() and wants fields returned...
             if ($select_fields !== false) {
-                $ret_values[$count] = array();
+                $ret_values[$count] = [];
 
                 foreach ($select_fields as $select_field) {
                     if (isset($seed->$select_field)) {
@@ -969,15 +961,11 @@ class SoapHelperWebServices
         if ($select_fields !== false) {
             $GLOBALS['log']->info('End: SoapHelperWebServices->new_handle_set_entries');
 
-            return array(
-                'name_value_lists' => $ret_values,
-            );
+            return ['name_value_lists' => $ret_values];
         } else {
             $GLOBALS['log']->info('End: SoapHelperWebServices->new_handle_set_entries');
 
-            return array(
-                'ids' => $ids,
-            );
+            return ['ids' => $ids];
         }
     }
 
@@ -992,11 +980,7 @@ class SoapHelperWebServices
         $value = clean_sensitive_data($value->field_defs, $value);
         $GLOBALS['log']->info('End: SoapHelperWebServices->new_handle_set_entries');
 
-        return Array(
-            'id' => $value->id,
-            'module_name' => $module,
-            'name_value_list' => $this->get_name_value_list($value)
-        );
+        return ['id' => $value->id, 'module_name' => $module, 'name_value_list' => $this->get_name_value_list($value)];
     }
 
 
@@ -1008,14 +992,10 @@ class SoapHelperWebServices
         $result = $this->get_field_list($value, $fields, $translate);
         $GLOBALS['log']->info('End: SoapHelperWebServices->get_return_module_fields');
 
-        return Array(
-            'module_name' => $module,
-            'module_fields' => $result['module_fields'],
-            'link_fields' => $result['link_fields'],
-        );
+        return ['module_name' => $module, 'module_fields' => $result['module_fields'], 'link_fields' => $result['link_fields']];
     } // fn
 
-    function login_success($name_value_list = array())
+    function login_success($name_value_list = [])
     {
         $GLOBALS['log']->info('Begin: SoapHelperWebServices->login_success');
         global $current_language, $sugar_config, $app_strings, $app_list_strings;
@@ -1087,7 +1067,7 @@ class SoapHelperWebServices
 
                 return;
             }
-            $arr = array();
+            $arr = [];
 
             if (!empty($account_id))  // bug # 44280
             {

@@ -46,7 +46,7 @@
 
 class KTreeViewGenerator {
 
-   const TREE_COLUMN_NAME = 'tree_column';
+   public const TREE_COLUMN_NAME = 'tree_column';
 
    public $nodes_history;
    public $values_history;
@@ -66,14 +66,11 @@ class KTreeViewGenerator {
       $this->bean->whereOverride = json_decode(html_entity_decode($where_conditions), true);
 
       $this->columns = json_decode(html_entity_decode($this->bean->listfields, ENT_QUOTES), true);
-      $this->original_records = $this->bean->getSelectionResults(array( 'grouping' => 'off', 'noFormat' => true ));
+      $this->original_records = $this->bean->getSelectionResults(['grouping' => 'off', 'noFormat' => true]);
       $this->presentation_params = json_decode(html_entity_decode($this->bean->presentation_params, ENT_QUOTES), true);
       $this->group_until = $this->presentation_params['pluginData']['kTreeViewProperties']['groupUntil'];
 
-      $history = array(
-         'nodes_history' => json_decode(html_entity_decode($nodes_history), true),
-         'values_history' => json_decode(html_entity_decode($values_history), true),
-      );
+      $history = ['nodes_history' => json_decode(html_entity_decode($nodes_history), true), 'values_history' => json_decode(html_entity_decode($values_history), true)];
       $this->init($history);
    }
 
@@ -84,12 +81,12 @@ class KTreeViewGenerator {
       $this->parent_node = end($this->nodes_history);
       $this->column_node = null;
       $this->is_leaf = false;
-      $this->parsed_records = array();
+      $this->parsed_records = [];
       return $this;
    }
 
    public function generateColumns() {
-      $columns_array = array();
+      $columns_array = [];
 
       $last_column_found = false;
       $group_column_title = '';
@@ -106,21 +103,10 @@ class KTreeViewGenerator {
             if ( $column['fieldid'] == $this->group_until ) {
                $last_column_found = true;
 
-               array_push($columns_array, array(
-                  'xtype' => 'treecolumn',
-                  'text' => $group_column_title,
-                  'dataIndex' => self::TREE_COLUMN_NAME,
-                  'width' => $group_column_width,
-                  'sortable' => false
-               ));
+               array_push($columns_array, ['xtype' => 'treecolumn', 'text' => $group_column_title, 'dataIndex' => self::TREE_COLUMN_NAME, 'width' => $group_column_width, 'sortable' => false]);
             }
          } else {
-            array_push($columns_array, array(
-               'text' => $column['name'],
-               'dataIndex' => $column['fieldid'],
-               'width' => $column['width'],
-               'sortable' => false
-            ));
+            array_push($columns_array, ['text' => $column['name'], 'dataIndex' => $column['fieldid'], 'width' => $column['width'], 'sortable' => false]);
          }
       }
 
@@ -128,7 +114,7 @@ class KTreeViewGenerator {
    }
 
    public function generateRecords() {
-      $records = array();
+      $records = [];
 
       $this->column_node = $this->getCurrentColumnNode();
       $this->records = $this->removeUnnecessaryRecords($this->records);
@@ -142,12 +128,7 @@ class KTreeViewGenerator {
             $values_history = $this->values_history;
             array_push($values_history, self::removeInvalidSymbols($record[$this->column_node]));
 
-            $record_row = array(
-               'leaf' => $this->is_leaf,
-               'expanded' => false,
-               'nodes_history' => $nodes_history,
-               'values_history' => $values_history
-            );
+            $record_row = ['leaf' => $this->is_leaf, 'expanded' => false, 'nodes_history' => $nodes_history, 'values_history' => $values_history];
 
             foreach ( $this->columns as $column ) {
                if ( $column['fieldid'] == $this->column_node ) {
@@ -226,7 +207,7 @@ class KTreeViewGenerator {
    }
 
    protected function mergeRecords() {
-      $merged_records = array();
+      $merged_records = [];
 
       if ( $this->is_leaf ) {
          $merged_records = $this->parsed_records;
@@ -252,7 +233,7 @@ class KTreeViewGenerator {
    protected function mergeRecord(&$records_array, $record, $existing_index) {
       foreach ( $this->columns as $column ) {
          if ( array_key_exists($column['fieldid'], $record) ) {
-            $func = isset($column['function']) ? $column['function'] : '';
+            $func = $column['function'] ?? '';
             switch ( $func ) {
                case 'sum':
                   $records_array[$existing_index][$column['fieldid']] += $record[$column['fieldid']];
@@ -290,16 +271,13 @@ class KTreeViewGenerator {
       if ( $existing_index == -1 ) {
          foreach ( $this->columns as $column ) {
             if ( array_key_exists($column['fieldid'], $record) ) {
-               $func = isset($column['function']) ? $column['function'] : '';
+               $func = $column['function'] ?? '';
                switch ( $func ) {
                   case 'count':
                      $record[$column['fieldid']] = 1;
                      break;
                   case 'avg':
-                     $record[$column['fieldid'] . '_avg'] = array(
-                        'current_sum' => $record[$column['fieldid']],
-                        'current_count' => 1,
-                     );
+                     $record[$column['fieldid'] . '_avg'] = ['current_sum' => $record[$column['fieldid']], 'current_count' => 1];
                      break;
                }
             }
@@ -353,19 +331,11 @@ class KTreeViewGenerator {
    public static function sortRecordsByField($records_array, $field, $direction) {
       if ( $direction == 'asc' ) {
          usort($records_array, function($a, $b) use ($field) {
-            if ( $a[$field] == $b[$field] ) {
-               return 0;
-            } else {
-               return $a[$field] > $b[$field] ? 1 : -1;
-            }
+            return $a[$field] <=> $b[$field];
          });
       } else if ( $direction == 'desc' ) {
          usort($records_array, function($a, $b) use ($field) {
-            if ( $a[$field] == $b[$field] ) {
-               return 0;
-            } else {
-               return $a[$field] < $b[$field] ? 1 : -1;
-            }
+            return $b[$field] <=> $a[$field];
          });
       }
       return $records_array;

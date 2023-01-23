@@ -53,7 +53,7 @@ require_once('include/EditView/EditView2.php');
  * @api
  */
 class SubpanelQuickEdit{
-	var $defaultProcess = true;
+	public $defaultProcess = true;
 
 	function __construct($module, $view='QuickEdit', $proccessOverride = false){
         //treat quickedit and quickcreate views as the same
@@ -104,7 +104,7 @@ class SubpanelQuickEdit{
 
 	    $this->ev->defs['templateMeta']['form']['headerTpl'] = 'include/EditView/header.tpl';
 		$this->ev->defs['templateMeta']['form']['footerTpl'] = 'include/EditView/footer.tpl';
-		$this->ev->defs['templateMeta']['form']['buttons'] = array('SUBPANELSAVE', 'SUBPANELCANCEL', 'SUBPANELFULLFORM');
+		$this->ev->defs['templateMeta']['form']['buttons'] = ['SUBPANELSAVE', 'SUBPANELCANCEL', 'SUBPANELFULLFORM'];
         $this->ev->defs['templateMeta']['form']['hideAudit'] = true;
 
 

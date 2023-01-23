@@ -58,7 +58,8 @@ require_once('modules/AM_ProjectTemplates/AM_ProjectTemplates.php');
 
 class AM_ProjectTemplatesDashlet extends DashletGeneric {
     function __construct($id, $def = null) {
-		global $current_user, $app_strings;
+		$dashletData = [];
+  global $current_user, $app_strings;
 		require('modules/AM_ProjectTemplates/metadata/dashletviewdefs.php');
 
         parent::__construct($id, $def);

@@ -52,7 +52,7 @@ class Zend_Gdata_Contacts_Extension_Name extends Zend_Gdata_Extension
 
     protected $_rootNamespace = 'gd';
     protected $_rootElement = 'name';
-    protected $_names = array('first_name' => '', 'last_name' => '', 'full_name' => '');
+    protected $_names = ['first_name' => '', 'last_name' => '', 'full_name' => ''];
     /**
      * Constructs a new Zend_Gdata_Contacts_Extension_Name object.
      * @param string $value (optional) The text content of the element.

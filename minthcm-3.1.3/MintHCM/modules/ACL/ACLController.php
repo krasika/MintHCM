@@ -175,7 +175,7 @@ class ACLController
         }
         $actions = ACLAction::getUserActions($current_user->id, false);
 
-        $compList = array();
+        $compList = [];
         if ($by_value) {
             foreach ($moduleList as $key => $value) {
                 $compList[$value] = $key;
@@ -250,11 +250,11 @@ class ACLController
     {
         global $aclModuleList, $current_user;
         if (is_admin($GLOBALS['current_user'])) {
-            return array();
+            return [];
         }
         $actions = ACLAction::getUserActions($current_user->id, false);
-        $disabled = array();
-        $compList = array();
+        $disabled = [];
+        $compList = [];
 
         if ($by_value) {
             foreach ($moduleList as $key => $value) {
@@ -328,7 +328,7 @@ class ACLController
      */
     public static function moduleSupportsACL($module)
     {
-        static $checkModules = array();
+        static $checkModules = [];
         global $beanFiles, $beanList;
         if (isset($checkModules[$module])) {
             return $checkModules[$module];

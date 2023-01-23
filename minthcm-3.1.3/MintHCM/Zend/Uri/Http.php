@@ -43,11 +43,11 @@ class Zend_Uri_Http extends Zend_Uri
     /**
      * Character classes for validation regular expressions
      */
-    const CHAR_ALNUM    = 'A-Za-z0-9';
-    const CHAR_MARK     = '-_.!~*\'()\[\]';
-    const CHAR_RESERVED = ';\/?:@&=+$,';
-    const CHAR_SEGMENT  = ':@&=+$,;';
-    const CHAR_UNWISE   = '{}|\\\\^`';
+    public const CHAR_ALNUM    = 'A-Za-z0-9';
+    public const CHAR_MARK     = '-_.!~*\'()\[\]';
+    public const CHAR_RESERVED = ';\/?:@&=+$,';
+    public const CHAR_SEGMENT  = ':@&=+$,;';
+    public const CHAR_UNWISE   = '{}|\\\\^`';
 
     /**
      * HTTP username
@@ -103,7 +103,7 @@ class Zend_Uri_Http extends Zend_Uri
      *
      * @var array
      */
-    protected $_regex = array();
+    protected $_regex = [];
 
     /**
      * Constructor accepts a string $scheme (e.g., http, https) and a scheme-specific part of the URI
@@ -178,7 +178,7 @@ class Zend_Uri_Http extends Zend_Uri
         $scheme         = strtolower($uri[0]);
         $schemeSpecific = isset($uri[1]) === true ? $uri[1] : '';
 
-        if (in_array($scheme, array('http', 'https')) === false) {
+        if (in_array($scheme, ['http', 'https']) === false) {
             require_once 'Zend/Uri/Exception.php';
             throw new Zend_Uri_Exception("Invalid scheme: '$scheme'");
         }
@@ -601,7 +601,7 @@ class Zend_Uri_Http extends Zend_Uri
     public function getQueryAsArray()
     {
         $query = $this->getQuery();
-        $querryArray = array();
+        $querryArray = [];
         if ($query !== false) {
             parse_str($query, $querryArray);
         }

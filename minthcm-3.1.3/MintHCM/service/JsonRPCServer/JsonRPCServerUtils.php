@@ -58,10 +58,10 @@ class JsonRPCServerUtils {
       if ( !empty($table) ) {
          $table .= '.';
       }
-      $cond_arr = array();
+      $cond_arr = [];
 
       if ( !is_array($query_obj['conditions']) ) {
-         $query_obj['conditions'] = array();
+         $query_obj['conditions'] = [];
       }
 
       foreach ( $query_obj['conditions'] as $condition ) {
@@ -126,8 +126,8 @@ class JsonRPCServerUtils {
       global $sugar_config;
       global $log;
 
-      $user_unique_key = isset($_SESSION['unique_key']) ? $_SESSION['unique_key'] : '';
-      $server_unique_key = isset($sugar_config['unique_key']) ? $sugar_config['unique_key'] : '';
+      $user_unique_key = $_SESSION['unique_key'] ?? '';
+      $server_unique_key = $sugar_config['unique_key'] ?? '';
 
       if ( $user_unique_key !== $server_unique_key ) {
          $log->debug('JSON_SERVER: user_unique_key:' . $user_unique_key . '!=' . $server_unique_key);

@@ -198,7 +198,7 @@ class EditView {
       $this->tpl = get_custom_file_if_exists($tpl);
       $this->module = $module;
       $this->focus = $focus;
-      $viewdefs = array();
+      $viewdefs = [];
       //this logic checks if the focus has an id and if it does not then it will create a new instance of the focus bean
       //but in convert lead we do not want to create a new instance and do not want to populate id.
       if ( $createFocus ) {
@@ -257,6 +257,7 @@ class EditView {
    }
 
    public function createFocus() {
+      $employee_related_copy_assigned = null;
       global $beanList, $beanFiles;
 
       if ( empty($beanList[$this->module]) ) {
@@ -281,7 +282,7 @@ class EditView {
          // MintHCM begin #70311
          include 'modules/Employees/access_config.php';
          if(isset($GLOBALS["dictionary"][$this->focus->object_name]["templates"]['employee_related']) && in_array($this->focus->module_dir,$employee_related_copy_assigned)  && empty($this->focus->employee_id)){
-            $this->focus->employee_id = isset($this->focus->assigned_user_id)?  $this->focus->assigned_user_id : "";
+            $this->focus->employee_id = $this->focus->assigned_user_id ?? "";
             if(!empty($this->focus->employee_id)){
                $this->focus->employee_name = get_assigned_user_name($this->focus->employee_id);
             }
@@ -295,7 +296,7 @@ class EditView {
     * @param array $request
     * @return void
     */
-   public function populateBean($request = array()) {
+   public function populateBean($request = []) {
       if ( empty($request) && isset($_REQUEST) && !empty($_REQUEST) ) {
          $request = $_REQUEST;
       }
@@ -330,7 +331,7 @@ class EditView {
     * Enter description here ...
     */
    public function requiredFirst() {
-      $panels = array( 'required' => array() );
+      $panels = ['required' => []];
       $reqCol = -1;
       $reqRow = 0;
       foreach ( $this->defs['panels'] as $key => $p ) {
@@ -371,9 +372,9 @@ class EditView {
          }
       }
 
-      $this->sectionPanels = array();
-      $this->sectionLabels = array();
-      if ( !empty($this->defs['panels']) && count($this->defs['panels']) > 0 ) {
+      $this->sectionPanels = [];
+      $this->sectionLabels = [];
+      if ( !empty($this->defs['panels']) && (is_array($this->defs['panels']) || $this->defs['panels'] instanceof \Countable ? count($this->defs['panels']) : 0) > 0 ) {
          $keys = array_keys($this->defs['panels']);
          if ( is_numeric($keys[0]) ) {
             $defaultPanel = $this->defs['panels'];
@@ -386,22 +387,22 @@ class EditView {
          $this->requiredFirst();
       }
 
-      $maxColumns = isset($this->defs['templateMeta']['maxColumns']) ? $this->defs['templateMeta']['maxColumns'] : 2;
+      $maxColumns = $this->defs['templateMeta']['maxColumns'] ?? 2;
       $panelCount = 0;
       static $itemCount = 100; //Start the generated tab indexes at 100 so they don't step on custom ones.
 
       /* loop all the panels */
       foreach ( $this->defs['panels'] as $key => $p ) {
-         $panel = array();
+         $panel = [];
 
          if ( !is_array($this->defs['panels'][$key]) ) {
             $this->sectionPanels[strtoupper($key)] = $p;
          } else {
             foreach ( $p as $row => $rowDef ) {
-               $columnsInRows = count($rowDef);
+               $columnsInRows = is_array($rowDef) || $rowDef instanceof \Countable ? count($rowDef) : 0;
                $columnsUsed = 0;
                foreach ( $rowDef as $col => $colDef ) {
-                  $panel[$row][$col] = is_array($p[$row][$col]) ? array( 'field' => $p[$row][$col] ) : array( 'field' => array( 'name' => $p[$row][$col] ) );
+                  $panel[$row][$col] = is_array($p[$row][$col]) ? ['field' => $p[$row][$col]] : ['field' => ['name' => $p[$row][$col]]];
 
                   $panel[$row][$col]['field']['tabindex'] = (isset($p[$row][$col]['tabindex']) && is_numeric($p[$row][$col]['tabindex'])) ? $p[$row][$col]['tabindex'] : '0';
 
@@ -445,7 +446,7 @@ class EditView {
    protected function getPanelWithFillers($panel) {
       $addFiller = true;
       foreach ( $panel as $row ) {
-         if ( count($row) == $this->defs['templateMeta']['maxColumns'] || 1 == count($panel)
+         if ( (is_array($row) || $row instanceof \Countable ? count($row) : 0) == $this->defs['templateMeta']['maxColumns'] || 1 == count($panel)
          ) {
             $addFiller = false;
             break;
@@ -454,9 +455,9 @@ class EditView {
 
       if ( $addFiller ) {
          $rowCount = count($panel);
-         $filler = count($panel[$rowCount - 1]);
+         $filler = is_array($panel[$rowCount - 1]) || $panel[$rowCount - 1] instanceof \Countable ? count($panel[$rowCount - 1]) : 0;
          while ( $filler < $this->defs['templateMeta']['maxColumns'] ) {
-            $panel[$rowCount - 1][$filler++] = array( 'field' => array( 'name' => '' ) );
+            $panel[$rowCount - 1][$filler++] = ['field' => ['name' => '']];
          }
       }
 
@@ -524,7 +525,7 @@ class EditView {
 
       $is_owner = $this->focus->isOwner($GLOBALS['current_user']->id);
 
-      $this->fieldDefs = array();
+      $this->fieldDefs = [];
       if ( $this->focus ) {
          global $current_user;
 
@@ -547,7 +548,7 @@ class EditView {
             $additional_params = false;
             $this->fieldDefs[$name] = (!empty($this->fieldDefs[$name]) && !empty($this->fieldDefs[$name]['value'])) ? array_merge($this->focus->field_defs[$name], $this->fieldDefs[$name]) : $this->focus->field_defs[$name];
 
-            foreach ( array( "formula", "default", "comments", "help" ) as $toEscape ) {
+            foreach ( ["formula", "default", "comments", "help"] as $toEscape ) {
                if ( !empty($this->fieldDefs[$name][$toEscape]) ) {
                   $this->fieldDefs[$name][$toEscape] = htmlentities(
                           $this->fieldDefs[$name][$toEscape], ENT_QUOTES, 'UTF-8'
@@ -582,9 +583,7 @@ class EditView {
                     !isset($this->fieldDefs[$name]['options'][$this->fieldDefs[$name]['default_empty']])
             ) {
                $this->fieldDefs[$name]['options'] = array_merge(
-                       array(
-                  $this->fieldDefs[$name]['default_empty'] => $this->fieldDefs[$name]['default_empty']
-                       ), $this->fieldDefs[$name]['options']
+                       [$this->fieldDefs[$name]['default_empty'] => $this->fieldDefs[$name]['default_empty']], $this->fieldDefs[$name]['options']
                );
             }
 
@@ -634,7 +633,7 @@ class EditView {
 
             if ( !$valueFormatted ) {
                // $this->focus->format_field($this->focus->field_defs[$name]);
-               $value = isset($this->focus->$name) ? $this->focus->$name : '';
+               $value = $this->focus->$name ?? '';
             }
 
             if ( empty($this->fieldDefs[$name]['value']) ) {
@@ -728,7 +727,7 @@ class EditView {
          }
       }
 
-      $fieldDefsIdValue = isset($this->fieldDefs['id']['value']) ? $this->fieldDefs['id']['value'] : null;
+      $fieldDefsIdValue = $this->fieldDefs['id']['value'] ?? null;
       $this->th->ss->assign('id', $fieldDefsIdValue);
       $this->th->ss->assign('offset', $this->offset + 1);
       $this->th->ss->assign('APP', $app_strings);
@@ -745,21 +744,21 @@ class EditView {
               'useTabs', isset($this->defs['templateMeta']['useTabs']) && isset($this->defs['templateMeta']['tabDefs']) ? $this->defs['templateMeta']['useTabs'] : false
       );
       $this->th->ss->assign(
-              'maxColumns', isset($this->defs['templateMeta']['maxColumns']) ? $this->defs['templateMeta']['maxColumns'] : 2
+              'maxColumns', $this->defs['templateMeta']['maxColumns'] ?? 2
       );
       $this->th->ss->assign('module', $this->module);
       $this->th->ss->assign(
-              'headerTpl', isset($this->defs['templateMeta']['form']['headerTpl']) ? $this->defs['templateMeta']['form']['headerTpl'] : 'include/' . $this->view . '/header.tpl'
+              'headerTpl', $this->defs['templateMeta']['form']['headerTpl'] ?? 'include/' . $this->view . '/header.tpl'
       );
       $this->th->ss->assign(
-              'footerTpl', isset($this->defs['templateMeta']['form']['footerTpl']) ? $this->defs['templateMeta']['form']['footerTpl'] : 'include/' . $this->view . '/footer.tpl'
+              'footerTpl', $this->defs['templateMeta']['form']['footerTpl'] ?? 'include/' . $this->view . '/footer.tpl'
       );
       $this->th->ss->assign('current_user', $current_user);
       $this->th->ss->assign('bean', $this->focus);
       $this->th->ss->assign('isAuditEnabled', $this->focus->is_AuditEnabled());
       $this->th->ss->assign('gridline', $current_user->getPreference('gridline') === 'on' ? '1' : '0');
       $this->th->ss->assign(
-              'tabDefs', isset($this->defs['templateMeta']['tabDefs']) ? $this->defs['templateMeta']['tabDefs'] : false
+              'tabDefs', $this->defs['templateMeta']['tabDefs'] ?? false
       );
       $this->th->ss->assign('VERSION_MARK', getVersionedPath(''));
 
@@ -818,10 +817,10 @@ class EditView {
       $this->th->ss->assign('set_focus_block', get_set_focus_js());
 
       $this->th->ss->assign(
-              'form', isset($this->defs['templateMeta']['form']) ? $this->defs['templateMeta']['form'] : null
+              'form', $this->defs['templateMeta']['form'] ?? null
       );
       $this->th->ss->assign(
-              'includes', isset($this->defs['templateMeta']['includes']) ? $this->defs['templateMeta']['includes'] : null
+              'includes', $this->defs['templateMeta']['includes'] ?? null
       );
       $this->th->ss->assign('view', $this->view);
 
@@ -860,8 +859,8 @@ class EditView {
          $height = $current_user->getPreference('text_editor_height');
          $width = $current_user->getPreference('text_editor_width');
 
-         $height = isset($height) ? $height : '300px';
-         $width = isset($width) ? $width : '95%';
+         $height = $height ?? '300px';
+         $width = $width ?? '95%';
 
          $this->th->ss->assign('RICH_TEXT_EDITOR_HEIGHT', $height);
          $this->th->ss->assign('RICH_TEXT_EDITOR_WIDTH', $width);
@@ -967,8 +966,8 @@ EOQ;
     */
    public function callFunction($vardef) {
       $can_execute = true;
-      $execute_function = array();
-      $execute_params = array();
+      $execute_function = [];
+      $execute_params = [];
       if ( !empty($vardef['function_class']) ) {
          $execute_function[] = $vardef['function_class'];
          $execute_function[] = $vardef['function_name'];

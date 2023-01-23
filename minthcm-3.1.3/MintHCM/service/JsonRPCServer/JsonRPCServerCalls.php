@@ -74,12 +74,9 @@ class JsonRPCServerCalls
         // to get a simplified version of the SugarBean
         $module_arr = $jsonConfig->populateBean($focus);
 
-        $response = array();
+        $response = [];
         $response['id'] = $request_id;
-        $response['result'] = array(
-            'status' => 'success',
-            'record' => $module_arr
-        );
+        $response['result'] = ['status' => 'success', 'record' => $module_arr];
 
         return $response;
     }
@@ -98,7 +95,7 @@ class JsonRPCServerCalls
         $jsonParser = getJSONobj();
         $jsonConfig = new json_config();
         $jsonServerUtils = new JsonRPCServerUtils();
-        $list_arr = array();
+        $list_arr = [];
         // override query limits
         if ($sugar_config['list_max_entries_per_page'] < 31)
         {
@@ -119,10 +116,10 @@ class JsonRPCServerCalls
             }
         }
 
-        $list_return = array();
+        $list_return = [];
 
         if (!empty($args['module'])) {
-            $args['modules'] = array($args['module']);
+            $args['modules'] = [$args['module']];
         }
 
         foreach ($args['modules'] as $module) {
@@ -148,7 +145,7 @@ class JsonRPCServerCalls
             }
 
             $query_where = $jsonServerUtils->constructWhere($args, $focus->table_name, $module);
-            $list_arr = array();
+            $list_arr = [];
             if ($focus->ACLAccess('ListView', true)) {
                 $focus->ungreedy_count = false;
                 $curlist = $focus->get_list($query_orderby, $query_where, 0, $query_limit, -1, 0);
@@ -164,8 +161,8 @@ class JsonRPCServerCalls
                 $list_return[$i]->emailAddress->handleLegacyRetrieve($list_return[$i]);
             }
 
-            $list_arr[$i] = array();
-            $list_arr[$i]['fields'] = array();
+            $list_arr[$i] = [];
+            $list_arr[$i]['fields'] = [];
             $list_arr[$i]['module'] = $list_return[$i]->object_name;
 
             foreach ($args['field_list'] as $field) {
@@ -198,7 +195,7 @@ class JsonRPCServerCalls
         }
 
         $response['id'] = $request_id;
-        $response['result'] = array('list' => $list_arr);
+        $response['result'] = ['list' => $list_arr];
 
         return $response;
     }

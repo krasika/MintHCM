@@ -55,7 +55,7 @@ require_once('include/entryPoint.php');
 require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
 
 class PackageManager{
-    var $soap_client;
+    public $soap_client;
 
     /**
      * Constructor: In this method we will initialize the nusoap client to point to the hearbeat server
@@ -89,9 +89,9 @@ class PackageManager{
      * @return string   the string from the promotion
      */
     function getPromotion(){
-        $name_value_list = PackageManagerComm::getPromotion();
+        $name_value_list = (new PackageManagerComm())->getPromotion();
         if(!empty($name_value_list)){
-            $name_value_list = PackageManager::fromNameValueList($name_value_list);
+            $name_value_list = (new PackageManager())->fromNameValueList($name_value_list);
             return $name_value_list['description'];
         }else {
            return '';
@@ -102,46 +102,46 @@ class PackageManager{
      * Obtain a list of category/packages/releases for use within the module loader
      */
     function getModuleLoaderCategoryPackages($category_id = ''){
-    	$filter = array();
-    	$filter = array('type' => "'module', 'theme', 'langpack'");
-    	$filter = PackageManager::toNameValueList($filter);
-    	return PackageManager::getCategoryPackages($category_id, $filter);
+    	$filter = [];
+    	$filter = ['type' => "'module', 'theme', 'langpack'"];
+    	$filter = (new PackageManager())->toNameValueList($filter);
+    	return (new PackageManager())->getCategoryPackages($category_id, $filter);
     }
 
     /**
      * Obtain the list of category_packages from SugarDepot
      * @return category_packages
      */
-    function getCategoryPackages($category_id = '', $filter = array()){
-         $results = PackageManagerComm::getCategoryPackages($category_id, $filter);
-         PackageManagerComm::errorCheck();
-         $nodes = array();
+    function getCategoryPackages($category_id = '', $filter = []){
+         $results = (new PackageManagerComm())->getCategoryPackages($category_id, $filter);
+         (new PackageManagerComm())->errorCheck();
+         $nodes = [];
 
-        $nodes[$category_id]['packages'] = array();
+        $nodes[$category_id]['packages'] = [];
         if(!empty($results['categories'])){
 	         foreach($results['categories'] as $category){
-	            $mycat = PackageManager::fromNameValueList($category);
-	            $nodes[$mycat['id']] = array('id' => $mycat['id'], 'label' => $mycat['name'], 'description' => $mycat['description'], 'type' => 'cat', 'parent' => $mycat['parent_id']);
-	            $nodes[$mycat['id']]['packages'] = array();
+	            $mycat = (new PackageManager())->fromNameValueList($category);
+	            $nodes[$mycat['id']] = ['id' => $mycat['id'], 'label' => $mycat['name'], 'description' => $mycat['description'], 'type' => 'cat', 'parent' => $mycat['parent_id']];
+	            $nodes[$mycat['id']]['packages'] = [];
 	         }
         }
          if(!empty($results['packages'])){
 	        $uh = new UpgradeHistory();
 	         foreach($results['packages'] as $package){
-	            $mypack = PackageManager::fromNameValueList($package);
-	            $nodes[$mypack['category_id']]['packages'][$mypack['id']] = array('id' => $mypack['id'], 'label' => $mypack['name'], 'description' => $mypack['description'], 'category_id' => $mypack['category_id'], 'type' => 'package');
-	            $releases = PackageManager::getReleases($category_id, $mypack['id'], $filter);
-	            $arr_releases = array();
-	            $nodes[$mypack['category_id']]['packages'][$mypack['id']]['releases'] = array();
+	            $mypack = (new PackageManager())->fromNameValueList($package);
+	            $nodes[$mypack['category_id']]['packages'][$mypack['id']] = ['id' => $mypack['id'], 'label' => $mypack['name'], 'description' => $mypack['description'], 'category_id' => $mypack['category_id'], 'type' => 'package'];
+	            $releases = (new PackageManager())->getReleases($category_id, $mypack['id'], $filter);
+	            $arr_releases = [];
+	            $nodes[$mypack['category_id']]['packages'][$mypack['id']]['releases'] = [];
 	            if(!empty($releases['packages'])){
 		            foreach($releases['packages'] as $release){
-		                 $myrelease = PackageManager::fromNameValueList($release);
+		                 $myrelease = (new PackageManager())->fromNameValueList($release);
 		                 //check to see if we already this one installed
 		                 $result = $uh->determineIfUpgrade($myrelease['id_name'], $myrelease['version']);
 		                 $enable = false;
 		                 if($result == true || is_array($result))
 		                	 $enable = true;
-		                 $nodes[$mypack['category_id']]['packages'][$mypack['id']]['releases'][$myrelease['id']] = array('id' => $myrelease['id'], 'version' => $myrelease['version'], 'label' => $myrelease['description'], 'category_id' => $mypack['category_id'], 'package_id' => $mypack['id'], 'type' => 'release', 'enable' => $enable);
+		                 $nodes[$mypack['category_id']]['packages'][$mypack['id']]['releases'][$myrelease['id']] = ['id' => $myrelease['id'], 'version' => $myrelease['version'], 'label' => $myrelease['description'], 'category_id' => $mypack['category_id'], 'package_id' => $mypack['id'], 'type' => 'release', 'enable' => $enable];
 		           	}
 	            }
 	            //array_push($nodes[$mypack['category_id']]['packages'], $package_arr);
@@ -157,35 +157,35 @@ class PackageManager{
      * @param filter        an array of filters to pass to limit the query
      * @return array        an array of categories for display on the client
      */
-    function getCategories($category_id, $filter = array()){
-        $nodes = array();
-        $results = PackageManagerComm::getCategories($category_id, $filter);
-        PackageManagerComm::errorCheck();
+    function getCategories($category_id, $filter = []){
+        $nodes = [];
+        $results = (new PackageManagerComm())->getCategories($category_id, $filter);
+        (new PackageManagerComm())->errorCheck();
         if(!empty($results['categories'])){
 	        foreach($results['categories'] as $category){
-	            $mycat = PackageManager::fromNameValueList($category);
-	            $nodes[] = array('id' => $mycat['id'], 'label' => $mycat['name'], 'description' => $mycat['description'], 'type' => 'cat', 'parent' => $mycat['parent_id']);
+	            $mycat = (new PackageManager())->fromNameValueList($category);
+	            $nodes[] = ['id' => $mycat['id'], 'label' => $mycat['name'], 'description' => $mycat['description'], 'type' => 'cat', 'parent' => $mycat['parent_id']];
 	        }
         }
         return $nodes;
     }
 
-    function getPackages($category_id, $filter = array()){
-        $nodes = array();
-        $results = PackageManagerComm::getPackages($category_id, $filter);
-        PackageManagerComm::errorCheck();
-        $packages = array();
+    function getPackages($category_id, $filter = []){
+        $nodes = [];
+        $results = (new PackageManagerComm())->getPackages($category_id, $filter);
+        (new PackageManagerComm())->errorCheck();
+        $packages = [];
         //$xml = '';
         //$xml .= '<packages>';
         if(!empty($results['packages'])){
 	        foreach($results['packages'] as $package){
-	            $mypack = PackageManager::fromNameValueList($package);
-	            $packages[$mypack['id']] = array('package_id' => $mypack['id'], 'name' => $mypack['name'], 'description' => $mypack['description'], 'category_id' => $mypack['category_id']);
-	            $releases = PackageManager::getReleases($category_id, $mypack['id']);
-	            $arr_releases = array();
+	            $mypack = (new PackageManager())->fromNameValueList($package);
+	            $packages[$mypack['id']] = ['package_id' => $mypack['id'], 'name' => $mypack['name'], 'description' => $mypack['description'], 'category_id' => $mypack['category_id']];
+	            $releases = (new PackageManager())->getReleases($category_id, $mypack['id']);
+	            $arr_releases = [];
 	            foreach($releases['packages'] as $release){
-	                 $myrelease = PackageManager::fromNameValueList($release);
-	                 $arr_releases[$myrelease['id']]  = array('release_id' => $myrelease['id'], 'version' => $myrelease['version'], 'description' => $myrelease['description'], 'category_id' => $mypack['category_id'], 'package_id' => $mypack['id']);
+	                 $myrelease = (new PackageManager())->fromNameValueList($release);
+	                 $arr_releases[$myrelease['id']]  = ['release_id' => $myrelease['id'], 'version' => $myrelease['version'], 'description' => $myrelease['description'], 'category_id' => $mypack['category_id'], 'package_id' => $mypack['id']];
 	            }
 	            $packages[$mypack['id']]['releases'] = $arr_releases;
 	        }
@@ -193,9 +193,9 @@ class PackageManager{
         return $packages;
     }
 
-    function getReleases($category_id, $package_id, $filter = array()){
-        $releases = PackageManagerComm::getReleases($category_id, $package_id, $filter);
-        PackageManagerComm::errorCheck();
+    function getReleases($category_id, $package_id, $filter = []){
+        $releases = (new PackageManagerComm())->getReleases($category_id, $package_id, $filter);
+        (new PackageManagerComm())->errorCheck();
         return $releases;
     }
 
@@ -211,10 +211,10 @@ class PackageManager{
     {
         $GLOBALS['log']->debug('RELEASE _ID: '.$release_id);
         if(!empty($release_id)){
-            $filename = PackageManagerComm::addDownload($category_id, $package_id, $release_id);
+            $filename = (new PackageManagerComm())->addDownload($category_id, $package_id, $release_id);
             if($filename){
 	            $GLOBALS['log']->debug('RESULT: '.$filename);
-	            PackageManagerComm::errorCheck();
+	            (new PackageManagerComm())->errorCheck();
 	           	$filepath = PackageManagerComm::performDownload($filename);
 	           	return $filepath;
             }
@@ -233,9 +233,9 @@ class PackageManager{
      * @return              true if successful, false otherwise
      */
     function authenticate($username, $password, $systemname='', $terms_checked = true){
-        PackageManager::setCredentials($username, $password, $systemname);
-        PackageManagerComm::clearSession();
-        $result = PackageManagerComm::login($terms_checked);
+        (new PackageManager())->setCredentials($username, $password, $systemname);
+        (new PackageManagerComm())->clearSession();
+        $result = (new PackageManagerComm())->login($terms_checked);
         if(is_array($result))
         	return $result;
        	else
@@ -257,7 +257,7 @@ class PackageManager{
 
         $admin = new Administration();
         $admin->retrieveSettings(CREDENTIAL_CATEGORY, true);
-        $credentials = array();
+        $credentials = [];
         $credentials['username'] = '';
         $credentials['password'] = '';
 		$credentials['system_name'] = '';
@@ -274,7 +274,7 @@ class PackageManager{
     }
 
     function getTermsAndConditions(){
-    	return PackageManagerComm::getTermsAndConditions();
+    	return (new PackageManagerComm())->getTermsAndConditions();
 
     }
 
@@ -288,7 +288,7 @@ class PackageManager{
      */
     function getDocumentation($package_id, $release_id){
     	 if(!empty($release_id) || !empty($package_id)){
-            $documents = PackageManagerComm::getDocumentation($package_id, $release_id);
+            $documents = (new PackageManagerComm())->getDocumentation($package_id, $release_id);
             return $documents;
         }else{
             return null;
@@ -300,10 +300,10 @@ class PackageManager{
      * The depot will then send back a list of modules that need to be updated
      */
     function checkForUpdates(){
-    	$lists = $this->buildInstalledReleases(array('module'), true);
-		$updates = array();
+    	$lists = $this->buildInstalledReleases(['module']);
+		$updates = [];
 		if(!empty($lists)){
-			$updates = PackageManagerComm::checkForUpdates($lists);
+			$updates = (new PackageManagerComm())->checkForUpdates($lists);
 		}//fi
 		return $updates;
     }
@@ -311,46 +311,46 @@ class PackageManager{
      ////////////////////////////////////////////////////////
      /////////// HELPER FUNCTIONS
     function toNameValueList($array){
-		$list = array();
+		$list = [];
 		foreach($array as $name=>$value){
-			$list[] = array('name'=>$name, 'value'=>$value);
+			$list[] = ['name'=>$name, 'value'=>$value];
 		}
 		return $list;
 	}
 
 	function toNameValueLists($arrays){
-		$lists = array();
+		$lists = [];
 		foreach($arrays as $array){
-			$lists[] = PackageManager::toNameValueList($array);
+			$lists[] = (new PackageManager())->toNameValueList($array);
 		}
 		return $lists;
 	}
 
      function fromNameValueList($nvl){
-        $array = array();
+        $array = [];
         foreach($nvl as $list){
             $array[$list['name']] = $list['value'];
         }
         return $array;
     }
 
-    function buildInstalledReleases($types = array('module')){
+    function buildInstalledReleases($types = ['module']){
     	//1) get list of installed modules
 		$installeds = $this->getInstalled($types);
-		$releases = array();
+		$releases = [];
 		foreach($installeds as $installed){
-			$releases[] = array('name' => $installed->name, 'id_name' => $installed->id_name, 'version' => $installed->version, 'filename' => $installed->filename, 'type' => $installed->type);
+			$releases[] = ['name' => $installed->name, 'id_name' => $installed->id_name, 'version' => $installed->version, 'filename' => $installed->filename, 'type' => $installed->type];
 		}
 
-		$lists = array();
-		$name_value_list = array();
+		$lists = [];
+		$name_value_list = [];
 		if(!empty($releases)){
 			$lists = $this->toNameValueLists($releases);
 		}//fi
 		return $lists;
     }
 
-    function buildPackageXML($package, $releases = array()){
+    function buildPackageXML($package, $releases = []){
         $xml = '<package>';
         $xml .= '<package_id>'.$package['id'].'</package_id>';
         $xml .= '<name>'.$package['name'].'</name>';
@@ -359,7 +359,7 @@ class PackageManager{
              $xml .= '<releases>';
              foreach($releases['packages'] as $release){
 
-                 $myrelease = PackageManager::fromNameValueList($release);
+                 $myrelease = (new PackageManager())->fromNameValueList($release);
                  $xml .= '<release>';
                  $xml .= '<release_id>'.$myrelease['id'].'</release_id>';
                  $xml .= '<version>'.$myrelease['version'].'</version>';
@@ -374,12 +374,12 @@ class PackageManager{
         return $xml;
     }
 
-    private $cleanUpDirs = array();
+    private $cleanUpDirs = [];
 
     private function addToCleanup($dir)
     {
         if(empty($this->cleanUpDirs)) {
-            register_shutdown_function(array($this, "cleanUpTempDir"));
+            register_shutdown_function([$this, "cleanUpTempDir"]);
         }
         $this->cleanUpDirs[] = $dir;
     }
@@ -453,7 +453,7 @@ class PackageManager{
     function getInstallType( $type_string ){
         // detect file type
         global $subdirs;
-        $subdirs = array('full', 'langpack', 'module', 'patch', 'theme', 'temp');
+        $subdirs = ['full', 'langpack', 'module', 'patch', 'theme', 'temp'];
 
 
         foreach( $subdirs as $subdir ){
@@ -466,6 +466,7 @@ class PackageManager{
     }
 
     function performSetup($tempFile, $view = 'module', $display_messages = true){
+        $manifest = [];
         global $sugar_config,$mod_strings;
         $base_filename = urldecode($tempFile);
         $GLOBALS['log']->debug("BaseFileName: ".$base_filename);
@@ -533,6 +534,8 @@ class PackageManager{
     }
 
     function performInstall($file, $silent=true){
+        $installdefs = [];
+        $manifest = [];
         global $sugar_config;
         global $mod_strings;
         global $current_language;
@@ -560,7 +563,7 @@ class PackageManager{
             $id_name = $installdefs['id'];
 			$version = $manifest['version'];
 			$uh = new UpgradeHistory();
-			$previous_install = array();
+			$previous_install = [];
     		if(!empty($id_name) & !empty($version))
     			$previous_install = $uh->determineIfUpgrade($id_name, $version);
     		$previous_version = (empty($previous_install['version'])) ? '' : $previous_install['version'];
@@ -582,10 +585,10 @@ class PackageManager{
             $new_upgrade->name          = $manifest['name'];
             $new_upgrade->description   = $manifest['description'];
             $new_upgrade->id_name		= $id_name;
-			$serial_manifest = array();
-			$serial_manifest['manifest'] = (isset($manifest) ? $manifest : '');
-			$serial_manifest['installdefs'] = (isset($installdefs) ? $installdefs : '');
-			$serial_manifest['upgrade_manifest'] = (isset($upgrade_manifest) ? $upgrade_manifest : '');
+			$serial_manifest = [];
+			$serial_manifest['manifest'] = ($manifest ?? '');
+			$serial_manifest['installdefs'] = ($installdefs ?? '');
+			$serial_manifest['upgrade_manifest'] = ($upgrade_manifest ?? '');
 			$new_upgrade->manifest		= base64_encode(serialize($serial_manifest));
             //$new_upgrade->unique_key    = (isset($manifest['unique_key'])) ? $manifest['unique_key'] : '';
             $new_upgrade->save();
@@ -674,10 +677,10 @@ class PackageManager{
         global $current_language;
         $uh = new UpgradeHistory();
         $base_upgrade_dir       = "upload://upgrades";
-        $uContent = findAllFiles( $base_upgrade_dir, array() , false, 'zip');
-        $upgrade_contents = array();
+        $uContent = findAllFiles( $base_upgrade_dir, [] , false, 'zip');
+        $upgrade_contents = [];
         $content_values = array_values($uContent);
-        $alreadyProcessed = array();
+        $alreadyProcessed = [];
         foreach($content_values as $val){
         	if(empty($alreadyProcessed[$val])){
         		$upgrade_contents[] = $val;
@@ -686,7 +689,7 @@ class PackageManager{
         }
 
         $upgrades_available = 0;
-        $packages = array();
+        $packages = [];
         $mod_strings = return_module_language($current_language, "Administration");
         foreach($upgrade_contents as $upgrade_content) {
             if(!preg_match('#.*\.zip$#', strtolower($upgrade_content)) || preg_match("#.*./zips/.*#", strtolower($upgrade_content))) {
@@ -711,7 +714,7 @@ class PackageManager{
 	                $uninstallable = empty($manifest['is_uninstallable']) ? 'No' : 'Yes';
 	                $type = $this->getUITextForType( $manifest['type'] );
 	                $manifest_type = $manifest['type'];
-	                $dependencies = array();
+	                $dependencies = [];
 	                if( isset( $manifest['dependencies']) ){
 	    				$dependencies    = $manifest['dependencies'];
 					}
@@ -721,7 +724,7 @@ class PackageManager{
 				if(!empty($dependencies)) {
 					$uh = new UpgradeHistory();
 					$not_found = $uh->checkDependencies($dependencies);
-					if(!empty($not_found) && count($not_found) > 0){
+					if(!empty($not_found) && (is_array($not_found) || $not_found instanceof \Countable ? count($not_found) : 0) > 0){
 							$file_install = 'errors_'.$mod_strings['ERR_UW_NO_DEPENDENCY']."[".implode(',', $not_found)."]";
 					}
 				}
@@ -744,9 +747,7 @@ class PackageManager{
 
                 $upgrades_available++;
 
-                $packages[] = array('name' => $name, 'version' => $version, 'published_date' => $published_date,
-                	'description' => $description, 'uninstallable' =>$uninstallable, 'type' => $type,
-                	'file' => fileToHash($upgrade_content), 'file_install' => fileToHash($upgrade_content), 'unFile' => fileToHash($upgrade_content));
+                $packages[] = ['name' => $name, 'version' => $version, 'published_date' => $published_date, 'description' => $description, 'uninstallable' =>$uninstallable, 'type' => $type, 'file' => fileToHash($upgrade_content), 'file_install' => fileToHash($upgrade_content), 'unFile' => fileToHash($upgrade_content)];
             }//fi
         }//rof
         return $packages;
@@ -773,12 +774,12 @@ class PackageManager{
      *
      * @return an array of installed upgrade_history objects
      */
-    function getInstalled($types = array('module')){
+    function getInstalled($types = ['module']){
     	$uh = new UpgradeHistory();
     	$in = "";
-    	for($i = 0; $i < count($types); $i++){
+    	for($i = 0; $i < (is_array($types) || $types instanceof \Countable ? count($types) : 0); $i++){
     		$in .= "'".$types[$i]."'";
-    		if(($i+1) < count($types)){
+    		if(($i+1) < (is_array($types) || $types instanceof \Countable ? count($types) : 0)){
     			$in .= ",";
     		}
     	}
@@ -786,10 +787,10 @@ class PackageManager{
     	return $uh->getList($query);
     }
 
-    function getinstalledPackages($types = array('module', 'langpack')){
+    function getinstalledPackages($types = ['module', 'langpack']){
     	global $sugar_config;
     	$installeds = $this->getInstalled($types);
-    	$packages = array();
+    	$packages = [];
     	$upgrades_installed = 0;
     	$uh = new UpgradeHistory();
         $base_upgrade_dir       = $this->upload_dir.'/upgrades';
@@ -836,10 +837,10 @@ class PackageManager{
 						    $installed->id_name = $id_name;
 						}
 
-						$serial_manifest = array();
-						$serial_manifest['manifest'] = (isset($manifest) ? $manifest : '');
-						$serial_manifest['installdefs'] = (isset($installdefs) ? $installdefs : '');
-						$serial_manifest['upgrade_manifest'] = (isset($upgrade_manifest) ? $upgrade_manifest : '');
+						$serial_manifest = [];
+						$serial_manifest['manifest'] = ($manifest ?? '');
+						$serial_manifest['installdefs'] = ($installdefs ?? '');
+						$serial_manifest['upgrade_manifest'] = ($upgrade_manifest ?? '');
 						$installed->manifest = base64_encode(serialize($serial_manifest));
 						$installed->save();
 					}else{
@@ -862,17 +863,7 @@ class PackageManager{
 						$file_uninstall = fileToHash( $file_uninstall );
 					}
 
-				$packages[] = array(
-				    'name' => $name,
-				    'version' => $version,
-				    'type' => $type,
-				    'published_date' => $date_entered,
-				    'description' => $description,
-				    'uninstallable' =>$uninstallable,
-				    'file_install' =>  $file_uninstall ,
-				    'file' =>  fileToHash($filename),
-				    'enabled' => $enabled_string
-				);
+				$packages[] = ['name' => $name, 'version' => $version, 'type' => $type, 'published_date' => $date_entered, 'description' => $description, 'uninstallable' =>$uninstallable, 'file_install' =>  $file_uninstall, 'file' =>  fileToHash($filename), 'enabled' => $enabled_string];
 				break;
 				default:
 				break;

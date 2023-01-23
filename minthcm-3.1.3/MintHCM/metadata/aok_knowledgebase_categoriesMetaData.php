@@ -42,79 +42,17 @@
  * "Supercharged by SuiteCRM" and "Reinvented by MintHCM".
  */
 
-$dictionary["aok_knowledgebase_categories"] = array (
-  'true_relationship_type' => 'many-to-many',
-  'relationships' => 
-  array (
-    'aok_knowledgebase_categories' =>
-    array (
-      'lhs_module' => 'AOK_KnowledgeBase',
-      'lhs_table' => 'aok_knowledgebase',
-      'lhs_key' => 'id',
-      'rhs_module' => 'AOK_Knowledge_Base_Categories',
-      'rhs_table' => 'aok_knowledge_base_categories',
-      'rhs_key' => 'id',
-      'relationship_type' => 'many-to-many',
-      'join_table' => 'aok_knowledgebase_categories',
-      'join_key_lhs' => 'aok_knowledgebase_id',
-      'join_key_rhs' => 'aok_knowledge_base_categories_id',
-    ),
-  ),
-  'table' => 'aok_knowledgebase_categories',
-  'fields' => 
-  array (
-    0 => 
-    array (
-      'name' => 'id',
-      'type' => 'varchar',
-      'len' => 36,
-    ),
-    1 => 
-    array (
-      'name' => 'date_modified',
-      'type' => 'datetime',
-    ),
-    2 => 
-    array (
-      'name' => 'deleted',
-      'type' => 'bool',
-      'len' => '1',
-      'default' => '0',
-      'required' => true,
-    ),
-    3 => 
-    array (
-      'name' => 'aok_knowledgebase_id',
-      'type' => 'varchar',
-      'len' => 36,
-    ),
-    4 => 
-    array (
-      'name' => 'aok_knowledge_base_categories_id',
-      'type' => 'varchar',
-      'len' => 36,
-    ),
-  ),
-  'indices' => 
-  array (
-    0 => 
-    array (
-      'name' => 'aok_knowledgebase_categoriesspk',
-      'type' => 'primary',
-      'fields' => 
-      array (
-        0 => 'id',
-      ),
-    ),
-    1 => 
-    array (
-      'name' => 'aok_knowledgebase_categories_alt',
-      'type' => 'alternate_key',
-      'fields' => 
-      array (
-        0 => 'aok_knowledgebase_id',
-        1 => 'aok_knowledge_base_categories_id',
-      ),
-    ),
-  ),
-);
+$dictionary["aok_knowledgebase_categories"] = ['true_relationship_type' => 'many-to-many', 'relationships' => 
+['aok_knowledgebase_categories' =>
+['lhs_module' => 'AOK_KnowledgeBase', 'lhs_table' => 'aok_knowledgebase', 'lhs_key' => 'id', 'rhs_module' => 'AOK_Knowledge_Base_Categories', 'rhs_table' => 'aok_knowledge_base_categories', 'rhs_key' => 'id', 'relationship_type' => 'many-to-many', 'join_table' => 'aok_knowledgebase_categories', 'join_key_lhs' => 'aok_knowledgebase_id', 'join_key_rhs' => 'aok_knowledge_base_categories_id']], 'table' => 'aok_knowledgebase_categories', 'fields' => 
+[0 => 
+['name' => 'id', 'type' => 'varchar', 'len' => 36], 1 => 
+['name' => 'date_modified', 'type' => 'datetime'], 2 => 
+['name' => 'deleted', 'type' => 'bool', 'len' => '1', 'default' => '0', 'required' => true], 3 => 
+['name' => 'aok_knowledgebase_id', 'type' => 'varchar', 'len' => 36], 4 => 
+['name' => 'aok_knowledge_base_categories_id', 'type' => 'varchar', 'len' => 36]], 'indices' => 
+[0 => 
+['name' => 'aok_knowledgebase_categoriesspk', 'type' => 'primary', 'fields' => 
+[0 => 'id']], 1 => 
+['name' => 'aok_knowledgebase_categories_alt', 'type' => 'alternate_key', 'fields' => 
+[0 => 'aok_knowledgebase_id', 1 => 'aok_knowledge_base_categories_id']]]];

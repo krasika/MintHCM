@@ -45,7 +45,7 @@
  require_once('ModuleInstall/PackageManager/PackageManagerDisplay.php');
  require_once('ModuleInstall/PackageManager/PackageManager.php');
  class PackageController{
-        var $_pm;
+        public $_pm;
 
         /**
          * Constructor: this class is called from the the ajax call and handles invoking the correct
@@ -80,8 +80,8 @@
              if(isset($_REQUEST['node_id'])) {
                 $node_id = nl2br($_REQUEST['node_id']);
             }
-            $xml = PackageManager::getPackages($node_id);
-            echo 'result = ' . $json->encode(array('packages' => $xml));
+            $xml = (new PackageManager())->getPackages($node_id);
+            echo 'result = ' . $json->encode(['packages' => $xml]);
         }
 
         /**
@@ -99,8 +99,8 @@
              if(isset($_REQUEST['category_id'])) {
                 $category_id = nl2br($_REQUEST['category_id']);
             }
-            $xml = PackageManager::getPackages($category_id);
-            echo 'result = ' . $json->encode(array('package_output' => $xml));
+            $xml = (new PackageManager())->getPackages($category_id);
+            echo 'result = ' . $json->encode(['package_output' => $xml]);
         }
 
         /**
@@ -123,7 +123,7 @@
             }
             $types = explode(',', $types);
 
-            $filter = array();
+            $filter = [];
           	$count = count($types);
           	$index = 1;
           	$type_str = '';
@@ -134,18 +134,18 @@
           		$index++;
           	}
 
-          	$filter = array('type' => $type_str);
-          	$filter = PackageManager::toNameValueList($filter);
-            $releases = PackageManager::getReleases($category_id, $package_id, $filter);
-            $nodes = array();
-            $release_map = array();
+          	$filter = ['type' => $type_str];
+          	$filter = (new PackageManager())->toNameValueList($filter);
+            $releases = (new PackageManager())->getReleases($category_id, $package_id, $filter);
+            $nodes = [];
+            $release_map = [];
             foreach($releases['packages'] as $release){
-            	$release = PackageManager::fromNameValueList($release);
-				$nodes[] = array('description' => $release['description'], 'version' => $release['version'], 'build_number' => $release['build_number'], 'id' => $release['id']);
-        		$release_map[$release['id']] = array('package_id' => $release['package_id'], 'category_id' => $release['category_id']);
+            	$release = (new PackageManager())->fromNameValueList($release);
+				$nodes[] = ['description' => $release['description'], 'version' => $release['version'], 'build_number' => $release['build_number'], 'id' => $release['id']];
+        		$release_map[$release['id']] = ['package_id' => $release['package_id'], 'category_id' => $release['category_id']];
         	}
         	$_SESSION['ML_PATCHES'] = $release_map;
-            echo 'result = ' . $json->encode(array('releases' => $nodes));
+            echo 'result = ' . $json->encode(['releases' => $nodes]);
         }
 
         /**
@@ -154,9 +154,9 @@
         function getPromotion(){
             $json = getJSONobj();
 
-            $header = PackageManager::getPromotion();
+            $header = (new PackageManager())->getPromotion();
 
-            echo 'result = ' . $json->encode(array('promotion' => $header));
+            echo 'result = ' . $json->encode(['promotion' => $header]);
         }
 
         /**
@@ -194,7 +194,7 @@
                 $GLOBALS['log']->debug("Complete Setup");
                 $success = 'true';
             }
-            echo 'result = ' . $json->encode(array('success' => $success));
+            echo 'result = ' . $json->encode(['success' => $success]);
         }
 
          /**
@@ -210,8 +210,8 @@
                 $node_id = nl2br($_REQUEST['category_id']);
             }
             $GLOBALS['log']->debug("NODE ID: ".$node_id);
-            $nodes = PackageManager::getCategories($node_id);
-            echo 'result = ' . $json->encode(array('nodes' => $nodes));
+            $nodes = (new PackageManager())->getCategories($node_id);
+            echo 'result = ' . $json->encode(['nodes' => $nodes]);
         }
 
          function getNodes(){
@@ -221,9 +221,9 @@
                 $category_id = nl2br($_REQUEST['category_id']);
             }
             $GLOBALS['log']->debug("CATEGORY ID: ".$category_id);
-            $nodes = PackageManager::getModuleLoaderCategoryPackages($category_id);
+            $nodes = (new PackageManager())->getModuleLoaderCategoryPackages($category_id);
             $GLOBALS['log']->debug(var_export($nodes, true));
-            echo 'result = ' . $json->encode(array('nodes' => $nodes));
+            echo 'result = ' . $json->encode(['nodes' => $nodes]);
         }
 
         /**
@@ -239,27 +239,27 @@
             }
             $pm = new PackageManager();
             $updates = $pm->checkForUpdates();
-            $nodes = array();
-			$release_map = array();
+            $nodes = [];
+			$release_map = [];
             if(!empty($updates)){
 	            foreach($updates as $update){
-	            	$update = PackageManager::fromNameValueList($update);
-	            	$nodes[] = array('label' => $update['name'], 'description' => $update['description'], 'version' => $update['version'], 'build_number' => $update['build_number'], 'id' => $update['id'], 'type' => $update['type']);
-					$release_map[$update['id']] = array('package_id' => $update['package_id'], 'category_id' => $update['category_id'], 'type' => $update['type']);
+	            	$update = (new PackageManager())->fromNameValueList($update);
+	            	$nodes[] = ['label' => $update['name'], 'description' => $update['description'], 'version' => $update['version'], 'build_number' => $update['build_number'], 'id' => $update['id'], 'type' => $update['type']];
+					$release_map[$update['id']] = ['package_id' => $update['package_id'], 'category_id' => $update['category_id'], 'type' => $update['type']];
 	            }
             }
            //patches
-           $filter = array(array('name' => 'type', 'value' => "'patch'"));
+           $filter = [['name' => 'type', 'value' => "'patch'"]];
             $releases = $pm->getReleases('', '', $filter);
             if(!empty($releases['packages'])){
             	foreach($releases['packages'] as $update){
-	            	$update = PackageManager::fromNameValueList($update);
-					$nodes[] = array('label' => $update['name'], 'description' => $update['description'], 'version' => $update['version'], 'build_number' => $update['build_number'], 'id' => $update['id'], 'type' => $update['type']);
-					$release_map[$update['id']] = array('package_id' => $update['package_id'], 'category_id' => $update['category_id'], 'type' => $update['type']);
+	            	$update = (new PackageManager())->fromNameValueList($update);
+					$nodes[] = ['label' => $update['name'], 'description' => $update['description'], 'version' => $update['version'], 'build_number' => $update['build_number'], 'id' => $update['id'], 'type' => $update['type']];
+					$release_map[$update['id']] = ['package_id' => $update['package_id'], 'category_id' => $update['category_id'], 'type' => $update['type']];
 	            }
             }
 			$_SESSION['ML_PATCHES'] = $release_map;
-            echo 'result = ' . $json->encode(array('updates' => $nodes));
+            echo 'result = ' . $json->encode(['updates' => $nodes]);
         }
 
         function getLicenseText(){
@@ -269,7 +269,7 @@
                 $file = hashToFile($_REQUEST['file']);
             }
             $GLOBALS['log']->debug("FILE : ".$file);
-            echo 'result = ' . $json->encode(array('license_display' => PackageManagerDisplay::buildLicenseOutput($file)));
+            echo 'result = ' . $json->encode(['license_display' => (new PackageManagerDisplay())->buildLicenseOutput($file)]);
         }
 
         /**
@@ -279,7 +279,7 @@
             $packages = $this->_pm->getPackagesInStaging('module');
             $json = getJSONobj();
 
-            echo 'result = ' . $json->encode(array('packages' => $packages));
+            echo 'result = ' . $json->encode(['packages' => $packages]);
         }
 
         /**
@@ -295,7 +295,7 @@
 			}
             $json = getJSONobj();
 
-            echo 'result = ' . $json->encode(array('result' => 'success'));
+            echo 'result = ' . $json->encode(['result' => 'success']);
         }
 
         function authenticate(){
@@ -321,7 +321,7 @@
 
             if(!empty($username) && !empty($password)){
                 $password = md5($password);
-                $result = PackageManager::authenticate($username, $password, $servername, $terms_checked);
+                $result = (new PackageManager())->authenticate($username, $password, $servername, $terms_checked);
                 if(!is_array($result) && $result == true)
                     $status  = 'success';
                 else
@@ -330,7 +330,7 @@
                 $status  = 'failed';
             }
 
-            echo 'result = ' . $json->encode(array('status' => $status));
+            echo 'result = ' . $json->encode(['status' => $status]);
         }
 
         function getDocumentation(){
@@ -345,9 +345,9 @@
                 $release_id = nl2br($_REQUEST['release_id']);
             }
 
-            $documents = PackageManager::getDocumentation($package_id, $release_id);
+            $documents = (new PackageManager())->getDocumentation($package_id, $release_id);
             $GLOBALS['log']->debug("DOCUMENTS: ".var_export($documents, true));
-            echo 'result = ' . $json->encode(array('documents' => $documents));
+            echo 'result = ' . $json->encode(['documents' => $documents]);
         }
 
         function downloadedDocumentation(){
@@ -358,8 +358,8 @@
                 $document_id = nl2br($_REQUEST['document_id']);
             }
              $GLOBALS['log']->debug("Downloading Document: ".$document_id);
-            PackageManagerComm::downloadedDocumentation($document_id);
-            echo 'result = ' . $json->encode(array('result' => 'true'));
+            (new PackageManagerComm())->downloadedDocumentation($document_id);
+            echo 'result = ' . $json->encode(['result' => 'true']);
         }
 
         /**
@@ -386,10 +386,10 @@
             $GLOBALS['log']->debug("FILE TO REMOVE: ".$file);
             if(!empty($file)){
             	unlink($file);
-            	foreach(array("manifest", "icon") as $meta) {
+            	foreach(["manifest", "icon"] as $meta) {
             	    $this->rmMetaFile($file, $meta);
             	}
             }
-            echo 'result = ' . $json->encode(array('result' => 'true'));
+            echo 'result = ' . $json->encode(['result' => 'true']);
         }
  }

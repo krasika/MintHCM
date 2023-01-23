@@ -58,7 +58,8 @@ require_once('modules/AM_TaskTemplates/AM_TaskTemplates.php');
 
 class AM_TaskTemplatesDashlet extends DashletGeneric {
     function __construct($id, $def = null) {
-		global $current_user, $app_strings;
+		$dashletData = [];
+  global $current_user, $app_strings;
 		require('modules/AM_TaskTemplates/metadata/dashletviewdefs.php');
 
         parent::__construct($id, $def);
